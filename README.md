@@ -89,6 +89,24 @@ The text graph:
 - Preserves original labels exactly — no summarization, no typos fixed
 - Never infers meaning beyond visible text and arrows
 
+The export includes **graph_insights**:
+- **Root detection**: finds nodes with highest outgoing edge count and no incoming edges
+- **Leaf detection**: finds nodes with incoming edges but no outgoing edges
+- **Direct branch count**: outgoing edges from the top root node
+- **Max depth estimate**: longest directed path from root using BFS
+- **Relation status counts**: bound vs loose inferred edges
+- **Lowest-confidence edge**: identifies the edge most likely needing verification
+
+This helps AI explain boards quickly without screenshots. Models should separate visible graph facts from likely interpretation.
+
+Example of exported insights for an ESP32-to-five-IMUs board:
+- Root: `esp 32` (5 outgoing, 0 incoming)
+- Direct branches: 5
+- Leaves: `imu 0 thumb`, `imu 1 index finger`, `imu 2 middle finger`, `imu 3 back of hand`, `imu 4 wrist relative`
+- Max depth: 1
+- Relation statuses: 4 bound, 1 loose inferred
+- Lowest confidence edge: `esp 32 connects to imu 2 middle finger` (0.75, loose_inferred_relation)
+
 ## Policy
 
 ### Board Context

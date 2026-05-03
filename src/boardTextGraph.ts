@@ -34,6 +34,43 @@ export type UngroupedText = {
   y: number;
 };
 
+export type RootNodeInsight = {
+  node_id: string;
+  label: string;
+  reason: string;
+  outgoing_edge_count: number;
+  incoming_edge_count: number;
+};
+
+export type LeafNodeInsight = {
+  node_id: string;
+  label: string;
+  reason: string;
+  outgoing_edge_count: number;
+  incoming_edge_count: number;
+};
+
+export type LowestConfidenceEdge = {
+  id: string;
+  plain_text: string;
+  confidence: number;
+  status: "bound_visual_relation" | "loose_inferred_relation";
+};
+
+export type GraphInsights = {
+  likely_root_nodes: RootNodeInsight[];
+  likely_leaf_nodes: LeafNodeInsight[];
+  direct_branch_count: number;
+  max_depth_estimate: number | null;
+  has_unresolved_arrows: boolean;
+  has_ungrouped_text: boolean;
+  lowest_confidence_edge: LowestConfidenceEdge | null;
+  relation_status_counts: {
+    bound_visual_relation: number;
+    loose_inferred_relation: number;
+  };
+};
+
 export type BoardTextGraph = {
   schema: "recall-board-text-graph-v1";
   summary: {
@@ -49,6 +86,7 @@ export type BoardTextGraph = {
   edges: TextGraphEdge[];
   unresolved_arrows: UnresolvedArrow[];
   ungrouped_text: UngroupedText[];
+  graph_insights: GraphInsights;
   plain_text_graph: string;
 };
 
@@ -318,6 +356,161 @@ export function buildBoardTextGraph(elements: readonly LooseEl[]): BoardTextGrap
     }
   }
 
+  // --- Build graph_insights ---
+
+  const outgoingCount = new Map<string, number>();
+  const incomingCount = new Map<string, number>();
+  for (const n of nodes) {
+    outgoingCount.set(n.id, 0);
+    incomingCount.set(n.id, 0);
+  }
+  for (const e of edges) {
+    outgoingCount.set(e.from_node_id, (outgoingCount.get(e.from_node_id) || 0) + 1);
+    incomingCount.set(e.to_node_id, (incomingCount.get(e.to_node_id) || 0) + 1);
+  }
+
+  const likelyRootNodes: RootNodeInsight[] = [];
+  const likelyLeafNodes: LeafNodeInsight[] = [];
+
+  // Roots: nodes with outgoing > 0 and incoming === 0, ranked by outgoing desc
+  const rootCandidates: { id: string; out: number; in: number }[] = [];
+  for (const n of nodes) {
+    const out = outgoingCount.get(n.id) || 0;
+    const inn = incomingCount.get(n.id) || 0;
+    if (out > 0 && inn === 0) {
+      rootCandidates.push({ id: n.id, out, in: inn });
+    }
+  }
+  rootCandidates.sort((a, b) => b.out - a.out);
+
+  for (const rc of rootCandidates) {
+    const node = nodes.find((n) => n.id === rc.id);
+    likelyRootNodes.push({
+      node_id: rc.id,
+      label: node?.label || "?",
+      reason: "highest outgoing edge count with no incoming edges",
+      outgoing_edge_count: rc.out,
+      incoming_edge_count: rc.in,
+    });
+  }
+
+  // If no pure roots, fallback to highest outgoing overall
+  if (likelyRootNodes.length === 0) {
+    const allByOut = nodes
+      .map((n) => ({ id: n.id, out: outgoingCount.get(n.id) || 0, in: incomingCount.get(n.id) || 0 }))
+      .filter((x) => x.out > 0 || x.in > 0)
+      .sort((a, b) => b.out - a.out);
+    if (allByOut.length > 0) {
+      const top = allByOut[0];
+      const node = nodes.find((n) => n.id === top.id);
+      likelyRootNodes.push({
+        node_id: top.id,
+        label: node?.label || "?",
+        reason: top.in === 0
+          ? "highest outgoing edge count with no incoming edges"
+          : "highest outgoing edge count",
+        outgoing_edge_count: top.out,
+        incoming_edge_count: top.in,
+      });
+    }
+  }
+
+  // Leaves: incoming > 0 and outgoing === 0, ranked by incoming desc
+  const leafCandidates: { id: string; out: number; in: number }[] = [];
+  for (const n of nodes) {
+    const out = outgoingCount.get(n.id) || 0;
+    const inn = incomingCount.get(n.id) || 0;
+    if (inn > 0 && out === 0) {
+      leafCandidates.push({ id: n.id, out, in: inn });
+    }
+  }
+  leafCandidates.sort((a, b) => b.in - a.in);
+
+  for (const lc of leafCandidates) {
+    const node = nodes.find((n) => n.id === lc.id);
+    likelyLeafNodes.push({
+      node_id: lc.id,
+      label: node?.label || "?",
+      reason: "has incoming edge(s) and no outgoing edges",
+      outgoing_edge_count: lc.out,
+      incoming_edge_count: lc.in,
+    });
+  }
+
+  // Direct branch count: outgoing of top root
+  const directBranchCount = likelyRootNodes.length > 0 ? likelyRootNodes[0].outgoing_edge_count : 0;
+
+  // Max depth estimate: BFS from top root
+  let maxDepth: number | null = null;
+  if (likelyRootNodes.length > 0) {
+    const rootId = likelyRootNodes[0].node_id;
+    const adj = new Map<string, string[]>();
+    for (const n of nodes) adj.set(n.id, []);
+    for (const e of edges) {
+      const list = adj.get(e.from_node_id);
+      if (list) list.push(e.to_node_id);
+    }
+    const visited = new Set<string>();
+    const depth = new Map<string, number>();
+    const queue: string[] = [rootId];
+    visited.add(rootId);
+    depth.set(rootId, 0);
+    while (queue.length > 0) {
+      const cur = queue.shift()!;
+      const curDepth = depth.get(cur) || 0;
+      for (const next of adj.get(cur) || []) {
+        if (!visited.has(next)) {
+          visited.add(next);
+          depth.set(next, curDepth + 1);
+          queue.push(next);
+        }
+      }
+    }
+    let maxD = 0;
+    for (const d of depth.values()) {
+      if (d > maxD) maxD = d;
+    }
+    maxDepth = maxD;
+  }
+
+  // Relation status counts
+  let boundCount = 0;
+  let looseCount = 0;
+  for (const e of edges) {
+    if (e.status === "bound_visual_relation") boundCount++;
+    else looseCount++;
+  }
+
+  // Lowest confidence edge
+  let lowestEdge: TextGraphEdge | null = null;
+  for (const e of edges) {
+    if (!lowestEdge || e.confidence < lowestEdge.confidence) {
+      lowestEdge = e;
+    }
+  }
+  const lowestConfidenceEdge: LowestConfidenceEdge | null = lowestEdge
+    ? {
+        id: lowestEdge.id,
+        plain_text: lowestEdge.plain_text,
+        confidence: lowestEdge.confidence,
+        status: lowestEdge.status,
+      }
+    : null;
+
+  const graph_insights: GraphInsights = {
+    likely_root_nodes: likelyRootNodes,
+    likely_leaf_nodes: likelyLeafNodes,
+    direct_branch_count: directBranchCount,
+    max_depth_estimate: maxDepth,
+    has_unresolved_arrows: unresolvedArrows.length > 0,
+    has_ungrouped_text: ungroupedText.length > 0,
+    lowest_confidence_edge: lowestConfidenceEdge,
+    relation_status_counts: {
+      bound_visual_relation: boundCount,
+      loose_inferred_relation: looseCount,
+    },
+  };
+
   // --- Build plain_text_graph ---
 
   const nodeList = nodes.map((n) => `- ${n.label}`).join("\n");
@@ -329,7 +522,32 @@ export function buildBoardTextGraph(elements: readonly LooseEl[]): BoardTextGrap
     ? "\n## Ungrouped Text\n" + ungroupedText.map((t) => `- ${t.text}`).join("\n")
     : "\n## Ungrouped Text\n(none)";
 
+  const rootLine = likelyRootNodes.length > 0
+    ? `- Likely root: ${likelyRootNodes[0].label} (${likelyRootNodes[0].outgoing_edge_count} outgoing, ${likelyRootNodes[0].incoming_edge_count} incoming)`
+    : "- Likely root: none identified";
+  const leafLines = likelyLeafNodes.length > 0
+    ? "- Likely leaves:\n" + likelyLeafNodes.map((l) => `    - ${l.label}`).join("\n")
+    : "- Likely leaves: none identified";
+  const branchLine = `- Direct branches from root: ${directBranchCount}`;
+  const depthLine = `- Max depth estimate: ${maxDepth !== null ? maxDepth : "N/A"}`;
+  const statusLine = `- Relation statuses: ${boundCount} bound, ${looseCount} loose inferred`;
+  const lowEdgeLine = lowestConfidenceEdge
+    ? `- Lowest confidence edge: ${lowestConfidenceEdge.plain_text} (${lowestConfidenceEdge.confidence}, ${lowestConfidenceEdge.status})`
+    : "- Lowest confidence edge: none";
+  const unresolvedFlag = unresolvedArrows.length > 0 ? `- Unresolved arrows: ${unresolvedArrows.length}` : "- Unresolved arrows: none";
+  const ungroupedFlag = ungroupedText.length > 0 ? `- Ungrouped text: ${ungroupedText.length} items` : "- Ungrouped text: none";
+
   const plain_text_graph = `# Board Text Graph
+
+## Graph Insights
+${rootLine}
+${leafLines}
+${branchLine}
+${depthLine}
+${statusLine}
+${lowEdgeLine}
+${unresolvedFlag}
+${ungroupedFlag}
 
 ## Nodes
 ${nodeList}
@@ -354,6 +572,7 @@ ${ungroupedList}`;
     edges,
     unresolved_arrows: unresolvedArrows,
     ungrouped_text: ungroupedText,
+    graph_insights,
     plain_text_graph,
   };
 }
