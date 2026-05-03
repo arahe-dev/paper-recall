@@ -3,6 +3,7 @@ import { Excalidraw } from "@excalidraw/excalidraw";
 import "@excalidraw/excalidraw/index.css";
 import "./App.css";
 import TranscriptPanel from "./TranscriptPanel";
+import { buildBoardTextGraph } from "./boardTextGraph";
 
 // Minimal local types to avoid strict import issues for this prototype
 type LooseElement = {
@@ -17,6 +18,8 @@ type LooseElement = {
   backgroundColor: string;
   isDeleted?: boolean;
   boundElements?: readonly { id: string; type: string }[] | null;
+  containerId?: string | null;
+  points?: readonly (readonly [number, number])[];
   text?: string;
   startBinding?: { elementId: string; focus: number; gap: number } | null;
   endBinding?: { elementId: string; focus: number; gap: number } | null;
@@ -218,6 +221,49 @@ function exportAiContext(
   downloadJSON("recall-ai-context.json", context);
 }
 
+function downloadText(filename: string, content: string) {
+  const blob = new Blob([content], { type: "text/plain" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function exportTextGraph(elements: readonly LooseElement[]) {
+  const graph = buildBoardTextGraph(elements);
+  downloadJSON("recall-board-text-graph.json", graph);
+}
+
+function exportTextGraphPrompt(elements: readonly LooseElement[]) {
+  const graph = buildBoardTextGraph(elements);
+  const pretty = JSON.stringify(graph, null, 2);
+  const prompt = `You are reading a compact board text graph.
+
+Explain the board using only this graph.
+Do not ask for a screenshot.
+Each node is text found inside a shape.
+Each edge means one node is connected to another by an arrow.
+
+Return:
+1. One-sentence summary
+2. Central/root node if identifiable
+3. Main branches
+4. Sub-branches
+5. Important relationships
+6. Unclear/unresolved arrows
+7. Suggested cleanup
+
+Here is the graph:
+
+${pretty}
+`;
+  downloadText("recall-board-text-graph-prompt.txt", prompt);
+}
+
 function App() {
   const elementsRef = useRef<readonly LooseElement[]>([]);
   const appStateRef = useRef<LooseAppState>({});
@@ -245,6 +291,14 @@ function App() {
     );
   }, []);
 
+  const handleExportTextGraph = useCallback(() => {
+    exportTextGraph(elementsRef.current);
+  }, []);
+
+  const handleExportTextGraphPrompt = useCallback(() => {
+    exportTextGraphPrompt(elementsRef.current);
+  }, []);
+
   return (
     <div className="app-shell">
       <header className="top-bar">
@@ -252,6 +306,8 @@ function App() {
         <div className="top-bar-actions">
           <button onClick={handleExportScene}>Export Scene JSON</button>
           <button onClick={handleExportAiContext}>Export AI Context</button>
+          <button onClick={handleExportTextGraph}>Export Text Graph</button>
+          <button onClick={handleExportTextGraphPrompt}>Export Text Graph Prompt</button>
           <button onClick={() => setShowTranscript(true)}>Parse Transcript</button>
         </div>
       </header>
