@@ -2,9 +2,9 @@ export type TextGraphNode = {
   id: string;
   label: string;
   body?: string;
-  source_shape_id: string;
+  source_shape_id?: string;
   source_text_ids: string[];
-  shape_type: string;
+  shape_type?: string;
   bounds: { x: number; y: number; width: number; height: number };
 };
 
@@ -14,10 +14,12 @@ export type TextGraphEdge = {
   to_node_id: string;
   from_label: string;
   to_label: string;
+  direction: "from_to" | "to_from" | "undirected_or_unclear";
   relation: "arrow";
   status: "bound_visual_relation" | "loose_inferred_relation";
   source_arrow_id: string;
   confidence: number;
+  plain_text: string;
 };
 
 export type UnresolvedArrow = {
@@ -33,8 +35,9 @@ export type UngroupedText = {
 };
 
 export type BoardTextGraph = {
-  schema: "recall-board-text-graph-v0";
+  schema: "recall-board-text-graph-v1";
   summary: {
+    total_element_count: number;
     active_element_count: number;
     deleted_element_count: number;
     node_count: number;
@@ -46,6 +49,7 @@ export type BoardTextGraph = {
   edges: TextGraphEdge[];
   unresolved_arrows: UnresolvedArrow[];
   ungrouped_text: UngroupedText[];
+  plain_text_graph: string;
 };
 
 type LooseEl = {
@@ -65,12 +69,8 @@ type LooseEl = {
 };
 
 function pointToRectDist(
-  px: number,
-  py: number,
-  rx: number,
-  ry: number,
-  rw: number,
-  rh: number
+  px: number, py: number,
+  rx: number, ry: number, rw: number, rh: number
 ): number {
   const cx = Math.max(rx, Math.min(px, rx + rw));
   const cy = Math.max(ry, Math.min(py, ry + rh));
@@ -84,12 +84,8 @@ export function buildBoardTextGraph(elements: readonly LooseEl[]): BoardTextGrap
   const deleted = elements.filter((el) => el.isDeleted);
 
   const shapes = active.filter(
-    (el) =>
-      el.type === "rectangle" ||
-      el.type === "ellipse" ||
-      el.type === "diamond"
+    (el) => el.type === "rectangle" || el.type === "ellipse" || el.type === "diamond"
   );
-
   const texts = active.filter((el) => el.type === "text");
   const arrows = active.filter((el) => el.type === "arrow");
 
@@ -99,28 +95,18 @@ export function buildBoardTextGraph(elements: readonly LooseEl[]): BoardTextGrap
 
   const shapeToTexts: Map<string, LooseEl[]> = new Map();
   const unmatchedTexts: LooseEl[] = [];
-
-  // Rule 1: containerId on text element
-  // Rule 2: boundElements on shape
-  // Rule 3: geometry fallback
-
   const textIdsMatched = new Set<string>();
 
   for (const shape of shapes) {
     const matched: LooseEl[] = [];
     for (const t of texts) {
       if (textIdsMatched.has(t.id)) continue;
-      // containerId
       if (t.containerId && t.containerId === shape.id) {
         matched.push(t);
         textIdsMatched.add(t.id);
         continue;
       }
-      // boundElements reference
-      if (
-        shape.boundElements &&
-        shape.boundElements.some((be) => be.id === t.id)
-      ) {
+      if (shape.boundElements && shape.boundElements.some((be) => be.id === t.id)) {
         matched.push(t);
         textIdsMatched.add(t.id);
         continue;
@@ -131,18 +117,13 @@ export function buildBoardTextGraph(elements: readonly LooseEl[]): BoardTextGrap
     }
   }
 
-  // Geometry fallback for remaining unmatched texts
   for (const t of texts) {
     if (textIdsMatched.has(t.id)) continue;
     const cx = t.x + t.width / 2;
     const cy = t.y + t.height / 2;
     let found = false;
     for (const shape of shapes) {
-      const left = shape.x;
-      const right = shape.x + shape.width;
-      const top = shape.y;
-      const bottom = shape.y + shape.height;
-      if (cx >= left && cx <= right && cy >= top && cy <= bottom) {
+      if (cx >= shape.x && cx <= shape.x + shape.width && cy >= shape.y && cy <= shape.y + shape.height) {
         const list = shapeToTexts.get(shape.id) || [];
         list.push(t);
         shapeToTexts.set(shape.id, list);
@@ -156,35 +137,19 @@ export function buildBoardTextGraph(elements: readonly LooseEl[]): BoardTextGrap
     }
   }
 
-  // --- Build nodes ---
+  // --- Build nodes from shapes ---
 
   const nodes: TextGraphNode[] = [];
-  const shapeIdToNodeId = new Map<string, string>();
+  const idToNodeId = new Map<string, string>(); // shape ID or text element ID → node ID
+  const textIdToParentNodeId = new Map<string, string>(); // text element ID → parent node ID
 
   for (const shape of shapes) {
     const matchedTexts = shapeToTexts.get(shape.id) || [];
-    if (matchedTexts.length === 0) {
-      // unlabeled shape – still create a node
-      const nodeId = `node_${shape.id}`;
-      nodes.push({
-        id: nodeId,
-        label: "[unlabeled shape]",
-        source_shape_id: shape.id,
-        source_text_ids: [],
-        shape_type: shape.type,
-        bounds: { x: shape.x, y: shape.y, width: shape.width, height: shape.height },
-      });
-      shapeIdToNodeId.set(shape.id, nodeId);
-      continue;
-    }
+    matchedTexts.sort((a, b) => { const d = a.y - b.y; return d !== 0 ? d : a.x - b.x; });
 
-    // sort texts by y then x
-    matchedTexts.sort((a, b) => {
-      const dy = a.y - b.y;
-      return dy !== 0 ? dy : a.x - b.x;
-    });
-
-    const labelText = matchedTexts[0].text?.trim().replace(/\s+/g, " ") || "";
+    const labelText = matchedTexts.length > 0
+      ? (matchedTexts[0].text?.trim().replace(/\s+/g, " ") || "")
+      : "";
     const bodyLines: string[] = [];
     for (let i = 1; i < matchedTexts.length; i++) {
       const bt = matchedTexts[i].text?.trim() || "";
@@ -194,100 +159,126 @@ export function buildBoardTextGraph(elements: readonly LooseEl[]): BoardTextGrap
     const nodeId = `node_${shape.id}`;
     const node: TextGraphNode = {
       id: nodeId,
-      label: labelText || "[unlabeled shape]",
+      label: labelText || `[unlabeled ${shape.type}]`,
       source_shape_id: shape.id,
       source_text_ids: matchedTexts.map((t) => t.id),
       shape_type: shape.type,
       bounds: { x: shape.x, y: shape.y, width: shape.width, height: shape.height },
     };
-    if (bodyLines.length > 0) {
-      node.body = bodyLines.join("\n");
-    }
+    if (bodyLines.length > 0) node.body = bodyLines.join("\n");
+
     nodes.push(node);
-    shapeIdToNodeId.set(shape.id, nodeId);
-  }
-
-  // --- Parse arrows ---
-
-  const edges: TextGraphEdge[] = [];
-  const unresolvedArrows: UnresolvedArrow[] = [];
-  let edgeCounter = 0;
-
-  function nearestShapeId(
-    px: number,
-    py: number,
-    excludeId?: string
-  ): string | null {
-    let bestId: string | null = null;
-    let bestDist = Infinity;
-    for (const shape of shapes) {
-      if (shape.id === excludeId) continue;
-      // Prefer containment (distance 0 = inside)
-      const d = pointToRectDist(px, py, shape.x, shape.y, shape.width, shape.height);
-      const inside =
-        px >= shape.x &&
-        px <= shape.x + shape.width &&
-        py >= shape.y &&
-        py <= shape.y + shape.height;
-      const effective = inside ? d * 0.1 : d;
-      if (effective < bestDist) {
-        bestDist = effective;
-        bestId = shape.id;
-      }
+    idToNodeId.set(shape.id, nodeId);
+    for (const t of matchedTexts) {
+      textIdToParentNodeId.set(t.id, nodeId);
+      idToNodeId.set(t.id, nodeId);
     }
-    return bestId;
   }
 
-  function arrowEndpoint(
-    arrow: LooseEl,
-    isEnd: boolean
-  ): { px: number; py: number } | null {
+  // --- Promote ungrouped text that is targeted by arrow bindings ---
+
+  const textsPromoted = new Set<string>();
+
+  function arrowEndpoint(arrow: LooseEl, isEnd: boolean): { px: number; py: number } | null {
     if (arrow.points && arrow.points.length > 0) {
       const idx = isEnd ? arrow.points.length - 1 : 0;
       const pt = arrow.points[idx];
       return { px: arrow.x + pt[0], py: arrow.y + pt[1] };
     }
-    // fallback: use element center edge
-    if (isEnd) {
-      return { px: arrow.x + arrow.width, py: arrow.y + arrow.height / 2 };
-    }
+    if (isEnd) return { px: arrow.x + arrow.width, py: arrow.y + arrow.height / 2 };
     return { px: arrow.x, py: arrow.y + arrow.height / 2 };
+  }
+
+  // First pass: collect text element IDs referenced by arrow bindings
+  const referencedTextIds = new Set<string>();
+  for (const arrow of arrows) {
+    if (arrow.startBinding && !idToNodeId.has(arrow.startBinding.elementId) && activeIds.has(arrow.startBinding.elementId)) {
+      referencedTextIds.add(arrow.startBinding.elementId);
+    }
+    if (arrow.endBinding && !idToNodeId.has(arrow.endBinding.elementId) && activeIds.has(arrow.endBinding.elementId)) {
+      referencedTextIds.add(arrow.endBinding.elementId);
+    }
+  }
+
+  for (const t of unmatchedTexts) {
+    if (referencedTextIds.has(t.id)) {
+      const nodeId = `node_${t.id}`;
+      const label = (t.text?.trim().replace(/\s+/g, " ") || "").replace(/\n/g, " ");
+      nodes.push({
+        id: nodeId,
+        label: label || "[unnamed text]",
+        source_text_ids: [t.id],
+        bounds: { x: t.x, y: t.y, width: t.width, height: t.height },
+      });
+      idToNodeId.set(t.id, nodeId);
+      textsPromoted.add(t.id);
+    }
+  }
+
+  const finalUngrouped = unmatchedTexts.filter((t) => !textsPromoted.has(t.id));
+  const ungroupedText: UngroupedText[] = finalUngrouped.map((t) => ({
+    id: t.id,
+    text: t.text?.trim() || "",
+    x: t.x,
+    y: t.y,
+  }));
+
+  // --- Resolve arrows into edges ---
+
+  const edges: TextGraphEdge[] = [];
+  const unresolvedArrows: UnresolvedArrow[] = [];
+  let edgeCounter = 0;
+
+  function nearestShapeId(px: number, py: number, excludeId?: string): string | null {
+    let bestId: string | null = null;
+    let bestDist = Infinity;
+    for (const shape of shapes) {
+      if (shape.id === excludeId) continue;
+      const d = pointToRectDist(px, py, shape.x, shape.y, shape.width, shape.height);
+      const inside = px >= shape.x && px <= shape.x + shape.width && py >= shape.y && py <= shape.y + shape.height;
+      if ((inside ? d * 0.1 : d) < bestDist) {
+        bestDist = inside ? d * 0.1 : d;
+        bestId = shape.id;
+      }
+    }
+    // Also check promoted text element bounds
+    for (const t of unmatchedTexts) {
+      if (!textsPromoted.has(t.id)) continue;
+      if (t.id === excludeId) continue;
+      const d = pointToRectDist(px, py, t.x, t.y, t.width || 60, t.height || 20);
+      if (d < bestDist) {
+        bestDist = d;
+        bestId = t.id;
+      }
+    }
+    return bestId;
   }
 
   for (const arrow of arrows) {
     const sb = arrow.startBinding;
     const eb = arrow.endBinding;
-    const sbValid = sb ? activeIds.has(sb.elementId) : false;
-    const ebValid = eb ? activeIds.has(eb.elementId) : false;
+    const sbValid = sb ? idToNodeId.has(sb.elementId) : false;
+    const ebValid = eb ? idToNodeId.has(eb.elementId) : false;
 
     let fromNode: string | null = null;
     let toNode: string | null = null;
-    const fromShapeId = sbValid ? sb!.elementId : null;
-    const toShapeId = ebValid ? eb!.elementId : null;
+    const fromElId = sbValid ? sb!.elementId : null;
+    const toElId = ebValid ? eb!.elementId : null;
 
-    if (fromShapeId && shapeIdToNodeId.has(fromShapeId)) {
-      fromNode = shapeIdToNodeId.get(fromShapeId)!;
-    }
-    if (toShapeId && shapeIdToNodeId.has(toShapeId)) {
-      toNode = shapeIdToNodeId.get(toShapeId)!;
-    }
+    if (fromElId && idToNodeId.has(fromElId)) fromNode = idToNodeId.get(fromElId)!;
+    if (toElId && idToNodeId.has(toElId)) toNode = idToNodeId.get(toElId)!;
 
-    // Fallback geometric inference for missing sides
     if (!fromNode || !toNode) {
       const startPt = arrowEndpoint(arrow, false);
       const endPt = arrowEndpoint(arrow, true);
       if (startPt && endPt) {
         if (!fromNode) {
-          const ns = nearestShapeId(startPt.px, startPt.py, toShapeId || undefined);
-          if (ns && shapeIdToNodeId.has(ns)) {
-            fromNode = shapeIdToNodeId.get(ns)!;
-          }
+          const ns = nearestShapeId(startPt.px, startPt.py, toElId || undefined);
+          if (ns && idToNodeId.has(ns)) fromNode = idToNodeId.get(ns)!;
         }
         if (!toNode) {
-          const ns = nearestShapeId(endPt.px, endPt.py, fromShapeId || undefined);
-          if (ns && shapeIdToNodeId.has(ns)) {
-            toNode = shapeIdToNodeId.get(ns)!;
-          }
+          const ns = nearestShapeId(endPt.px, endPt.py, fromElId || undefined);
+          if (ns && idToNodeId.has(ns)) toNode = idToNodeId.get(ns)!;
         }
       }
     }
@@ -297,22 +288,26 @@ export function buildBoardTextGraph(elements: readonly LooseEl[]): BoardTextGrap
       const toN = nodes.find((n) => n.id === toNode);
       const bound = sbValid && ebValid;
       edgeCounter++;
+
+      const fromLabel = fromN?.label || "?";
+      const toLabel = toN?.label || "?";
+      const plainText = `${fromLabel} connects to ${toLabel}`;
+
       edges.push({
         id: `edge_${String(edgeCounter).padStart(3, "0")}`,
         from_node_id: fromNode,
         to_node_id: toNode,
-        from_label: fromN?.label || "",
-        to_label: toN?.label || "",
+        from_label: fromLabel,
+        to_label: toLabel,
+        direction: "from_to",
         relation: "arrow",
         status: bound ? "bound_visual_relation" : "loose_inferred_relation",
         source_arrow_id: arrow.id,
-        confidence: bound ? 1.0 : 0.7,
+        confidence: bound ? 1.0 : 0.75,
+        plain_text: plainText,
       });
     } else if (fromNode && toNode && fromNode === toNode) {
-      unresolvedArrows.push({
-        id: arrow.id,
-        reason: "Arrow appears to loop back to the same node (self-loop).",
-      });
+      unresolvedArrows.push({ id: arrow.id, reason: "Arrow appears to loop back to the same node (self-loop)." });
     } else {
       const reason = fromNode
         ? "Could not resolve target endpoint to any node."
@@ -323,18 +318,31 @@ export function buildBoardTextGraph(elements: readonly LooseEl[]): BoardTextGrap
     }
   }
 
-  // --- Ungrouped text ---
+  // --- Build plain_text_graph ---
 
-  const ungroupedText: UngroupedText[] = unmatchedTexts.map((t) => ({
-    id: t.id,
-    text: t.text?.trim() || "",
-    x: t.x,
-    y: t.y,
-  }));
+  const nodeList = nodes.map((n) => `- ${n.label}`).join("\n");
+  const edgeList = edges.map((e) => `- ${e.plain_text}`).join("\n");
+  const unresolvedList = unresolvedArrows.length > 0
+    ? "\n## Unresolved Arrows\n" + unresolvedArrows.map((a) => `- ${a.id}: ${a.reason}`).join("\n")
+    : "\n## Unresolved Arrows\n(none)";
+  const ungroupedList = ungroupedText.length > 0
+    ? "\n## Ungrouped Text\n" + ungroupedText.map((t) => `- ${t.text}`).join("\n")
+    : "\n## Ungrouped Text\n(none)";
+
+  const plain_text_graph = `# Board Text Graph
+
+## Nodes
+${nodeList}
+
+## Edges
+${edgeList}
+${unresolvedList}
+${ungroupedList}`;
 
   return {
-    schema: "recall-board-text-graph-v0",
+    schema: "recall-board-text-graph-v1",
     summary: {
+      total_element_count: elements.length,
       active_element_count: active.length,
       deleted_element_count: deleted.length,
       node_count: nodes.length,
@@ -346,5 +354,6 @@ export function buildBoardTextGraph(elements: readonly LooseEl[]): BoardTextGrap
     edges,
     unresolved_arrows: unresolvedArrows,
     ungrouped_text: ungroupedText,
+    plain_text_graph,
   };
 }

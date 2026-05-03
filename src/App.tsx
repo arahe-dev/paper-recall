@@ -243,10 +243,14 @@ function exportTextGraphPrompt(elements: readonly LooseElement[]) {
   const pretty = JSON.stringify(graph, null, 2);
   const prompt = `You are reading a compact board text graph.
 
-Explain the board using only this graph.
 Do not ask for a screenshot.
-Each node is text found inside a shape.
+Use only the nodes, edges, unresolved arrows, and ungrouped text below.
+
+Each node is text found inside a shape or clear standalone text.
 Each edge means one node is connected to another by an arrow.
+Preserve original wording.
+Do not invent missing details.
+Say "unclear" when a relation is ambiguous.
 
 Return:
 1. One-sentence summary
@@ -255,13 +259,20 @@ Return:
 4. Sub-branches
 5. Important relationships
 6. Unclear/unresolved arrows
-7. Suggested cleanup
+7. Ungrouped/disconnected text
+8. Suggested cleanup
+9. What this board seems to communicate
 
-Here is the graph:
+GRAPH:
 
+${graph.plain_text_graph}
+
+## Full JSON
+\`\`\`json
 ${pretty}
+\`\`\`
 `;
-  downloadText("recall-board-text-graph-prompt.txt", prompt);
+  downloadText("recall-board-text-graph-prompt.md", prompt);
 }
 
 function App() {
