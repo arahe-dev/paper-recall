@@ -1,5 +1,5 @@
 import { useRef, useCallback, useState, useEffect } from "react";
-import { Excalidraw, exportToBlob } from "@excalidraw/excalidraw";
+import { Excalidraw, exportToBlob, restoreElements } from "@excalidraw/excalidraw";
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import "@excalidraw/excalidraw/index.css";
 import "./App.css";
@@ -304,6 +304,7 @@ declare global {
     __RECALL_API__?: {
       loadGraph: (json: RecallGraphIR) => Promise<{ success: boolean; errors: string[] }>;
       exportPNG: (filename?: string) => Promise<void>;
+      loadScene: (scene: { elements: unknown[] }) => void;
       getSceneSnapshot: () => { elements: unknown[]; appState: unknown };
     };
   }
@@ -377,6 +378,35 @@ function App() {
     window.__RECALL_API__ = {
       loadGraph: handleLoadGraph,
       exportPNG: handleExportPNG,
+      loadScene: (scene: { elements: any[] }) => {
+        const restored = restoreElements(scene.elements, null);
+        apiRef.current?.updateScene({ elements: restored, captureUpdate: "NEVER" as any });
+
+        requestAnimationFrame(() => {
+          const els = apiRef.current?.getSceneElements() || restored;
+          let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+          for (const el of els as any[]) {
+            if (el.isDeleted) continue;
+            const w = el.width ?? 0;
+            const h = el.height ?? 0;
+            minX = Math.min(minX, el.x);
+            minY = Math.min(minY, el.y);
+            maxX = Math.max(maxX, el.x + w);
+            maxY = Math.max(maxY, el.y + h);
+          }
+          const cx = (minX + maxX) / 2;
+          const cy = (minY + maxY) / 2;
+          const appState = apiRef.current?.getAppState();
+          const vw = (appState as any)?.width || 1200;
+          const vh = (appState as any)?.height || 700;
+          const scrollX = vw / 2 - cx;
+          const scrollY = vh / 2 - cy;
+          apiRef.current?.updateScene({
+            appState: { scrollX, scrollY, zoom: { value: 1 as any } },
+            captureUpdate: "NEVER" as any,
+          });
+        });
+      },
       getSceneSnapshot: () => ({
         elements: elementsRef.current as unknown[],
         appState: appStateRef.current as unknown,

@@ -1,0 +1,1062 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "generated",
+  "elements": [
+    {
+      "id": "el-147",
+      "version": 2,
+      "versionNonce": 725901,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "text",
+      "x": 50,
+      "y": 308,
+      "width": 300,
+      "height": 30,
+      "text": "R",
+      "fontSize": 22,
+      "fontFamily": 2,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "strokeColor": "#1e1e1e",
+      "roughness": 0,
+      "opacity": 100
+    },
+    {
+      "id": "el-148",
+      "version": 2,
+      "versionNonce": 18629,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "arrow",
+      "x": 70,
+      "y": 320,
+      "width": 75,
+      "height": 0,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "roughness": 0,
+      "opacity": 100,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          75,
+          0
+        ]
+      ],
+      "endArrowhead": "arrow",
+      "startBinding": null,
+      "endBinding": null
+    },
+    {
+      "id": "el-149",
+      "version": 2,
+      "versionNonce": 819759,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "ellipse",
+      "x": 145,
+      "y": 295,
+      "width": 50,
+      "height": 50,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "roughness": 0,
+      "opacity": 100
+    },
+    {
+      "id": "el-150",
+      "version": 2,
+      "versionNonce": 381847,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "line",
+      "x": 151,
+      "y": 320,
+      "width": 38,
+      "height": 0,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 1.5,
+      "roughness": 0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          38,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "el-151",
+      "version": 2,
+      "versionNonce": 196349,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "line",
+      "x": 170,
+      "y": 301,
+      "width": 0,
+      "height": 38,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 1.5,
+      "roughness": 0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          38
+        ]
+      ]
+    },
+    {
+      "id": "el-152",
+      "version": 2,
+      "versionNonce": 921365,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "text",
+      "x": 170,
+      "y": 308.75,
+      "width": 300,
+      "height": 30,
+      "text": "+",
+      "fontSize": 18,
+      "fontFamily": 2,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "strokeColor": "#1e1e1e",
+      "roughness": 0,
+      "opacity": 100
+    },
+    {
+      "id": "el-153",
+      "version": 2,
+      "versionNonce": 728642,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "text",
+      "x": 170,
+      "y": 325.25,
+      "width": 300,
+      "height": 30,
+      "text": "−",
+      "fontSize": 18,
+      "fontFamily": 2,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "strokeColor": "#1e1e1e",
+      "roughness": 0,
+      "opacity": 100
+    },
+    {
+      "id": "el-154",
+      "version": 2,
+      "versionNonce": 766346,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "arrow",
+      "x": 195,
+      "y": 320,
+      "width": 60,
+      "height": 0,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "roughness": 0,
+      "opacity": 100,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          60,
+          0
+        ]
+      ],
+      "endArrowhead": "arrow",
+      "startBinding": null,
+      "endBinding": null
+    },
+    {
+      "id": "el-155",
+      "version": 2,
+      "versionNonce": 174676,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "ellipse",
+      "x": 255,
+      "y": 295,
+      "width": 50,
+      "height": 50,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "roughness": 0,
+      "opacity": 100
+    },
+    {
+      "id": "el-156",
+      "version": 2,
+      "versionNonce": 664578,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "line",
+      "x": 261,
+      "y": 320,
+      "width": 38,
+      "height": 0,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 1.5,
+      "roughness": 0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          38,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "el-157",
+      "version": 2,
+      "versionNonce": 281149,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "line",
+      "x": 280,
+      "y": 301,
+      "width": 0,
+      "height": 38,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 1.5,
+      "roughness": 0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          38
+        ]
+      ]
+    },
+    {
+      "id": "el-158",
+      "version": 2,
+      "versionNonce": 159443,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "text",
+      "x": 280,
+      "y": 308.75,
+      "width": 300,
+      "height": 30,
+      "text": "+",
+      "fontSize": 18,
+      "fontFamily": 2,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "strokeColor": "#1e1e1e",
+      "roughness": 0,
+      "opacity": 100
+    },
+    {
+      "id": "el-159",
+      "version": 2,
+      "versionNonce": 226715,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "text",
+      "x": 280,
+      "y": 325.25,
+      "width": 300,
+      "height": 30,
+      "text": "±",
+      "fontSize": 18,
+      "fontFamily": 2,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "strokeColor": "#1e1e1e",
+      "roughness": 0,
+      "opacity": 100
+    },
+    {
+      "id": "el-160",
+      "version": 2,
+      "versionNonce": 184600,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "arrow",
+      "x": 305,
+      "y": 320,
+      "width": 45,
+      "height": 0,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "roughness": 0,
+      "opacity": 100,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          45,
+          0
+        ]
+      ],
+      "endArrowhead": "arrow",
+      "startBinding": null,
+      "endBinding": null
+    },
+    {
+      "id": "el-161",
+      "version": 2,
+      "versionNonce": 859069,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "rectangle",
+      "x": 350,
+      "y": 290,
+      "width": 100,
+      "height": 60,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "roughness": 0,
+      "opacity": 100,
+      "roundness": {
+        "type": 1,
+        "value": 4
+      }
+    },
+    {
+      "id": "el-162",
+      "version": 2,
+      "versionNonce": 44368,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "text",
+      "x": 354,
+      "y": 306,
+      "width": 92,
+      "height": 28,
+      "text": "G₁",
+      "fontSize": 20,
+      "fontFamily": 2,
+      "textAlign": "center",
+      "verticalAlign": "top",
+      "strokeColor": "#1e1e1e",
+      "roughness": 0,
+      "opacity": 100
+    },
+    {
+      "id": "el-163",
+      "version": 2,
+      "versionNonce": 298189,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "arrow",
+      "x": 450,
+      "y": 320,
+      "width": 160,
+      "height": 0,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "roughness": 0,
+      "opacity": 100,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          160,
+          0
+        ]
+      ],
+      "endArrowhead": "arrow",
+      "startBinding": null,
+      "endBinding": null
+    },
+    {
+      "id": "el-164",
+      "version": 2,
+      "versionNonce": 871825,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "rectangle",
+      "x": 610,
+      "y": 290,
+      "width": 100,
+      "height": 60,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "roughness": 0,
+      "opacity": 100,
+      "roundness": {
+        "type": 1,
+        "value": 4
+      }
+    },
+    {
+      "id": "el-165",
+      "version": 2,
+      "versionNonce": 264789,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "text",
+      "x": 614,
+      "y": 306,
+      "width": 92,
+      "height": 28,
+      "text": "G₂",
+      "fontSize": 20,
+      "fontFamily": 2,
+      "textAlign": "center",
+      "verticalAlign": "top",
+      "strokeColor": "#1e1e1e",
+      "roughness": 0,
+      "opacity": 100
+    },
+    {
+      "id": "el-166",
+      "version": 2,
+      "versionNonce": 544497,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "arrow",
+      "x": 710,
+      "y": 320,
+      "width": 40,
+      "height": 0,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "roughness": 0,
+      "opacity": 100,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          40,
+          0
+        ]
+      ],
+      "endArrowhead": "arrow",
+      "startBinding": null,
+      "endBinding": null
+    },
+    {
+      "id": "el-167",
+      "version": 2,
+      "versionNonce": 809994,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "rectangle",
+      "x": 750,
+      "y": 290,
+      "width": 100,
+      "height": 60,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "roughness": 0,
+      "opacity": 100,
+      "roundness": {
+        "type": 1,
+        "value": 4
+      }
+    },
+    {
+      "id": "el-168",
+      "version": 2,
+      "versionNonce": 178851,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "text",
+      "x": 754,
+      "y": 306,
+      "width": 92,
+      "height": 28,
+      "text": "G₃",
+      "fontSize": 20,
+      "fontFamily": 2,
+      "textAlign": "center",
+      "verticalAlign": "top",
+      "strokeColor": "#1e1e1e",
+      "roughness": 0,
+      "opacity": 100
+    },
+    {
+      "id": "el-169",
+      "version": 2,
+      "versionNonce": 453013,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "arrow",
+      "x": 850,
+      "y": 320,
+      "width": 80,
+      "height": 0,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "roughness": 0,
+      "opacity": 100,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          80,
+          0
+        ]
+      ],
+      "endArrowhead": "arrow",
+      "startBinding": null,
+      "endBinding": null
+    },
+    {
+      "id": "el-170",
+      "version": 2,
+      "versionNonce": 646065,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "text",
+      "x": 940,
+      "y": 308,
+      "width": 300,
+      "height": 30,
+      "text": "C",
+      "fontSize": 22,
+      "fontFamily": 2,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "strokeColor": "#1e1e1e",
+      "roughness": 0,
+      "opacity": 100
+    },
+    {
+      "id": "el-171",
+      "version": 2,
+      "versionNonce": 55255,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "line",
+      "x": 910,
+      "y": 350,
+      "width": 0,
+      "height": 80,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "roughness": 0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          80
+        ]
+      ]
+    },
+    {
+      "id": "el-172",
+      "version": 2,
+      "versionNonce": 713881,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "rectangle",
+      "x": 855,
+      "y": 430,
+      "width": 110,
+      "height": 50,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#e8f4ff",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "roughness": 0,
+      "opacity": 100,
+      "roundness": {
+        "type": 1,
+        "value": 4
+      }
+    },
+    {
+      "id": "el-173",
+      "version": 2,
+      "versionNonce": 368576,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "text",
+      "x": 859,
+      "y": 441,
+      "width": 102,
+      "height": 28,
+      "text": "H₁/G₃",
+      "fontSize": 20,
+      "fontFamily": 2,
+      "textAlign": "center",
+      "verticalAlign": "top",
+      "strokeColor": "#1e1e1e",
+      "roughness": 0,
+      "opacity": 100
+    },
+    {
+      "id": "el-174",
+      "version": 2,
+      "versionNonce": 144291,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "line",
+      "x": 280,
+      "y": 480,
+      "width": 630,
+      "height": 0,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "roughness": 0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          630,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "el-175",
+      "version": 2,
+      "versionNonce": 328386,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "line",
+      "x": 280,
+      "y": 345,
+      "width": 0,
+      "height": 135,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "roughness": 0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          135
+        ]
+      ]
+    },
+    {
+      "id": "el-176",
+      "version": 2,
+      "versionNonce": 456886,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "arrow",
+      "x": 280,
+      "y": 480,
+      "width": 0,
+      "height": 135,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "roughness": 0,
+      "opacity": 100,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          -135
+        ]
+      ],
+      "endArrowhead": "arrow",
+      "startBinding": null,
+      "endBinding": null
+    },
+    {
+      "id": "el-177",
+      "version": 2,
+      "versionNonce": 203871,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "line",
+      "x": 850,
+      "y": 290,
+      "width": 0,
+      "height": -60,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "roughness": 0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          -60
+        ]
+      ]
+    },
+    {
+      "id": "el-178",
+      "version": 2,
+      "versionNonce": 928006,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "rectangle",
+      "x": 780,
+      "y": 180,
+      "width": 140,
+      "height": 50,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#e8f4ff",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "roughness": 0,
+      "opacity": 100,
+      "roundness": {
+        "type": 1,
+        "value": 4
+      }
+    },
+    {
+      "id": "el-179",
+      "version": 2,
+      "versionNonce": 483406,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "text",
+      "x": 784,
+      "y": 191,
+      "width": 132,
+      "height": 28,
+      "text": "H₂/(G₁G₂)",
+      "fontSize": 20,
+      "fontFamily": 2,
+      "textAlign": "center",
+      "verticalAlign": "top",
+      "strokeColor": "#1e1e1e",
+      "roughness": 0,
+      "opacity": 100
+    },
+    {
+      "id": "el-180",
+      "version": 2,
+      "versionNonce": 69173,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "line",
+      "x": 280,
+      "y": 180,
+      "width": 570,
+      "height": 0,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "roughness": 0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          570,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "el-181",
+      "version": 2,
+      "versionNonce": 187313,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "line",
+      "x": 280,
+      "y": 180,
+      "width": 0,
+      "height": 115,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "roughness": 0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          115
+        ]
+      ]
+    },
+    {
+      "id": "el-182",
+      "version": 2,
+      "versionNonce": 14258,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "arrow",
+      "x": 280,
+      "y": 180,
+      "width": 0,
+      "height": 115,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "roughness": 0,
+      "opacity": 100,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          115
+        ]
+      ],
+      "endArrowhead": "arrow",
+      "startBinding": null,
+      "endBinding": null
+    },
+    {
+      "id": "el-183",
+      "version": 2,
+      "versionNonce": 425919,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "line",
+      "x": 70,
+      "y": 320,
+      "width": 0,
+      "height": 180,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "roughness": 0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          180
+        ]
+      ]
+    },
+    {
+      "id": "el-184",
+      "version": 2,
+      "versionNonce": 788895,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "line",
+      "x": 70,
+      "y": 500,
+      "width": 100,
+      "height": 0,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "roughness": 0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          100,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "el-185",
+      "version": 2,
+      "versionNonce": 792026,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "line",
+      "x": 170,
+      "y": 345,
+      "width": 0,
+      "height": 155,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "roughness": 0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          155
+        ]
+      ]
+    },
+    {
+      "id": "el-186",
+      "version": 2,
+      "versionNonce": 112786,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "arrow",
+      "x": 170,
+      "y": 500,
+      "width": 0,
+      "height": 155,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "roughness": 0,
+      "opacity": 100,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          -155
+        ]
+      ],
+      "endArrowhead": "arrow",
+      "startBinding": null,
+      "endBinding": null
+    },
+    {
+      "id": "el-187",
+      "version": 2,
+      "versionNonce": 8895,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "text",
+      "x": 60,
+      "y": 500,
+      "width": 800,
+      "height": 30,
+      "text": "Rule: Move summing junction left past G₁ → H₂/G₂ → H₂/(G₁G₂); then combine junctions",
+      "fontSize": 15,
+      "fontFamily": 2,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "strokeColor": "#1e1e1e",
+      "roughness": 0,
+      "opacity": 100
+    },
+    {
+      "id": "el-188",
+      "version": 2,
+      "versionNonce": 235293,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "text",
+      "x": 60,
+      "y": 540,
+      "width": 300,
+      "height": 30,
+      "text": "Step: Combine summing junctions B & C",
+      "fontSize": 18,
+      "fontFamily": 2,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "strokeColor": "#1e1e1e",
+      "roughness": 0,
+      "opacity": 100
+    },
+    {
+      "id": "el-189",
+      "version": 2,
+      "versionNonce": 840151,
+      "updated": 1777879052862,
+      "created": 1777879052862,
+      "isDeleted": false,
+      "type": "text",
+      "x": 60,
+      "y": 568,
+      "width": 900,
+      "height": 30,
+      "text": "Single junction with multiple feedbacks",
+      "fontSize": 17,
+      "fontFamily": 2,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "strokeColor": "#1e1e1e",
+      "roughness": 0,
+      "opacity": 100
+    }
+  ]
+}
