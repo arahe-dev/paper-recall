@@ -54,6 +54,11 @@ export interface StylePreset {
   compactWidth: boolean; // shrink width to fit text
   alignLeaves: boolean; // align leaf nodes to same depth
   maxChildrenPerRow: number; // 0 = single row; >0 wraps children into a grid
+  maxRootsPerRow: number; // 0 = single row; >0 wraps roots into a grid
+
+  // Subtree backgrounds
+  subtreeBackgroundColor: string;
+  subtreeBackgroundOpacity: number;
 }
 
 // Excalidraw FONT_FAMILY values (from constants.ts)
@@ -80,19 +85,19 @@ export const PRESETS: Record<string, StylePreset> = {
     lineHeight: 1.25,
     textWrapThreshold: 24,
 
-    verticalSpacing: 80,
-    horizontalSpacing: 20,
-    siblingSpacing: 12,
-    subtreeSpacing: 14,
+    verticalSpacing: 120,
+    horizontalSpacing: 50,
+    siblingSpacing: 30,
+    subtreeSpacing: 40,
 
-    hubRadius: 180,
+    hubRadius: 220,
     hubSpokeAngleStart: Math.PI,
     hubSpokeAngleSpan: -Math.PI,
 
     rootCentering: true,
 
-    arrowStrokeWidth: 1.5,
-    arrowColor: "#1e1e1e",
+    arrowStrokeWidth: 1,
+    arrowColor: "#333333",
     arrowStartGap: 4,
     arrowEndGap: 4,
 
@@ -106,10 +111,14 @@ export const PRESETS: Record<string, StylePreset> = {
 
     canvasBackgroundColor: "#ffffff",
 
-    levelHeightMultiplier: 1.0,
+    levelHeightMultiplier: 1.5,
     compactWidth: true,
     alignLeaves: false,
-    maxChildrenPerRow: 3,
+    maxChildrenPerRow: 2,
+    maxRootsPerRow: 2,
+
+    subtreeBackgroundColor: "#e8e8e8",
+    subtreeBackgroundOpacity: 30,
   },
 
   readable_spacious: {
@@ -159,6 +168,10 @@ export const PRESETS: Record<string, StylePreset> = {
     compactWidth: true,
     alignLeaves: false,
     maxChildrenPerRow: 0,
+    maxRootsPerRow: 0,
+
+    subtreeBackgroundColor: "#e8e8e8",
+    subtreeBackgroundOpacity: 0,
   },
 
   readable_long: {
@@ -208,6 +221,10 @@ export const PRESETS: Record<string, StylePreset> = {
     compactWidth: true,
     alignLeaves: false,
     maxChildrenPerRow: 0,
+    maxRootsPerRow: 0,
+
+    subtreeBackgroundColor: "#e8e8e8",
+    subtreeBackgroundOpacity: 0,
   },
 
   readable_radial: {
@@ -257,6 +274,10 @@ export const PRESETS: Record<string, StylePreset> = {
     compactWidth: true,
     alignLeaves: false,
     maxChildrenPerRow: 0,
+    maxRootsPerRow: 0,
+
+    subtreeBackgroundColor: "#e8e8e8",
+    subtreeBackgroundOpacity: 0,
   },
 
   readable_dense: {
@@ -306,6 +327,10 @@ export const PRESETS: Record<string, StylePreset> = {
     compactWidth: true,
     alignLeaves: false,
     maxChildrenPerRow: 4,
+    maxRootsPerRow: 0,
+
+    subtreeBackgroundColor: "#e8e8e8",
+    subtreeBackgroundOpacity: 0,
   },
 };
 

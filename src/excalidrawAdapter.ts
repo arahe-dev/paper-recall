@@ -10,6 +10,55 @@ export function layoutToExcalidrawSkeleton(
 ): Skeleton[] {
   const elements: Skeleton[] = [];
 
+  // Subtree background rectangles (behind nodes/arrows)
+  if (preset.subtreeBackgroundOpacity > 0 && layout.childrenMap) {
+    const allChildren = new Set<string>();
+    for (const [, children] of layout.childrenMap) {
+      for (const c of children) allChildren.add(c);
+    }
+    const roots = layout.nodes.filter((n) => !allChildren.has(n.id));
+    const padding = 16;
+
+    function collectSubtree(nodeId: string, set: Set<string>) {
+      set.add(nodeId);
+      for (const child of layout.childrenMap!.get(nodeId) || []) {
+        collectSubtree(child, set);
+      }
+    }
+
+    for (const root of roots) {
+      const subtree = new Set<string>();
+      collectSubtree(root.id, subtree);
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      for (const node of layout.nodes) {
+        if (subtree.has(node.id)) {
+          minX = Math.min(minX, node.x);
+          minY = Math.min(minY, node.y);
+          maxX = Math.max(maxX, node.x + node.width);
+          maxY = Math.max(maxY, node.y + node.height);
+        }
+      }
+      if (isFinite(minX)) {
+        const bg: Skeleton = {
+          type: "rectangle",
+          id: `bg-subtree-${root.id}`,
+          x: minX - padding,
+          y: minY - padding,
+          width: maxX - minX + padding * 2,
+          height: maxY - minY + padding * 2,
+          strokeColor: "transparent",
+          backgroundColor: preset.subtreeBackgroundColor,
+          fillStyle: "solid",
+          strokeWidth: 0,
+          roughness: 0,
+          opacity: preset.subtreeBackgroundOpacity,
+          roundness: { type: 1, value: preset.cornerRadius * 1.5 },
+        };
+        elements.push(bg);
+      }
+    }
+  }
+
   // Create rectangles for nodes
   for (const node of layout.nodes) {
     const rect: Skeleton = {
@@ -37,57 +86,100 @@ export function layoutToExcalidrawSkeleton(
     elements.push(rect);
   }
 
+  const strategy = layout.strategy || "mixed";
+  const useBusRouting = strategy === "tree" || strategy === "mixed";
+
   // Create arrows for edges
   for (const edge of layout.edges) {
     const fromNode = layout.nodes.find((n) => n.id === edge.from);
     const toNode = layout.nodes.find((n) => n.id === edge.to);
     if (!fromNode || !toNode) continue;
 
-    // Compute anchor points based on relative node positions
-    const scx = fromNode.x + fromNode.width / 2;
-    const scy = fromNode.y + fromNode.height / 2;
-    const tcx = toNode.x + toNode.width / 2;
-    const tcy = toNode.y + toNode.height / 2;
-    const dx = tcx - scx;
-    const dy = tcy - scy;
-
     let sourceX: number;
     let sourceY: number;
     let targetX: number;
     let targetY: number;
+    let points: [number, number][];
+    let width: number;
+    let height: number;
 
-    if (Math.abs(dy) >= Math.abs(dx)) {
-      // Mostly vertical
-      if (dy >= 0) {
-        sourceX = scx;
-        sourceY = fromNode.y + fromNode.height;
-        targetX = tcx;
-        targetY = toNode.y;
-      } else {
-        sourceX = scx;
-        sourceY = fromNode.y;
-        targetX = tcx;
-        targetY = toNode.y + toNode.height;
+    if (edge.points && edge.points.length >= 2) {
+      // Use dagre-computed edge points
+      const pts = edge.points;
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      for (const p of pts) {
+        minX = Math.min(minX, p.x);
+        minY = Math.min(minY, p.y);
+        maxX = Math.max(maxX, p.x);
+        maxY = Math.max(maxY, p.y);
       }
+      sourceX = minX;
+      sourceY = minY;
+      width = maxX - minX;
+      height = maxY - minY;
+      points = pts.map((p) => [p.x - sourceX, p.y - sourceY] as [number, number]);
     } else {
-      // Mostly horizontal
-      if (dx >= 0) {
-        sourceX = fromNode.x + fromNode.width;
-        sourceY = scy;
-        targetX = toNode.x;
-        targetY = tcy;
+      // Compute anchor points based on relative node positions
+      const scx = fromNode.x + fromNode.width / 2;
+      const scy = fromNode.y + fromNode.height / 2;
+      const tcx = toNode.x + toNode.width / 2;
+      const tcy = toNode.y + toNode.height / 2;
+      const dx = tcx - scx;
+      const dy = tcy - scy;
+
+      if (Math.abs(dy) >= Math.abs(dx)) {
+        if (dy >= 0) {
+          sourceX = scx;
+          sourceY = fromNode.y + fromNode.height;
+          targetX = tcx;
+          targetY = toNode.y;
+        } else {
+          sourceX = scx;
+          sourceY = fromNode.y;
+          targetX = tcx;
+          targetY = toNode.y + toNode.height;
+        }
       } else {
-        sourceX = fromNode.x;
-        sourceY = scy;
-        targetX = toNode.x + toNode.width;
-        targetY = tcy;
+        if (dx >= 0) {
+          sourceX = fromNode.x + fromNode.width;
+          sourceY = scy;
+          targetX = toNode.x;
+          targetY = tcy;
+        } else {
+          sourceX = fromNode.x;
+          sourceY = scy;
+          targetX = toNode.x + toNode.width;
+          targetY = tcy;
+        }
+      }
+
+      const px = targetX - sourceX;
+      const py = targetY - sourceY;
+      width = Math.abs(px);
+      height = Math.abs(py);
+
+      if (useBusRouting && Math.abs(py) >= Math.abs(px) * 0.5) {
+        const busOffset = preset.verticalSpacing * 0.4;
+        const busY = py >= 0 ? busOffset : -busOffset;
+        points = [
+          [0, 0],
+          [0, busY],
+          [px, busY],
+          [px, py],
+        ];
+      } else if (useBusRouting && Math.abs(px) >= Math.abs(py) * 0.5) {
+        const busOffset = preset.horizontalSpacing * 0.4;
+        const busX = px >= 0 ? busOffset : -busOffset;
+        points = [
+          [0, 0],
+          [busX, 0],
+          [busX, py],
+          [px, py],
+        ];
+      } else {
+        points = [[0, 0], [px, py]];
       }
     }
-
-    const px = targetX - sourceX;
-    const py = targetY - sourceY;
-    const width = Math.abs(px);
-    const height = Math.abs(py);
 
     const arrow: Skeleton = {
       type: "arrow",
@@ -98,10 +190,7 @@ export function layoutToExcalidrawSkeleton(
       height,
       strokeColor: preset.arrowColor,
       strokeWidth: preset.arrowStrokeWidth,
-      points: [
-        [0, 0],
-        [px, py],
-      ],
+      points,
       start: {
         id: `rect-${fromNode.id}`,
         type: "rectangle",

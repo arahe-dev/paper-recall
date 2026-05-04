@@ -1,3 +1,4 @@
+import dagre from "dagre";
 import type { RecallGraphIR, RecallGraphNode } from "./recallGraphIR";
 import type { StylePreset } from "./stylePresets";
 
@@ -21,12 +22,16 @@ export interface PositionedEdge {
   to: string;
   label?: string;
   kind?: string;
+  points?: { x: number; y: number }[];
 }
 
 export interface LayoutResult {
   nodes: PositionedNode[];
   edges: PositionedEdge[];
   bounds: { minX: number; minY: number; maxX: number; maxY: number };
+  strategy?: string;
+  direction?: "TD" | "LR" | "BT" | "RL";
+  childrenMap?: Map<string, string[]>;
 }
 
 function estimateTextWidth(text: string, fontSize: number): number {
@@ -330,130 +335,125 @@ function layoutHubSpoke(
   return finalizeLayout(graph, positioned, childrenMap, preset.siblingSpacing, direction);
 }
 
-function layoutHierarchical(
+function rankdirFromDirection(direction: "TD" | "LR" | "BT" | "RL"): string {
+  switch (direction) {
+    case "LR": return "LR";
+    case "RL": return "RL";
+    case "BT": return "BT";
+    default: return "TB";
+  }
+}
+
+function layoutDagre(
   graph: RecallGraphIR,
   preset: StylePreset,
-  roots: string[],
+  _roots: string[],
   childrenMap: Map<string, string[]>,
   parentMap: Map<string, string>,
   levels: Map<string, number>
 ): LayoutResult {
-  const positioned = new Map<string, PositionedNode>();
+  const g = new dagre.graphlib.Graph();
+  const dir = graph.layout.direction || "TD";
+  const rankdir = rankdirFromDirection(dir);
+
+  g.setGraph({
+    rankdir,
+    ranksep: preset.verticalSpacing + 20,
+    nodesep: Math.max(10, preset.siblingSpacing * 0.5),
+    edgesep: 8,
+    marginx: preset.subtreeSpacing,
+    marginy: preset.subtreeSpacing,
+  });
+  g.setDefaultEdgeLabel(() => ({}));
+
   const nodeSizes = new Map<string, { width: number; height: number }>();
-
   for (const n of graph.nodes) {
-    nodeSizes.set(n.id, computeNodeSize(n, preset));
-  }
-
-  const subtreeWidth = new Map<string, number>();
-
-  function computeSubtreeWidth(nodeId: string): number {
-    if (subtreeWidth.has(nodeId)) return subtreeWidth.get(nodeId)!;
-    const size = nodeSizes.get(nodeId)!;
-    const children = childrenMap.get(nodeId) || [];
-    if (children.length === 0) {
-      subtreeWidth.set(nodeId, size.width);
-      return size.width;
-    }
-    let childrenWidth = 0;
-    const maxPerRow = preset.maxChildrenPerRow;
-    if (maxPerRow > 0 && children.length > maxPerRow) {
-      const rows = Math.ceil(children.length / maxPerRow);
-      let maxRowWidth = 0;
-      for (let r = 0; r < rows; r++) {
-        let rowWidth = 0;
-        const start = r * maxPerRow;
-        const end = Math.min(start + maxPerRow, children.length);
-        for (let i = start; i < end; i++) {
-          rowWidth += computeSubtreeWidth(children[i]);
-          if (i < end - 1) rowWidth += preset.siblingSpacing;
-        }
-        if (rowWidth > maxRowWidth) maxRowWidth = rowWidth;
-      }
-      childrenWidth = maxRowWidth;
-    } else {
-      for (let i = 0; i < children.length; i++) {
-        childrenWidth += computeSubtreeWidth(children[i]);
-        if (i < children.length - 1) childrenWidth += preset.siblingSpacing;
-      }
-    }
-    const width = Math.max(size.width, childrenWidth);
-    subtreeWidth.set(nodeId, width);
-    return width;
-  }
-
-  for (const root of roots) {
-    computeSubtreeWidth(root);
-  }
-
-  function assignPositions(nodeId: string, x: number, y: number) {
-    const size = nodeSizes.get(nodeId)!;
-    const children = childrenMap.get(nodeId) || [];
-    const stw = subtreeWidth.get(nodeId)!;
-
-    const nodeX = x + (stw - size.width) / 2;
-    const nodeY = y;
-
-    positioned.set(nodeId, {
-      id: nodeId,
-      x: nodeX,
-      y: nodeY,
+    const size = computeNodeSize(n, preset);
+    nodeSizes.set(n.id, size);
+    g.setNode(n.id, {
       width: size.width,
       height: size.height,
-      label: graph.nodes.find((n) => n.id === nodeId)!.label,
-      body: graph.nodes.find((n) => n.id === nodeId)!.body,
-      kind: graph.nodes.find((n) => n.id === nodeId)!.kind,
-      level: levels.get(nodeId) || 0,
-      children,
-      parent: parentMap.get(nodeId),
+      label: n.label,
+    });
+  }
+
+  for (const e of graph.edges) {
+    g.setEdge(e.from, e.to, { weight: e.order ?? 1 });
+  }
+
+  dagre.layout(g);
+
+  const positioned = new Map<string, PositionedNode>();
+  for (const n of graph.nodes) {
+    const dagreNode = g.node(n.id);
+    const size = nodeSizes.get(n.id)!;
+    positioned.set(n.id, {
+      id: n.id,
+      x: dagreNode.x - size.width / 2,
+      y: dagreNode.y - size.height / 2,
+      width: size.width,
+      height: size.height,
+      label: n.label,
+      body: n.body,
+      kind: n.kind,
+      level: levels.get(n.id) || 0,
+      children: childrenMap.get(n.id) || [],
+      parent: parentMap.get(n.id),
+    });
+  }
+
+  const edgeOrder = new Map<string, number>();
+  for (const e of graph.edges) {
+    edgeOrder.set(e.id, e.order ?? Infinity);
+  }
+
+  const edges: PositionedEdge[] = graph.edges
+    .map((e) => {
+      const dagreEdge = g.edge(e.from, e.to);
+      return {
+        id: e.id,
+        from: e.from,
+        to: e.to,
+        label: e.label,
+        kind: e.relation,
+        points: dagreEdge?.points || undefined,
+      };
+    })
+    .sort((a, b) => {
+      const oa = edgeOrder.get(a.id) ?? Infinity;
+      const ob = edgeOrder.get(b.id) ?? Infinity;
+      if (oa !== ob) return oa - ob;
+      return a.id.localeCompare(b.id);
     });
 
-    if (children.length > 0) {
-      const maxPerRow = preset.maxChildrenPerRow;
-      if (maxPerRow > 0 && children.length > maxPerRow) {
-        const rows = Math.ceil(children.length / maxPerRow);
-        let currentY = y + size.height + preset.verticalSpacing;
-        for (let r = 0; r < rows; r++) {
-          const start = r * maxPerRow;
-          const end = Math.min(start + maxPerRow, children.length);
-          let rowWidth = 0;
-          for (let i = start; i < end; i++) {
-            rowWidth += subtreeWidth.get(children[i])!;
-            if (i < end - 1) rowWidth += preset.siblingSpacing;
-          }
-          let childX = x + (stw - rowWidth) / 2;
-          let maxRowHeight = 0;
-          for (let i = start; i < end; i++) {
-            const child = children[i];
-            const cw = subtreeWidth.get(child)!;
-            assignPositions(child, childX, currentY);
-            childX += cw + preset.siblingSpacing;
-            const ch = nodeSizes.get(child)!.height;
-            if (ch > maxRowHeight) maxRowHeight = ch;
-          }
-          currentY += maxRowHeight + preset.verticalSpacing;
-        }
-      } else {
-        let childX = x;
-        const childY = y + size.height + preset.verticalSpacing;
-        for (const child of children) {
-          const cw = subtreeWidth.get(child)!;
-          assignPositions(child, childX, childY);
-          childX += cw + preset.siblingSpacing;
-        }
-      }
-    }
+  const nodes = Array.from(positioned.values());
+
+  let minX = Infinity,
+    minY = Infinity,
+    maxX = -Infinity,
+    maxY = -Infinity;
+  for (const n of nodes) {
+    minX = Math.min(minX, n.x);
+    minY = Math.min(minY, n.y);
+    maxX = Math.max(maxX, n.x + n.width);
+    maxY = Math.max(maxY, n.y + n.height);
   }
 
-  let currentX = preset.subtreeSpacing;
-  for (const root of roots) {
-    const rootY = preset.subtreeSpacing;
-    assignPositions(root, currentX, rootY);
-    currentX += subtreeWidth.get(root)! + preset.horizontalSpacing + preset.subtreeSpacing;
+  if (!isFinite(minX)) {
+    minX = 0;
+    minY = 0;
+    maxX = 0;
+    maxY = 0;
   }
 
-  const direction = graph.layout.direction || "TD";
-  return finalizeLayout(graph, positioned, childrenMap, preset.siblingSpacing, direction);
+  return {
+    nodes,
+    edges,
+    bounds: { minX, minY, maxX, maxY },
+    strategy: graph.layout.strategy,
+    direction: dir,
+    childrenMap,
+  };
 }
 
 function shiftSubtree(
@@ -541,19 +541,16 @@ function applyDirection(
   } else if (direction === "RL") {
     for (const n of nodes) {
       const oldX = n.x, oldY = n.y, oldW = n.width, oldH = n.height;
-      // Transpose then mirror horizontally
       const tx = oldY;
       const ty = oldX;
       const tw = oldH;
       const th = oldW;
-      // Mirror horizontally around the transposed bounds
-      const tMaxX = maxY - minY + minX; // approximate
+      const tMaxX = maxY - minY + minX;
       n.x = tMaxX - (tx + tw) + minX;
       n.y = ty;
       n.width = tw;
       n.height = th;
     }
-    // After RL, shift everything to start near 0
     let newMinX = Infinity;
     for (const n of nodes) newMinX = Math.min(newMinX, n.x);
     if (isFinite(newMinX) && newMinX !== 0) {
@@ -574,7 +571,6 @@ function finalizeLayout(
 
   const nodes = Array.from(positioned.values());
 
-  // Sort edges by explicit order if present
   const edgeOrder = new Map<string, number>();
   for (const e of graph.edges) {
     edgeOrder.set(e.id, e.order ?? Infinity);
@@ -616,6 +612,9 @@ function finalizeLayout(
     nodes,
     edges,
     bounds: { minX, minY, maxX, maxY },
+    strategy: graph.layout.strategy,
+    direction: graph.layout.direction || "TD",
+    childrenMap,
   };
 }
 
@@ -626,5 +625,5 @@ export function computeLayout(graph: RecallGraphIR, preset: StylePreset): Layout
     return layoutHubSpoke(graph, preset, roots, childrenMap);
   }
 
-  return layoutHierarchical(graph, preset, roots, childrenMap, parentMap, levels);
+  return layoutDagre(graph, preset, roots, childrenMap, parentMap, levels);
 }
