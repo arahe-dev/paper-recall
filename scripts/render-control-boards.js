@@ -26,7 +26,7 @@ async function main() {
   const url = `http://localhost:4173`;
 
   const browser = await chromium.launch({ headless: true });
-  const page = await browser.newPage({ viewport: { width: 1200, height: 700 } });
+  const page = await browser.newPage({ viewport: { width: 1200, height: 900 } });
 
   page.on("console", (msg) => console.log("[browser]", msg.type(), msg.text()));
   page.on("pageerror", (err) => console.log("[pageerror]", err.message));
