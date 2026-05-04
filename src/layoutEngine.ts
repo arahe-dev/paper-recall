@@ -262,7 +262,7 @@ function layoutHubSpoke(
     }
   }
 
-  return finalizeLayout(graph, positioned);
+  return finalizeLayout(graph, positioned, childrenMap, preset.siblingSpacing);
 }
 
 function layoutHierarchical(
@@ -399,13 +399,72 @@ function layoutHierarchical(
     currentX += subtreeWidth.get(root)! + preset.horizontalSpacing + preset.subtreeSpacing;
   }
 
-  return finalizeLayout(graph, positioned);
+  return finalizeLayout(graph, positioned, childrenMap, preset.siblingSpacing);
+}
+
+function shiftSubtree(
+  nodeId: string,
+  shiftX: number,
+  childrenMap: Map<string, string[]>,
+  positioned: Map<string, PositionedNode>
+) {
+  const node = positioned.get(nodeId);
+  if (!node) return;
+  node.x += shiftX;
+  for (const childId of childrenMap.get(nodeId) || []) {
+    shiftSubtree(childId, shiftX, childrenMap, positioned);
+  }
+}
+
+function resolveOverlaps(
+  positioned: Map<string, PositionedNode>,
+  childrenMap: Map<string, string[]>,
+  minGap: number
+) {
+  const nodes = Array.from(positioned.values());
+  const yTolerance = 2;
+
+  let changed = true;
+  let iterations = 0;
+  const maxIterations = 200;
+
+  while (changed && iterations < maxIterations) {
+    changed = false;
+    iterations++;
+
+    const yGroups = new Map<number, PositionedNode[]>();
+    for (const n of nodes) {
+      const yKey = Math.round(n.y / yTolerance) * yTolerance;
+      if (!yGroups.has(yKey)) yGroups.set(yKey, []);
+      yGroups.get(yKey)!.push(n);
+    }
+
+    for (const [, group] of yGroups) {
+      group.sort((a, b) => a.x - b.x);
+      for (let i = 1; i < group.length; i++) {
+        const left = group[i - 1];
+        const right = group[i];
+        const needed = left.x + left.width + minGap;
+        if (right.x < needed) {
+          const shift = needed - right.x;
+          shiftSubtree(right.id, shift, childrenMap, positioned);
+          changed = true;
+        }
+      }
+    }
+  }
 }
 
 function finalizeLayout(
   graph: RecallGraphIR,
-  positioned: Map<string, PositionedNode>
+  positioned: Map<string, PositionedNode>,
+  childrenMap?: Map<string, string[]>,
+  minGap?: number
 ): LayoutResult {
+  if (childrenMap && minGap !== undefined) {
+    resolveOverlaps(positioned, childrenMap, minGap);
+  }
+
   const nodes = Array.from(positioned.values());
   const edges: PositionedEdge[] = graph.edges.map((e) => ({
     id: e.id,
@@ -426,7 +485,6 @@ function finalizeLayout(
     maxY = Math.max(maxY, n.y + n.height);
   }
 
-  // If no nodes, provide defaults
   if (!isFinite(minX)) {
     minX = 0;
     minY = 0;
