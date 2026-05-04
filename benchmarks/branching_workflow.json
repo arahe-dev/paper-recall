@@ -1,0 +1,40 @@
+{
+  "schema": "recall-graph-ir-v1",
+  "title": "branching_workflow",
+  "layout": { "style": "readable_compact", "direction": "top-down" },
+  "nodes": [
+    { "id": "goal", "label": "Project Goal" },
+    { "id": "research", "label": "Research" },
+    { "id": "design", "label": "Design" },
+    { "id": "prototype", "label": "Prototype" },
+    { "id": "validate", "label": "Validate" },
+    { "id": "iterate", "label": "Iterate" },
+    { "id": "r1", "label": "Market analysis" },
+    { "id": "r2", "label": "Tech survey" },
+    { "id": "d1", "label": "Wireframes" },
+    { "id": "d2", "label": "System architecture" },
+    { "id": "p1", "label": "MVP build" },
+    { "id": "p2", "label": "Integration test" },
+    { "id": "v1", "label": "User testing" },
+    { "id": "v2", "label": "Performance audit" },
+    { "id": "i1", "label": "Refine" },
+    { "id": "i2", "label": "Retest" }
+  ],
+  "edges": [
+    { "id": "e1", "from": "goal", "to": "research" },
+    { "id": "e2", "from": "goal", "to": "design" },
+    { "id": "e3", "from": "goal", "to": "prototype" },
+    { "id": "e4", "from": "goal", "to": "validate" },
+    { "id": "e5", "from": "goal", "to": "iterate" },
+    { "id": "e6", "from": "research", "to": "r1" },
+    { "id": "e7", "from": "research", "to": "r2" },
+    { "id": "e8", "from": "design", "to": "d1" },
+    { "id": "e9", "from": "design", "to": "d2" },
+    { "id": "e10", "from": "prototype", "to": "p1" },
+    { "id": "e11", "from": "prototype", "to": "p2" },
+    { "id": "e12", "from": "validate", "to": "v1" },
+    { "id": "e13", "from": "validate", "to": "v2" },
+    { "id": "e14", "from": "iterate", "to": "i1" },
+    { "id": "e15", "from": "iterate", "to": "i2" }
+  ]
+}

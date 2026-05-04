@@ -1,0 +1,20 @@
+{
+  "schema": "recall-graph-ir-v1",
+  "title": "esp32_hub",
+  "layout": { "style": "readable_compact", "direction": "top-down" },
+  "nodes": [
+    { "id": "esp32", "label": "esp32" },
+    { "id": "imu0", "label": "imu 0 thumb" },
+    { "id": "imu1", "label": "imu 1 index finger" },
+    { "id": "imu2", "label": "imu 2 middle finger" },
+    { "id": "imu3", "label": "imu 3 back of hand" },
+    { "id": "imu4", "label": "imu 4 wrist relative" }
+  ],
+  "edges": [
+    { "id": "e1", "from": "esp32", "to": "imu0" },
+    { "id": "e2", "from": "esp32", "to": "imu1" },
+    { "id": "e3", "from": "esp32", "to": "imu2" },
+    { "id": "e4", "from": "esp32", "to": "imu3" },
+    { "id": "e5", "from": "esp32", "to": "imu4" }
+  ]
+}

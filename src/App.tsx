@@ -1,9 +1,12 @@
-import { useRef, useCallback, useState } from "react";
-import { Excalidraw } from "@excalidraw/excalidraw";
+import { useRef, useCallback, useState, useEffect } from "react";
+import { Excalidraw, exportToBlob } from "@excalidraw/excalidraw";
+import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import "@excalidraw/excalidraw/index.css";
 import "./App.css";
 import TranscriptPanel from "./TranscriptPanel";
 import { buildBoardTextGraph } from "./boardTextGraph";
+import { renderRecallGraphIR } from "./recallGraphRenderer";
+import type { RecallGraphIR } from "./recallGraphIR";
 
 // Minimal local types to avoid strict import issues for this prototype
 type LooseElement = {
@@ -41,6 +44,17 @@ function downloadJSON(filename: string, data: unknown) {
   const blob = new Blob([JSON.stringify(data, null, 2)], {
     type: "application/json",
   });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function downloadBlob(filename: string, blob: Blob) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
@@ -284,11 +298,24 @@ ${pretty}
   downloadText("recall-board-text-graph-prompt.md", prompt);
 }
 
+// Extend window for automation
+declare global {
+  interface Window {
+    __RECALL_API__?: {
+      loadGraph: (json: RecallGraphIR) => Promise<{ success: boolean; errors: string[] }>;
+      exportPNG: (filename?: string) => Promise<void>;
+      getSceneSnapshot: () => { elements: unknown[]; appState: unknown };
+    };
+  }
+}
+
 function App() {
   const elementsRef = useRef<readonly LooseElement[]>([]);
   const appStateRef = useRef<LooseAppState>({});
   const filesRef = useRef<LooseFiles>({});
+  const apiRef = useRef<ExcalidrawImperativeAPI | null>(null);
   const [showTranscript, setShowTranscript] = useState(false);
+  const [lastLoadErrors, setLastLoadErrors] = useState<string[]>([]);
 
   const handleChange = useCallback(
     (elements: readonly unknown[], appState: unknown, files: unknown) => {
@@ -297,6 +324,83 @@ function App() {
       filesRef.current = files as LooseFiles;
     },
     []
+  );
+
+  const handleExcalidrawAPI = useCallback((api: ExcalidrawImperativeAPI) => {
+    apiRef.current = api;
+  }, []);
+
+  const handleLoadGraph = useCallback(async (json: RecallGraphIR) => {
+    const result = renderRecallGraphIR(json);
+    if (!result.valid) {
+      setLastLoadErrors(result.errors);
+      return { success: false, errors: result.errors };
+    }
+    setLastLoadErrors([]);
+
+    const appState = apiRef.current?.getAppState();
+    apiRef.current?.updateScene({
+      elements: result.elements,
+      appState: {
+        viewBackgroundColor: json.layout.style === "readable_radial"
+          ? "#ffffff"
+          : appState?.viewBackgroundColor || "#ffffff",
+      },
+      captureUpdate: "NEVER" as any,
+    });
+
+    // Scroll to fit content
+    setTimeout(() => {
+      (apiRef.current as any)?.scrollToContent?.(undefined, { fitToViewport: true, animate: false });
+    }, 50);
+
+    return { success: true, errors: [] };
+  }, []);
+
+  const handleExportPNG = useCallback(async (filename?: string) => {
+    const api = apiRef.current;
+    if (!api) return;
+    const elements = api.getSceneElements();
+    const appState = api.getAppState();
+    const blob = await exportToBlob({
+      elements: elements as any,
+      appState: appState as any,
+      files: null,
+      mimeType: "image/png",
+      exportPadding: 20,
+    });
+    downloadBlob(filename || "recall-board.png", blob);
+  }, []);
+
+  // Expose automation API on window
+  useEffect(() => {
+    window.__RECALL_API__ = {
+      loadGraph: handleLoadGraph,
+      exportPNG: handleExportPNG,
+      getSceneSnapshot: () => ({
+        elements: elementsRef.current as unknown[],
+        appState: appStateRef.current as unknown,
+      }),
+    };
+    return () => {
+      delete window.__RECALL_API__;
+    };
+  }, [handleLoadGraph, handleExportPNG]);
+
+  const handleFileInput = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const text = await file.text();
+      try {
+        const json = JSON.parse(text) as RecallGraphIR;
+        await handleLoadGraph(json);
+      } catch (err) {
+        setLastLoadErrors([`Failed to parse JSON: ${err}`]);
+      }
+      e.target.value = "";
+    },
+    [handleLoadGraph]
   );
 
   const handleExportScene = useCallback(() => {
@@ -324,6 +428,16 @@ function App() {
       <header className="top-bar">
         <div className="top-bar-title">Recall Board</div>
         <div className="top-bar-actions">
+          <label className="file-input-label">
+            <input
+              type="file"
+              accept=".json"
+              onChange={handleFileInput}
+              style={{ display: "none" }}
+            />
+            Load Recall Graph IR
+          </label>
+          <button onClick={() => handleExportPNG()}>Export PNG</button>
           <button onClick={handleExportScene}>Export Scene JSON</button>
           <button onClick={handleExportAiContext}>Export AI Context</button>
           <button onClick={handleExportTextGraph}>Export Text Graph</button>
@@ -331,8 +445,15 @@ function App() {
           <button onClick={() => setShowTranscript(true)}>Parse Transcript</button>
         </div>
       </header>
+      {lastLoadErrors.length > 0 && (
+        <div className="load-errors">
+          {lastLoadErrors.map((err, i) => (
+            <div key={i} className="load-error">{err}</div>
+          ))}
+        </div>
+      )}
       <main className="board">
-        <Excalidraw onChange={handleChange} />
+        <Excalidraw onChange={handleChange} excalidrawAPI={handleExcalidrawAPI} />
       </main>
       {showTranscript && (
         <TranscriptPanel onClose={() => setShowTranscript(false)} />

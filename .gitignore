@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Research artifacts
+research-output/
+/analyze-snapshots.mjs
+/test-layout.mjs

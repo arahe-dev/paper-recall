@@ -51,6 +51,37 @@
   background: #444;
 }
 
+.file-input-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #e0e0e0;
+  background: #2c2c2c;
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+}
+
+.file-input-label:hover {
+  background: #3a3a3a;
+  border-color: #666;
+}
+
+.load-errors {
+  background: #2a1a1a;
+  border-bottom: 1px solid #522;
+  padding: 8px 12px;
+  color: #f87171;
+  font-size: 12px;
+}
+
+.load-error {
+  margin: 2px 0;
+}
+
 .board {
   flex: 1;
   min-height: 0;

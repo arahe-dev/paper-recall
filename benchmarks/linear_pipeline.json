@@ -1,0 +1,20 @@
+{
+  "schema": "recall-graph-ir-v1",
+  "title": "linear_pipeline",
+  "layout": { "style": "readable_compact", "direction": "top-down" },
+  "nodes": [
+    { "id": "prompt", "label": "Prompt" },
+    { "id": "ir", "label": "Recall Graph IR" },
+    { "id": "layout", "label": "Layout engine" },
+    { "id": "scene", "label": "Excalidraw scene" },
+    { "id": "board", "label": "Board Text Graph" },
+    { "id": "review", "label": "AI review" }
+  ],
+  "edges": [
+    { "id": "e1", "from": "prompt", "to": "ir" },
+    { "id": "e2", "from": "ir", "to": "layout" },
+    { "id": "e3", "from": "layout", "to": "scene" },
+    { "id": "e4", "from": "scene", "to": "board" },
+    { "id": "e5", "from": "board", "to": "review" }
+  ]
+}

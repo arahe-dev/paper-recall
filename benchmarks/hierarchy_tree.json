@@ -1,0 +1,28 @@
+{
+  "schema": "recall-graph-ir-v1",
+  "title": "hierarchy_tree",
+  "layout": { "style": "readable_compact", "direction": "top-down" },
+  "nodes": [
+    { "id": "root", "label": "Deadlock" },
+    { "id": "necessary", "label": "Necessary conditions" },
+    { "id": "prevention", "label": "Prevention" },
+    { "id": "avoidance", "label": "Avoidance" },
+    { "id": "detection", "label": "Detection" },
+    { "id": "recovery", "label": "Recovery" },
+    { "id": "mutual", "label": "Mutual exclusion" },
+    { "id": "hold", "label": "Hold and wait" },
+    { "id": "nopreempt", "label": "No preemption" },
+    { "id": "circular", "label": "Circular wait" }
+  ],
+  "edges": [
+    { "id": "e1", "from": "root", "to": "necessary" },
+    { "id": "e2", "from": "root", "to": "prevention" },
+    { "id": "e3", "from": "root", "to": "avoidance" },
+    { "id": "e4", "from": "root", "to": "detection" },
+    { "id": "e5", "from": "root", "to": "recovery" },
+    { "id": "e6", "from": "necessary", "to": "mutual" },
+    { "id": "e7", "from": "necessary", "to": "hold" },
+    { "id": "e8", "from": "necessary", "to": "nopreempt" },
+    { "id": "e9", "from": "necessary", "to": "circular" }
+  ]
+}
