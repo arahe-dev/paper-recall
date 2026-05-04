@@ -37,3 +37,50 @@ export function renderRecallGraphIR(
 
 export { getPreset, type StylePreset };
 export { validateRecallGraphIR, computeLayout, layoutToExcalidrawSkeleton };
+
+/**
+ * Export a Recall Graph IR as Mermaid-like text for debugging/inspection.
+ * Recall IR remains canonical; this is a lossy human-readable view.
+ */
+export function exportToMermaid(graph: RecallGraphIR): string {
+  const dir = graph.layout.direction || "TD";
+  const strategy = graph.layout.strategy || "flowchart";
+  const header = strategy === "tree" ? "graph" : "flowchart";
+  const lines: string[] = [`${header} ${dir}`];
+
+  // Node declarations with labels
+  for (const n of graph.nodes) {
+    const safeLabel = n.label.replace(/["\n]/g, " ");
+    if (safeLabel !== n.id) {
+      lines.push(`  ${n.id}["${safeLabel}"]`);
+    }
+  }
+
+  // Groups / subgraphs
+  if (graph.groups) {
+    for (const g of graph.groups) {
+      lines.push(`  subgraph ${g.id}["${g.label || g.id}"]`);
+      for (const nid of g.node_ids) {
+        lines.push(`    ${nid}`);
+      }
+      lines.push(`  end`);
+    }
+  }
+
+  // Edges
+  const edgeLines: string[] = [];
+  for (const e of graph.edges) {
+    let arrow = " --> ";
+    if (e.relation === "dashed") arrow = " -.-> ";
+    else if (e.relation === "thick") arrow = " ==> ";
+
+    let line = `  ${e.from}${arrow}${e.to}`;
+    if (e.label) {
+      line += ` : "${e.label.replace(/["\n]/g, " ")}"`;
+    }
+    edgeLines.push(line);
+  }
+  lines.push(...edgeLines);
+
+  return lines.join("\n");
+}

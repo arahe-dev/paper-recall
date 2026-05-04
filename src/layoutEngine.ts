@@ -30,7 +30,6 @@ export interface LayoutResult {
 }
 
 function estimateTextWidth(text: string, fontSize: number): number {
-  // Heuristic: average char width is ~0.55 * fontSize for Helvetica
   return text.length * fontSize * 0.55;
 }
 
@@ -76,6 +75,32 @@ function computeNodeSize(node: RecallGraphNode, preset: StylePreset): { width: n
   return { width, height };
 }
 
+function sortChildren(
+  children: string[],
+  childrenOrder: Map<string, string[]>,
+  nodeOrder: Map<string, number>
+): string[] {
+  const ordered = [...children];
+  ordered.sort((a, b) => {
+    // 1. Explicit children_order
+    // Find first parent that has an explicit order list containing both
+    for (const [, list] of childrenOrder) {
+      const ia = list.indexOf(a);
+      const ib = list.indexOf(b);
+      if (ia !== -1 && ib !== -1) {
+        return ia - ib;
+      }
+    }
+    // 2. Node order field
+    const oa = nodeOrder.get(a) ?? Infinity;
+    const ob = nodeOrder.get(b) ?? Infinity;
+    if (oa !== ob) return oa - ob;
+    // 3. Stable fallback: id
+    return a.localeCompare(b);
+  });
+  return ordered;
+}
+
 function buildTree(graph: RecallGraphIR): {
   roots: string[];
   childrenMap: Map<string, string[]>;
@@ -84,35 +109,64 @@ function buildTree(graph: RecallGraphIR): {
 } {
   const incoming = new Map<string, number>();
   const outgoing = new Map<string, number>();
-  const childrenMap = new Map<string, string[]>();
+  const rawChildrenMap = new Map<string, string[]>();
   const allNodeIds = new Set(graph.nodes.map((n) => n.id));
+  const nodeOrder = new Map<string, number>();
+  for (const n of graph.nodes) {
+    nodeOrder.set(n.id, n.order ?? Infinity);
+  }
 
   for (const n of graph.nodes) {
     incoming.set(n.id, 0);
     outgoing.set(n.id, 0);
-    childrenMap.set(n.id, []);
+    rawChildrenMap.set(n.id, []);
   }
 
   for (const e of graph.edges) {
     if (!allNodeIds.has(e.from) || !allNodeIds.has(e.to)) continue;
     incoming.set(e.to, (incoming.get(e.to) || 0) + 1);
     outgoing.set(e.from, (outgoing.get(e.from) || 0) + 1);
-    const list = childrenMap.get(e.from) || [];
+    const list = rawChildrenMap.get(e.from) || [];
     if (!list.includes(e.to)) {
       list.push(e.to);
-      childrenMap.set(e.from, list);
+      rawChildrenMap.set(e.from, list);
     }
   }
 
-  // Find roots: nodes with no incoming edges, or highest outgoing if cycle
+  // Build children_order map from explicit declaration
+  const explicitChildrenOrder = new Map<string, string[]>();
+  if (graph.children_order) {
+    for (const [parentId, childList] of Object.entries(graph.children_order)) {
+      if (allNodeIds.has(parentId)) {
+        explicitChildrenOrder.set(
+          parentId,
+          childList.filter((id) => allNodeIds.has(id))
+        );
+      }
+    }
+  }
+
+  // Sort all children arrays
+  const childrenMap = new Map<string, string[]>();
+  for (const [id, raw] of rawChildrenMap) {
+    childrenMap.set(id, sortChildren(raw, explicitChildrenOrder, nodeOrder));
+  }
+
+  // Determine roots
   let roots: string[] = [];
-  for (const [id, count] of incoming.entries()) {
-    if (count === 0 && (outgoing.get(id) || 0) > 0) {
-      roots.push(id);
+  if (graph.layout.root_ids && graph.layout.root_ids.length > 0) {
+    for (const rid of graph.layout.root_ids) {
+      if (allNodeIds.has(rid)) roots.push(rid);
     }
   }
   if (roots.length === 0) {
-    // fallback: node with highest out-degree
+    for (const [id, count] of incoming.entries()) {
+      if (count === 0 && (outgoing.get(id) || 0) > 0) {
+        roots.push(id);
+      }
+    }
+  }
+  if (roots.length === 0) {
     let best = "";
     let bestOut = -1;
     for (const [id, out] of outgoing.entries()) {
@@ -124,7 +178,15 @@ function buildTree(graph: RecallGraphIR): {
     if (best) roots.push(best);
   }
 
-  // Parent map: for nodes with multiple parents, pick the first one encountered
+  // Sort roots by order then id
+  roots.sort((a, b) => {
+    const oa = nodeOrder.get(a) ?? Infinity;
+    const ob = nodeOrder.get(b) ?? Infinity;
+    if (oa !== ob) return oa - ob;
+    return a.localeCompare(b);
+  });
+
+  // Parent map: pick first edge for each child
   const parentMap = new Map<string, string>();
   for (const e of graph.edges) {
     if (!parentMap.has(e.to) && allNodeIds.has(e.from) && allNodeIds.has(e.to)) {
@@ -132,32 +194,38 @@ function buildTree(graph: RecallGraphIR): {
     }
   }
 
-  // Compute levels via BFS from roots
+  // Compute levels
+  const rankPolicy = graph.layout.rank_policy || "from_root_depth";
   const levels = new Map<string, number>();
-  const queue: string[] = [...roots];
-  for (const r of roots) levels.set(r, 0);
-  const visited = new Set<string>(roots);
 
-  while (queue.length > 0) {
-    const cur = queue.shift()!;
-    const curLevel = levels.get(cur) || 0;
-    for (const child of childrenMap.get(cur) || []) {
-      if (!visited.has(child)) {
-        visited.add(child);
-        levels.set(child, curLevel + 1);
-        queue.push(child);
-      } else {
-        // For already visited, take max level
-        levels.set(child, Math.max(levels.get(child) || 0, curLevel + 1));
+  if (rankPolicy === "explicit") {
+    for (const n of graph.nodes) {
+      levels.set(n.id, n.rank ?? 0);
+    }
+  } else {
+    const queue: string[] = [...roots];
+    for (const r of roots) levels.set(r, 0);
+    const visited = new Set<string>(roots);
+
+    while (queue.length > 0) {
+      const cur = queue.shift()!;
+      const curLevel = levels.get(cur) || 0;
+      for (const child of childrenMap.get(cur) || []) {
+        if (!visited.has(child)) {
+          visited.add(child);
+          levels.set(child, curLevel + 1);
+          queue.push(child);
+        } else {
+          levels.set(child, Math.max(levels.get(child) || 0, curLevel + 1));
+        }
       }
     }
-  }
 
-  // Handle disconnected nodes (no level assigned)
-  for (const id of allNodeIds) {
-    if (!levels.has(id)) {
-      levels.set(id, 0);
-      roots.push(id);
+    for (const id of allNodeIds) {
+      if (!levels.has(id)) {
+        levels.set(id, 0);
+        roots.push(id);
+      }
     }
   }
 
@@ -168,7 +236,6 @@ function isHubSpoke(roots: string[], childrenMap: Map<string, string[]>): boolea
   if (roots.length !== 1) return false;
   const root = roots[0];
   const children = childrenMap.get(root) || [];
-  // Hub-spoke if root has >3 children and ALL children are leaves (no deeper nesting)
   if (children.length <= 3) return false;
   let leafCount = 0;
   for (const c of children) {
@@ -191,7 +258,6 @@ function layoutHubSpoke(
   const positioned = new Map<string, PositionedNode>();
   const children = childrenMap.get(rootId) || [];
 
-  // Place root at center
   const rootX = 0;
   const rootY = 0;
   positioned.set(rootId, {
@@ -207,7 +273,6 @@ function layoutHubSpoke(
     children,
   });
 
-  // Arrange children in arc
   const count = children.length;
   const startAngle = preset.hubSpokeAngleStart;
   const endAngle = preset.hubSpokeAngleStart + preset.hubSpokeAngleSpan;
@@ -235,7 +300,6 @@ function layoutHubSpoke(
     });
   }
 
-  // Handle grandchildren (place below their parents in a simple grid)
   for (const cid of children) {
     const cpos = positioned.get(cid)!;
     const gchildren = childrenMap.get(cid) || [];
@@ -262,7 +326,8 @@ function layoutHubSpoke(
     }
   }
 
-  return finalizeLayout(graph, positioned, childrenMap, preset.siblingSpacing);
+  const direction = graph.layout.direction || "TD";
+  return finalizeLayout(graph, positioned, childrenMap, preset.siblingSpacing, direction);
 }
 
 function layoutHierarchical(
@@ -280,15 +345,6 @@ function layoutHierarchical(
     nodeSizes.set(n.id, computeNodeSize(n, preset));
   }
 
-  // Group nodes by level
-  const levelNodes = new Map<number, string[]>();
-  for (const [id, lvl] of levels.entries()) {
-    const list = levelNodes.get(lvl) || [];
-    list.push(id);
-    levelNodes.set(lvl, list);
-  }
-
-  // Compute subtree widths recursively (post-order)
   const subtreeWidth = new Map<string, number>();
 
   function computeSubtreeWidth(nodeId: string): number {
@@ -330,13 +386,11 @@ function layoutHierarchical(
     computeSubtreeWidth(root);
   }
 
-  // Assign positions (pre-order)
   function assignPositions(nodeId: string, x: number, y: number) {
     const size = nodeSizes.get(nodeId)!;
     const children = childrenMap.get(nodeId) || [];
     const stw = subtreeWidth.get(nodeId)!;
 
-    // Center node over its subtree
     const nodeX = x + (stw - size.width) / 2;
     const nodeY = y;
 
@@ -391,7 +445,6 @@ function layoutHierarchical(
     }
   }
 
-  // Layout each root horizontally
   let currentX = preset.subtreeSpacing;
   for (const root of roots) {
     const rootY = preset.subtreeSpacing;
@@ -399,7 +452,8 @@ function layoutHierarchical(
     currentX += subtreeWidth.get(root)! + preset.horizontalSpacing + preset.subtreeSpacing;
   }
 
-  return finalizeLayout(graph, positioned, childrenMap, preset.siblingSpacing);
+  const direction = graph.layout.direction || "TD";
+  return finalizeLayout(graph, positioned, childrenMap, preset.siblingSpacing, direction);
 }
 
 function shiftSubtree(
@@ -455,24 +509,90 @@ function resolveOverlaps(
   }
 }
 
+function applyDirection(
+  positioned: Map<string, PositionedNode>,
+  direction: "TD" | "LR" | "BT" | "RL"
+) {
+  if (direction === "TD") return;
+
+  const nodes = Array.from(positioned.values());
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  for (const n of nodes) {
+    minX = Math.min(minX, n.x);
+    minY = Math.min(minY, n.y);
+    maxX = Math.max(maxX, n.x + n.width);
+    maxY = Math.max(maxY, n.y + n.height);
+  }
+
+  if (direction === "BT") {
+    for (const n of nodes) {
+      const bottom = n.y + n.height;
+      const distFromTop = bottom - minY;
+      n.y = maxY - distFromTop;
+    }
+  } else if (direction === "LR") {
+    for (const n of nodes) {
+      const oldX = n.x, oldY = n.y, oldW = n.width, oldH = n.height;
+      n.x = oldY;
+      n.y = oldX;
+      n.width = oldH;
+      n.height = oldW;
+    }
+  } else if (direction === "RL") {
+    for (const n of nodes) {
+      const oldX = n.x, oldY = n.y, oldW = n.width, oldH = n.height;
+      // Transpose then mirror horizontally
+      const tx = oldY;
+      const ty = oldX;
+      const tw = oldH;
+      const th = oldW;
+      // Mirror horizontally around the transposed bounds
+      const tMaxX = maxY - minY + minX; // approximate
+      n.x = tMaxX - (tx + tw) + minX;
+      n.y = ty;
+      n.width = tw;
+      n.height = th;
+    }
+    // After RL, shift everything to start near 0
+    let newMinX = Infinity;
+    for (const n of nodes) newMinX = Math.min(newMinX, n.x);
+    if (isFinite(newMinX) && newMinX !== 0) {
+      for (const n of nodes) n.x -= newMinX;
+    }
+  }
+}
+
 function finalizeLayout(
   graph: RecallGraphIR,
   positioned: Map<string, PositionedNode>,
-  childrenMap?: Map<string, string[]>,
-  minGap?: number
+  childrenMap: Map<string, string[]>,
+  minGap: number,
+  direction: "TD" | "LR" | "BT" | "RL"
 ): LayoutResult {
-  if (childrenMap && minGap !== undefined) {
-    resolveOverlaps(positioned, childrenMap, minGap);
-  }
+  resolveOverlaps(positioned, childrenMap, minGap);
+  applyDirection(positioned, direction);
 
   const nodes = Array.from(positioned.values());
-  const edges: PositionedEdge[] = graph.edges.map((e) => ({
-    id: e.id,
-    from: e.from,
-    to: e.to,
-    label: e.label,
-    kind: e.kind,
-  }));
+
+  // Sort edges by explicit order if present
+  const edgeOrder = new Map<string, number>();
+  for (const e of graph.edges) {
+    edgeOrder.set(e.id, e.order ?? Infinity);
+  }
+  const edges: PositionedEdge[] = graph.edges
+    .map((e) => ({
+      id: e.id,
+      from: e.from,
+      to: e.to,
+      label: e.label,
+      kind: e.relation,
+    }))
+    .sort((a, b) => {
+      const oa = edgeOrder.get(a.id) ?? Infinity;
+      const ob = edgeOrder.get(b.id) ?? Infinity;
+      if (oa !== ob) return oa - ob;
+      return a.id.localeCompare(b.id);
+    });
 
   let minX = Infinity,
     minY = Infinity,
