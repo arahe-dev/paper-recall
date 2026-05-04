@@ -144,4 +144,4 @@ Use `readable_compact` with:
 
 ## Commit Hash
 
-(To be generated after `git commit`)
+`2125847` — Add ordered Recall Graph IR layout semantics
