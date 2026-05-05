@@ -1,9 +1,11 @@
 import { useRef, useCallback, useState, useEffect } from "react";
-import { Excalidraw, restoreElements } from "@excalidraw/excalidraw";
+import { Excalidraw, exportToCanvas, restoreElements } from "@excalidraw/excalidraw";
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import "@excalidraw/excalidraw/index.css";
 import "./App.css";
+import HomeScreen from "./components/HomeScreen";
 import ThemeToggle from "./components/ThemeToggle";
+import TemplateGallery from "./components/TemplateGallery";
 import TranscriptPanel from "./TranscriptPanel";
 import { buildBoardTextGraph } from "./boardTextGraph";
 import type { LooseAppState, LooseElement, LooseFiles } from "./exporters/types";
@@ -31,6 +33,11 @@ import {
 import { exportAndSaveBoard, type ExportFormat } from "./utils/exportEngine";
 import { useTheme } from "./hooks/useTheme";
 import { getSettings, updateSettings } from "./utils/settingsStore";
+import {
+  getAllTemplates,
+  saveAsTemplate,
+  type RecallTemplate,
+} from "./utils/templateEngine";
 
 type RecallExcalidrawAPI = ExcalidrawImperativeAPI & {
   scrollToContent?: (elements?: unknown, options?: { fitToViewport?: boolean; animate?: boolean }) => void;
@@ -82,6 +89,10 @@ function App() {
   const [recentBoards, setRecentBoards] = useState<BoardMeta[]>(getRecentBoards);
   const [showRecent, setShowRecent] = useState(false);
   const [showExport, setShowExport] = useState(false);
+  const [showTemplateGallery, setShowTemplateGallery] = useState(false);
+  const [homeDismissed, setHomeDismissed] = useState(false);
+  const [activeElementCount, setActiveElementCount] = useState(0);
+  const [templates, setTemplates] = useState<RecallTemplate[]>(getAllTemplates);
   const [autoSaveEnabled, setAutoSaveEnabled] = useState(() => getSettings().autoSaveEnabled);
 
   const handleChange = useCallback(
@@ -89,6 +100,11 @@ function App() {
       elementsRef.current = elements as readonly LooseElement[];
       appStateRef.current = appState as LooseAppState;
       filesRef.current = files as LooseFiles;
+      const nextActiveCount = (elements as readonly LooseElement[]).filter((el) => !el.isDeleted).length;
+      setActiveElementCount(nextActiveCount);
+      if (nextActiveCount > 0) {
+        setHomeDismissed(true);
+      }
       if (Date.now() > suppressDirtyUntilRef.current) {
         lastChangeAtRef.current = Date.now();
         setIsDirty(true);
@@ -121,6 +137,8 @@ function App() {
       },
       captureUpdate: "NEVER" as never,
     });
+    setActiveElementCount(result.elements.filter((el) => !el.isDeleted).length);
+    setHomeDismissed(true);
 
     // Scroll to fit content
     setTimeout(() => {
@@ -256,6 +274,28 @@ function App() {
     files: filesRef.current as Record<string, unknown>,
   }), []);
 
+  const createCurrentThumbnail = useCallback(async (): Promise<string | undefined> => {
+    const api = apiRef.current;
+    const elements = (api?.getSceneElements() as readonly LooseElement[] | undefined) || elementsRef.current;
+    const activeElements = elements.filter((el) => !el.isDeleted);
+    if (activeElements.length === 0) return undefined;
+    try {
+      const canvas = await exportToCanvas({
+        elements: activeElements as never,
+        appState: {
+          ...(api?.getAppState() || appStateRef.current),
+          viewBackgroundColor: canvasBackgroundColor,
+        } as never,
+        files: filesRef.current as never,
+        exportPadding: 16,
+        maxWidthOrHeight: 360,
+      });
+      return canvas.toDataURL("image/png", 0.78);
+    } catch {
+      return undefined;
+    }
+  }, [canvasBackgroundColor]);
+
   const restoreScene = useCallback((scene: SceneData) => {
     suppressDirtyUntilRef.current = Date.now() + 750;
     apiRef.current?.updateScene({
@@ -263,6 +303,8 @@ function App() {
       appState: scene.appState as never,
       captureUpdate: "NEVER" as never,
     });
+    setActiveElementCount((scene.elements as LooseElement[]).filter((el) => !el.isDeleted).length);
+    setHomeDismissed(true);
   }, []);
 
   const canDiscardDirty = useCallback(() => (
@@ -273,7 +315,8 @@ function App() {
     saveInFlightRef.current = true;
     setIsSaving(true);
     try {
-      const updated = await saveBoard(board, scene);
+      const thumbnail = await createCurrentThumbnail();
+      const updated = await saveBoard(thumbnail ? { ...board, thumbnail } : board, scene);
       setCurrentBoard(updated);
       setRecentBoards(getRecentBoards());
       setIsDirty(false);
@@ -284,7 +327,7 @@ function App() {
       saveInFlightRef.current = false;
       setIsSaving(false);
     }
-  }, []);
+  }, [createCurrentThumbnail]);
 
   const handleNewBoard = useCallback(() => {
     if (!canDiscardDirty()) return;
@@ -293,30 +336,43 @@ function App() {
     setCurrentBoard(null);
     setIsDirty(false);
     setLastSavedAt(null);
+    setActiveElementCount(0);
+    setHomeDismissed(false);
     autoSavePromptedRef.current = false;
     setLastLoadErrors([]);
   }, [canDiscardDirty]);
+
+  const handleBlankCanvas = useCallback(() => {
+    handleNewBoard();
+    setHomeDismissed(true);
+  }, [handleNewBoard]);
 
   const handleSaveAs = useCallback(async () => {
     const scene = getCurrentScene();
     if (isTauriEnv()) {
       const meta = await saveBoardWithDialog(scene, currentBoard?.name || "board.excalidraw");
       if (meta) {
-        setCurrentBoard(meta);
+        const thumbnail = await createCurrentThumbnail();
+        const updated = thumbnail ? await saveBoard({ ...meta, thumbnail }, scene) : meta;
+        setCurrentBoard(updated);
         setIsDirty(false);
-        setLastSavedAt(meta.lastModified);
+        setLastSavedAt(updated.lastModified);
         setRecentBoards(getRecentBoards());
+        setHomeDismissed(true);
       }
     } else {
       const name = window.prompt("Board name", currentBoard?.name || "Untitled");
       if (!name) return;
       const meta = await createBoard(name.replace(/\.excalidraw$/i, ""), scene);
-      setCurrentBoard(meta);
+      const thumbnail = await createCurrentThumbnail();
+      const updated = thumbnail ? await saveBoard({ ...meta, thumbnail }, scene) : meta;
+      setCurrentBoard(updated);
       setIsDirty(false);
-      setLastSavedAt(meta.lastModified);
+      setLastSavedAt(updated.lastModified);
       setRecentBoards(getRecentBoards());
+      setHomeDismissed(true);
     }
-  }, [currentBoard, getCurrentScene]);
+  }, [createCurrentThumbnail, currentBoard, getCurrentScene]);
 
   const handleSaveBoard = useCallback(async () => {
     const scene = getCurrentScene();
@@ -338,6 +394,7 @@ function App() {
         setLastSavedAt(result.meta.lastModified);
         setRecentBoards(getRecentBoards());
         setLastLoadErrors([]);
+        setHomeDismissed(true);
       }
     } else {
       // Browser fallback: trigger hidden file input
@@ -354,6 +411,7 @@ function App() {
       setIsDirty(false);
       setLastSavedAt(meta.lastModified);
       setShowRecent(false);
+      setHomeDismissed(true);
       setLastLoadErrors([]);
     } else {
       setLastLoadErrors([`Failed to load board: ${meta.name}`]);
@@ -369,6 +427,8 @@ function App() {
         setCurrentBoard(null);
         setIsDirty(false);
         setLastSavedAt(null);
+        setActiveElementCount(0);
+        setHomeDismissed(false);
       }
     }
   }, [currentBoard]);
@@ -430,6 +490,8 @@ function App() {
       setCurrentBoard(null);
       setIsDirty(false);
       setLastSavedAt(null);
+      setActiveElementCount(0);
+      setHomeDismissed(false);
       setRecentBoards(getRecentBoards());
       setLastLoadErrors([]);
     } catch (err) {
@@ -465,6 +527,7 @@ function App() {
         setIsDirty(false);
         setLastSavedAt(meta.lastModified);
         setRecentBoards(getRecentBoards());
+        setHomeDismissed(true);
         setLastLoadErrors([]);
       } catch (err) {
         setLastLoadErrors([`Failed to parse board file: ${err}`]);
@@ -506,6 +569,7 @@ function App() {
         setIsDirty(false);
         setLastSavedAt(meta.lastModified);
         setRecentBoards(getRecentBoards());
+        setHomeDismissed(true);
         setLastLoadErrors([]);
       } catch (err) {
         setLastLoadErrors([`Auto-save failed: ${err}`]);
@@ -534,6 +598,84 @@ function App() {
     },
     [handleLoadGraph, handleLoadDiagramSpec]
   );
+
+  const handleUseTemplate = useCallback(async (template: RecallTemplate) => {
+    if (!canDiscardDirty()) return;
+    try {
+      const loaded = await handleLoadGraph(template.ir);
+      if (!loaded.success) return;
+      setCurrentBoard(null);
+      setIsDirty(true);
+      setLastSavedAt(null);
+      setShowTemplateGallery(false);
+      setHomeDismissed(true);
+      setLastLoadErrors([]);
+    } catch (err) {
+      setLastLoadErrors([`Failed to apply template: ${err}`]);
+    }
+  }, [canDiscardDirty, handleLoadGraph]);
+
+  const handleSaveAsTemplate = useCallback(() => {
+    const activeElements = elementsRef.current.filter((el) => !el.isDeleted);
+    if (activeElements.length === 0) {
+      setLastLoadErrors(["Add content before saving a template."]);
+      return;
+    }
+    const name = window.prompt("Template name", currentBoard?.name || "Custom Template");
+    if (!name) return;
+    try {
+      saveAsTemplate(elementsRef.current, appStateRef.current, {
+        name,
+        description: "Saved from the current board.",
+      });
+      setTemplates(getAllTemplates());
+      setShowTemplateGallery(true);
+      setLastLoadErrors([]);
+    } catch (err) {
+      setLastLoadErrors([`Failed to save template: ${err}`]);
+    }
+  }, [currentBoard]);
+
+  const handleRenameRecent = useCallback(async (meta: BoardMeta) => {
+    const name = window.prompt("Rename board", meta.name);
+    if (!name || name.trim() === meta.name) return;
+    try {
+      const updated = await renameBoard(meta, name);
+      if (currentBoard?.path === meta.path) setCurrentBoard(updated);
+      setRecentBoards(getRecentBoards());
+      setLastLoadErrors([]);
+    } catch (err) {
+      setLastLoadErrors([`Failed to rename board: ${err}`]);
+    }
+  }, [currentBoard]);
+
+  const handleDuplicateRecent = useCallback(async (meta: BoardMeta) => {
+    try {
+      const duplicate = await duplicateBoard(meta);
+      if (!duplicate) {
+        setLastLoadErrors([`Failed to duplicate board: ${meta.name}`]);
+        return;
+      }
+      setRecentBoards(getRecentBoards());
+      setLastLoadErrors([]);
+    } catch (err) {
+      setLastLoadErrors([`Failed to duplicate board: ${err}`]);
+    }
+  }, []);
+
+  const handleDeleteRecentCard = useCallback(async (meta: BoardMeta) => {
+    if (!window.confirm(`Delete "${meta.name}"?`)) return;
+    await deleteBoard(meta);
+    setRecentBoards(getRecentBoards());
+    if (currentBoard?.path === meta.path) {
+      apiRef.current?.resetScene();
+      setCurrentBoard(null);
+      setIsDirty(false);
+      setLastSavedAt(null);
+      setActiveElementCount(0);
+      setHomeDismissed(false);
+    }
+  }, [currentBoard]);
 
   const saveStatus = isSaving
     ? "saving"
@@ -564,6 +706,14 @@ function App() {
           <button onClick={handleRenameBoard}>Rename</button>
           <button onClick={handleDuplicateBoard}>Duplicate</button>
           <button onClick={handleDeleteCurrentBoard}>Delete</button>
+          <button onClick={() => {
+            setShowTemplateGallery(!showTemplateGallery);
+            setShowRecent(false);
+            setShowExport(false);
+          }}>
+            Templates
+          </button>
+          <button onClick={handleSaveAsTemplate}>Save Template</button>
           <label className="auto-save-toggle">
             <input
               type="checkbox"
@@ -615,6 +765,7 @@ function App() {
 
           <label className="file-input-label">
             <input
+              id="recall-graph-input"
               type="file"
               accept=".json"
               onChange={handleFileInput}
@@ -672,6 +823,31 @@ function App() {
           excalidrawAPI={handleExcalidrawAPI}
           theme={excalidrawTheme}
         />
+        {!homeDismissed && !currentBoard && activeElementCount === 0 && (
+          <HomeScreen
+            templates={templates}
+            recentBoards={recentBoards}
+            onUseTemplate={handleUseTemplate}
+            onOpenRecent={handleOpenRecent}
+            onRenameRecent={handleRenameRecent}
+            onDeleteRecent={handleDeleteRecentCard}
+            onDuplicateRecent={handleDuplicateRecent}
+            onNew={handleBlankCanvas}
+            onOpen={handleOpenBoard}
+            onImport={() => document.getElementById("recall-graph-input")?.click()}
+          />
+        )}
+        {showTemplateGallery && (
+          <div className="template-overlay">
+            <div className="template-overlay-panel">
+              <TemplateGallery
+                templates={templates}
+                onUseTemplate={handleUseTemplate}
+                onClose={() => setShowTemplateGallery(false)}
+              />
+            </div>
+          </div>
+        )}
       </main>
       {showTranscript && (
         <TranscriptPanel onClose={() => setShowTranscript(false)} />
