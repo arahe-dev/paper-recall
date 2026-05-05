@@ -12,6 +12,18 @@ import {
   recallDiagramSpecToGraphIR,
   type RecallDiagramSpecV0,
 } from "./recallDiagramSpec";
+import {
+  type BoardMeta,
+  type SceneData,
+  createBoard,
+  saveBoard,
+  saveBoardWithDialog,
+  openBoardWithDialog,
+  loadBoard,
+  deleteBoard,
+  getRecentBoards,
+  isTauriEnv,
+} from "./utils/boardStorage";
 
 // Minimal local types to avoid strict import issues for this prototype
 type LooseElement = {
@@ -76,8 +88,9 @@ function exportScene(
   files: LooseFiles
 ) {
   const scene = {
-    type: "recall-excalidraw-scene",
-    version: 1,
+    type: "excalidraw",
+    version: 2,
+    source: "recall-board",
     elements: elements.map((el) => ({ ...el })),
     appState: {
       viewBackgroundColor: appState.viewBackgroundColor,
@@ -326,11 +339,18 @@ function App() {
   const [showTranscript, setShowTranscript] = useState(false);
   const [lastLoadErrors, setLastLoadErrors] = useState<string[]>([]);
 
+  // Phase 0: Board persistence state
+  const [currentBoard, setCurrentBoard] = useState<BoardMeta | null>(null);
+  const [isDirty, setIsDirty] = useState(false);
+  const [recentBoards, setRecentBoards] = useState<BoardMeta[]>(getRecentBoards);
+  const [showRecent, setShowRecent] = useState(false);
+
   const handleChange = useCallback(
     (elements: readonly unknown[], appState: unknown, files: unknown) => {
       elementsRef.current = elements as readonly LooseElement[];
       appStateRef.current = appState as LooseAppState;
       filesRef.current = files as LooseFiles;
+      setIsDirty(true);
     },
     []
   );
@@ -453,6 +473,127 @@ function App() {
     };
   }, [handleLoadGraph, handleLoadDiagramSpec, handleExportPNG]);
 
+  // Phase 0: Board persistence handlers
+
+  const getCurrentScene = useCallback((): SceneData => ({
+    elements: elementsRef.current as unknown[],
+    appState: appStateRef.current as Record<string, unknown>,
+    files: filesRef.current as Record<string, unknown>,
+  }), []);
+
+  const handleNewBoard = useCallback(() => {
+    apiRef.current?.resetScene();
+    setCurrentBoard(null);
+    setIsDirty(false);
+    setLastLoadErrors([]);
+  }, []);
+
+  const handleSaveAs = useCallback(async () => {
+    const scene = getCurrentScene();
+    if (isTauriEnv()) {
+      const meta = await saveBoardWithDialog(scene, currentBoard?.name || "board.excalidraw");
+      if (meta) {
+        setCurrentBoard(meta);
+        setIsDirty(false);
+        setRecentBoards(getRecentBoards());
+      }
+    } else {
+      const name = window.prompt("Board name", currentBoard?.name || "Untitled");
+      if (!name) return;
+      const meta = await createBoard(name.replace(/\.excalidraw$/i, ""), scene);
+      setCurrentBoard(meta);
+      setIsDirty(false);
+      setRecentBoards(getRecentBoards());
+    }
+  }, [currentBoard, getCurrentScene]);
+
+  const handleSaveBoard = useCallback(async () => {
+    const scene = getCurrentScene();
+    if (currentBoard) {
+      await saveBoard(currentBoard, scene);
+      setIsDirty(false);
+      setRecentBoards(getRecentBoards());
+    } else {
+      await handleSaveAs();
+    }
+  }, [currentBoard, getCurrentScene, handleSaveAs]);
+
+  const handleOpenBoard = useCallback(async () => {
+    if (isTauriEnv()) {
+      const result = await openBoardWithDialog();
+      if (result) {
+        apiRef.current?.updateScene({
+          elements: result.scene.elements as any,
+          appState: result.scene.appState as any,
+          captureUpdate: "NEVER" as any,
+        });
+        setCurrentBoard(result.meta);
+        setIsDirty(false);
+        setRecentBoards(getRecentBoards());
+        setLastLoadErrors([]);
+      }
+    } else {
+      // Browser fallback: trigger hidden file input
+      document.getElementById("browser-file-input")?.click();
+    }
+  }, []);
+
+  const handleOpenRecent = useCallback(async (meta: BoardMeta) => {
+    const scene = await loadBoard(meta);
+    if (scene) {
+      apiRef.current?.updateScene({
+        elements: scene.elements as any,
+        appState: scene.appState as any,
+        captureUpdate: "NEVER" as any,
+      });
+      setCurrentBoard(meta);
+      setIsDirty(false);
+      setShowRecent(false);
+      setLastLoadErrors([]);
+    } else {
+      setLastLoadErrors([`Failed to load board: ${meta.name}`]);
+    }
+  }, []);
+
+  const handleDeleteRecent = useCallback(async (meta: BoardMeta, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (window.confirm(`Delete "${meta.name}"?`)) {
+      await deleteBoard(meta);
+      setRecentBoards(getRecentBoards());
+      if (currentBoard?.path === meta.path) {
+        setCurrentBoard(null);
+        setIsDirty(false);
+      }
+    }
+  }, [currentBoard]);
+
+  const handleBrowserFileInput = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const text = await file.text();
+      try {
+        const parsed = JSON.parse(text);
+        if (!parsed || typeof parsed !== "object" || !Array.isArray(parsed.elements)) {
+          setLastLoadErrors(["Invalid board file: missing elements array"]);
+          return;
+        }
+        apiRef.current?.updateScene({
+          elements: parsed.elements,
+          appState: parsed.appState ?? {},
+          captureUpdate: "NEVER" as any,
+        });
+        setCurrentBoard(null);
+        setIsDirty(false);
+        setLastLoadErrors([]);
+      } catch (err) {
+        setLastLoadErrors([`Failed to parse board file: ${err}`]);
+      }
+      e.target.value = "";
+    },
+    []
+  );
+
   const handleFileInput = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
@@ -496,8 +637,59 @@ function App() {
   return (
     <div className="app-shell">
       <header className="top-bar">
-        <div className="top-bar-title">Recall Board</div>
+        <div className="top-bar-title">
+          Recall Board
+          {currentBoard && (
+            <span className="board-name">
+              {" - "}{currentBoard.name}
+              {isDirty && <span className="dirty-indicator">*</span>}
+            </span>
+          )}
+        </div>
         <div className="top-bar-actions">
+          {/* Phase 0: Board persistence actions */}
+          <button onClick={handleNewBoard}>New</button>
+          <button onClick={handleOpenBoard}>Open...</button>
+          <button onClick={handleSaveBoard}>Save</button>
+          <button onClick={handleSaveAs}>Save As...</button>
+
+          {/* Recent boards dropdown */}
+          <div className="recent-dropdown">
+            <button onClick={() => setShowRecent(!showRecent)}>
+              Recent v
+            </button>
+            {showRecent && (
+              <div className="recent-menu">
+                {recentBoards.length === 0 ? (
+                  <div className="recent-item empty">No recent boards</div>
+                ) : (
+                  recentBoards.map((board) => (
+                    <div
+                      key={board.path}
+                      className="recent-item"
+                      onClick={() => handleOpenRecent(board)}
+                    >
+                      <span className="recent-name">{board.name}</span>
+                      <span className="recent-meta">
+                        {new Date(board.lastModified).toLocaleDateString()}
+                      </span>
+                      <button
+                        className="recent-delete"
+                        onClick={(e) => handleDeleteRecent(board, e)}
+                        title="Delete"
+                      >
+                        x
+                      </button>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+          </div>
+
+          <span className="action-separator" />
+
+          {/* Legacy export actions */}
           <label className="file-input-label">
             <input
               type="file"
@@ -515,11 +707,24 @@ function App() {
           <button onClick={() => setShowTranscript(true)}>Parse Transcript</button>
         </div>
       </header>
+
+      {/* Hidden file input for browser fallback open */}
+      <input
+        id="browser-file-input"
+        type="file"
+        accept=".excalidraw,.json"
+        onChange={handleBrowserFileInput}
+        style={{ display: "none" }}
+      />
+
       {lastLoadErrors.length > 0 && (
         <div className="load-errors">
           {lastLoadErrors.map((err, i) => (
             <div key={i} className="load-error">{err}</div>
           ))}
+          <button className="dismiss-errors" onClick={() => setLastLoadErrors([])}>
+            Dismiss
+          </button>
         </div>
       )}
       <main className="board">
