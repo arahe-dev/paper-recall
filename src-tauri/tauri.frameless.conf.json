@@ -1,0 +1,25 @@
+{
+  "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
+  "build": {
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:5173",
+    "beforeDevCommand": "corepack pnpm dev --mode frameless",
+    "beforeBuildCommand": "corepack pnpm run build:frameless"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Recall Board",
+        "width": 1280,
+        "height": 800,
+        "minWidth": 900,
+        "minHeight": 600,
+        "resizable": true,
+        "fullscreen": false,
+        "decorations": false,
+        "transparent": false,
+        "shadow": true
+      }
+    ]
+  }
+}

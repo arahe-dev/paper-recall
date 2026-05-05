@@ -12,6 +12,7 @@ import "./App.css";
 import HomeScreen from "./components/HomeScreen";
 import BacklinksPanel from "./components/BacklinksPanel";
 import ContextMenu from "./components/ContextMenu";
+import CustomTitleBar from "./components/CustomTitleBar";
 import GraphView from "./components/GraphView";
 import QuickSearch from "./components/QuickSearch";
 import SubpageBadge from "./components/SubpageBadge";
@@ -1462,9 +1463,17 @@ function App() {
     ? allLinks.filter((entry) => entry.targetBoardId === currentBoard.id)
     : [];
   const showSidePanel = homeDismissed || Boolean(currentBoard) || recentBoards.length > 0 || allLinks.length > 0;
+  const customChromeEnabled = isTauriEnv() && import.meta.env.VITE_RECALL_CUSTOM_CHROME === "true";
+
+  useEffect(() => {
+    document.title = currentBoard ? `Recall Board - ${currentBoard.name}` : "Recall Board";
+  }, [currentBoard]);
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell${customChromeEnabled ? " custom-chrome-shell" : ""}`}>
+      {customChromeEnabled && (
+        <CustomTitleBar boardName={currentBoard?.name} saveStatus={saveStatus} />
+      )}
       <header className="top-bar">
         <div className="top-bar-title">
           Recall Board
@@ -1476,124 +1485,131 @@ function App() {
           <span className={`save-status ${saveStatus}`}>{saveStatus}</span>
         </div>
         <div className="top-bar-actions">
-          {/* Board persistence actions */}
-          <button onClick={handleNewBoard}>New</button>
-          <button onClick={handleOpenBoard}>Open...</button>
-          <button onClick={handleSaveBoard}>Save</button>
-          <button onClick={handleSaveAs}>Save As...</button>
-          <button onClick={handleRenameBoard}>Rename</button>
-          <button onClick={handleDuplicateBoard}>Duplicate</button>
-          <button onClick={handleDeleteCurrentBoard}>Delete</button>
-          <button onClick={() => setQuickSearchOpen(true)}>Search</button>
-          <button onClick={() => void handleCreateBoardLink()}>Link Board</button>
-          <button onClick={() => {
-            setShowTemplateGallery(!showTemplateGallery);
-            setShowRecent(false);
-            setShowExport(false);
-          }}>
-            Templates
-          </button>
-          <button onClick={handleSaveAsTemplate}>Save Template</button>
-          <label className="auto-save-toggle">
-            <input
-              type="checkbox"
-              checked={autoSaveEnabled}
-              onChange={(event) => handleAutoSaveToggle(event.currentTarget.checked)}
-            />
-            Auto-save
-          </label>
-          <label className="auto-save-toggle">
-            <input
-              type="checkbox"
-              checked={autoSnapEnabled}
-              onChange={(event) => handleAutoSnapToggle(event.currentTarget.checked)}
-            />
-            Auto-snap
-          </label>
-          <label className="snap-threshold">
-            <span>Snap</span>
-            <input
-              type="number"
-              min="0.5"
-              max="0.95"
-              step="0.05"
-              value={snapConfidenceThreshold}
-              onChange={(event) => handleSnapThresholdChange(Number(event.currentTarget.value))}
-            />
-          </label>
-          <ThemeToggle compact />
+          <div className="toolbar-group board-actions">
+            <button className="toolbar-button" onClick={handleNewBoard}>New</button>
+            <button className="toolbar-button" onClick={handleOpenBoard}>Open...</button>
+            <button className="toolbar-button primary-action" onClick={handleSaveBoard}>Save</button>
+            <button className="toolbar-button" onClick={handleSaveAs}>Save As...</button>
+            <button className="toolbar-button" onClick={handleRenameBoard}>Rename</button>
+            <button className="toolbar-button" onClick={handleDuplicateBoard}>Duplicate</button>
+            <button className="toolbar-button danger-action" onClick={handleDeleteCurrentBoard}>Delete</button>
+          </div>
 
-          {/* Recent boards dropdown */}
-          <div className="recent-dropdown">
-            <button onClick={() => {
-              setShowRecent(!showRecent);
+          <div className="toolbar-group organize-actions">
+            <button className="toolbar-button" onClick={() => setQuickSearchOpen(true)}>Search</button>
+            <button className="toolbar-button" onClick={() => void handleCreateBoardLink()}>Link Board</button>
+            <button className="toolbar-button" onClick={() => {
+              setShowTemplateGallery(!showTemplateGallery);
+              setShowRecent(false);
               setShowExport(false);
             }}>
-              Recent v
+              Templates
             </button>
-            {showRecent && (
-              <div className="recent-menu">
-                {recentBoards.length === 0 ? (
-                  <div className="recent-item empty">No recent boards</div>
-                ) : (
-                  recentBoards.map((board) => (
-                    <div
-                      key={board.path}
-                      className="recent-item"
-                      onClick={() => handleOpenRecent(board)}
-                    >
-                      <span className="recent-name">{board.name}</span>
-                      <span className="recent-meta">
-                        {new Date(board.lastModified).toLocaleDateString()}
-                      </span>
-                      <button
-                        className="recent-delete"
-                        onClick={(e) => handleDeleteRecent(board, e)}
-                        title="Delete"
+            <button className="toolbar-button" onClick={handleSaveAsTemplate}>Save Template</button>
+          </div>
+
+          <div className="toolbar-group settings-actions">
+            <label className="auto-save-toggle">
+              <input
+                type="checkbox"
+                checked={autoSaveEnabled}
+                onChange={(event) => handleAutoSaveToggle(event.currentTarget.checked)}
+              />
+              Auto-save
+            </label>
+            <label className="auto-save-toggle">
+              <input
+                type="checkbox"
+                checked={autoSnapEnabled}
+                onChange={(event) => handleAutoSnapToggle(event.currentTarget.checked)}
+              />
+              Auto-snap
+            </label>
+            <label className="snap-threshold">
+              <span>Snap</span>
+              <input
+                type="number"
+                min="0.5"
+                max="0.95"
+                step="0.05"
+                value={snapConfidenceThreshold}
+                onChange={(event) => handleSnapThresholdChange(Number(event.currentTarget.value))}
+              />
+            </label>
+            <ThemeToggle compact />
+          </div>
+
+          {/* Recent boards dropdown */}
+          <div className="toolbar-group file-actions">
+            <div className="recent-dropdown">
+              <button className="toolbar-button" onClick={() => {
+                setShowRecent(!showRecent);
+                setShowExport(false);
+              }}>
+                Recent
+              </button>
+              {showRecent && (
+                <div className="recent-menu">
+                  {recentBoards.length === 0 ? (
+                    <div className="recent-item empty">No recent boards</div>
+                  ) : (
+                    recentBoards.map((board) => (
+                      <div
+                        key={board.path}
+                        className="recent-item"
+                        onClick={() => handleOpenRecent(board)}
                       >
-                        x
-                      </button>
-                    </div>
-                  ))
-                )}
-              </div>
-            )}
-          </div>
+                        <span className="recent-name">{board.name}</span>
+                        <span className="recent-meta">
+                          {new Date(board.lastModified).toLocaleDateString()}
+                        </span>
+                        <button
+                          className="recent-delete"
+                          onClick={(e) => handleDeleteRecent(board, e)}
+                          title="Delete"
+                        >
+                          x
+                        </button>
+                      </div>
+                    ))
+                  )}
+                </div>
+              )}
+            </div>
 
-          <span className="action-separator" />
-
-          <label className="file-input-label">
-            <input
-              id="recall-graph-input"
-              type="file"
-              accept=".json"
-              onChange={handleFileInput}
-              style={{ display: "none" }}
-            />
-            Load Recall Graph IR
-          </label>
-          <div className="export-dropdown">
-            <button onClick={() => {
-              setShowExport(!showExport);
-              setShowRecent(false);
-            }}>
-              Export v
-            </button>
-            {showExport && (
-              <div className="export-menu">
-                {EXPORT_OPTIONS.map((option) => (
-                  <button
-                    key={option.format}
-                    className="export-item"
-                    onClick={() => handleExport(option.format)}
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
-            )}
+            <label className="file-input-label">
+              <input
+                id="recall-graph-input"
+                type="file"
+                accept=".json"
+                onChange={handleFileInput}
+                style={{ display: "none" }}
+              />
+              Load Recall Graph IR
+            </label>
+            <div className="export-dropdown">
+              <button className="toolbar-button" onClick={() => {
+                setShowExport(!showExport);
+                setShowRecent(false);
+              }}>
+                Export
+              </button>
+              {showExport && (
+                <div className="export-menu">
+                  {EXPORT_OPTIONS.map((option) => (
+                    <button
+                      key={option.format}
+                      className="export-item"
+                      onClick={() => handleExport(option.format)}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            <button className="toolbar-button" onClick={() => setShowTranscript(true)}>Parse Transcript</button>
           </div>
-          <button onClick={() => setShowTranscript(true)}>Parse Transcript</button>
         </div>
       </header>
 

@@ -6,9 +6,12 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:frameless": "tsc -b && vite build --mode frameless",
     "lint": "eslint .",
     "preview": "vite preview",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "tauri:dev:frameless": "tauri dev --config src-tauri/tauri.frameless.conf.json",
+    "tauri:build:frameless": "tauri build --config src-tauri/tauri.frameless.conf.json"
   },
   "dependencies": {
     "@excalidraw/excalidraw": "^0.18.1",
