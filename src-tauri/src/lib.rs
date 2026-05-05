@@ -23,12 +23,33 @@ fn ensure_board_dir() -> Result<String, String> {
 #[tauri::command]
 fn save_board(path: String, content: String) -> Result<(), String> {
     let path = PathBuf::from(path);
+    write_file_atomic(path, content.as_bytes())
+}
+
+#[tauri::command]
+fn save_export_text(path: String, content: String) -> Result<(), String> {
+    let path = PathBuf::from(path);
+    write_file_atomic(path, content.as_bytes())
+}
+
+#[tauri::command]
+fn save_export_binary(path: String, bytes: Vec<u8>) -> Result<(), String> {
+    let path = PathBuf::from(path);
+    write_file_atomic(path, &bytes)
+}
+
+fn write_file_atomic(path: PathBuf, bytes: &[u8]) -> Result<(), String> {
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent).map_err(|e| e.to_string())?;
     }
 
-    let tmp_path = path.with_extension("excalidraw.tmp");
-    fs::write(&tmp_path, content).map_err(|e| e.to_string())?;
+    let tmp_extension = path
+        .extension()
+        .and_then(|value| value.to_str())
+        .map(|value| format!("{}.tmp", value))
+        .unwrap_or_else(|| "tmp".to_string());
+    let tmp_path = path.with_extension(tmp_extension);
+    fs::write(&tmp_path, bytes).map_err(|e| e.to_string())?;
     if fs::rename(&tmp_path, &path).is_err() {
         if path.exists() {
             fs::remove_file(&path).map_err(|e| e.to_string())?;
@@ -112,6 +133,8 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             ensure_board_dir,
             save_board,
+            save_export_text,
+            save_export_binary,
             load_board,
             list_boards,
             delete_board,

@@ -342,6 +342,11 @@
   display: inline-block;
 }
 
+.export-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
 .recent-menu {
   position: absolute;
   top: 100%;
@@ -356,6 +361,35 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   z-index: 100;
   padding: 4px 0;
+}
+
+.export-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  min-width: 190px;
+  background: #1e1e1e;
+  border: 1px solid #444;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  z-index: 100;
+  padding: 4px;
+}
+
+.top-bar-actions .export-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border-color: transparent;
+  background: transparent;
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+
+.top-bar-actions .export-item:hover {
+  background: #2a2a2a;
+  border-color: transparent;
 }
 
 .recent-item {

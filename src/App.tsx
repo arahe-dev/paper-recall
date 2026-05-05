@@ -1,10 +1,11 @@
 import { useRef, useCallback, useState, useEffect } from "react";
-import { Excalidraw, exportToBlob, restoreElements } from "@excalidraw/excalidraw";
+import { Excalidraw, restoreElements } from "@excalidraw/excalidraw";
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import "@excalidraw/excalidraw/index.css";
 import "./App.css";
 import TranscriptPanel from "./TranscriptPanel";
 import { buildBoardTextGraph } from "./boardTextGraph";
+import type { LooseAppState, LooseElement, LooseFiles } from "./exporters/types";
 import { renderRecallGraphIR } from "./recallGraphRenderer";
 import type { RecallGraphIR } from "./recallGraphIR";
 import {
@@ -26,303 +27,22 @@ import {
   getRecentBoards,
   isTauriEnv,
 } from "./utils/boardStorage";
+import { exportAndSaveBoard, type ExportFormat } from "./utils/exportEngine";
 import { getSettings, updateSettings } from "./utils/settingsStore";
-
-// Minimal local types to avoid strict import issues for this prototype
-type LooseElement = {
-  id: string;
-  type: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  angle: number;
-  strokeColor: string;
-  backgroundColor: string;
-  isDeleted?: boolean;
-  boundElements?: readonly { id: string; type: string }[] | null;
-  containerId?: string | null;
-  points?: readonly (readonly [number, number])[];
-  text?: string;
-  startBinding?: { elementId: string; focus: number; gap: number } | null;
-  endBinding?: { elementId: string; focus: number; gap: number } | null;
-};
-
-type LooseAppState = {
-  width?: number;
-  height?: number;
-  viewBackgroundColor?: string;
-  currentItemStrokeColor?: string;
-  currentItemBackgroundColor?: string;
-  currentItemFillStyle?: string;
-  currentItemStrokeWidth?: number;
-  currentItemRoughness?: number;
-  [key: string]: unknown;
-};
-
-type LooseFiles = Record<string, unknown>;
 
 type RecallExcalidrawAPI = ExcalidrawImperativeAPI & {
   scrollToContent?: (elements?: unknown, options?: { fitToViewport?: boolean; animate?: boolean }) => void;
   getSceneElementsIncludingDeleted?: () => readonly LooseElement[];
 };
 
-function downloadJSON(filename: string, data: unknown) {
-  const blob = new Blob([JSON.stringify(data, null, 2)], {
-    type: "application/json",
-  });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
-
-function downloadBlob(filename: string, blob: Blob) {
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
-
-function exportScene(
-  elements: readonly LooseElement[],
-  appState: LooseAppState,
-  files: LooseFiles
-) {
-  const scene = {
-    type: "excalidraw",
-    version: 2,
-    source: "recall-board",
-    elements: elements.map((el) => ({ ...el })),
-    appState: {
-      viewBackgroundColor: appState.viewBackgroundColor,
-      currentItemStrokeColor: appState.currentItemStrokeColor,
-      currentItemBackgroundColor: appState.currentItemBackgroundColor,
-      currentItemFillStyle: appState.currentItemFillStyle,
-      currentItemStrokeWidth: appState.currentItemStrokeWidth,
-      currentItemRoughness: appState.currentItemRoughness,
-    },
-    files,
-  };
-  downloadJSON("recall-board-scene.json", scene);
-}
-
-function exportAiContext(
-  elements: readonly LooseElement[]
-) {
-  const total_element_count_in_scene = elements.length;
-  const activeElements = elements.filter((el) => !el.isDeleted);
-  const deletedElements = elements.filter((el) => el.isDeleted);
-
-  const activeIds = new Set(activeElements.map((el) => el.id));
-
-  const shapes = activeElements.filter(
-    (el) => el.type === "rectangle" || el.type === "ellipse" || el.type === "diamond"
-  );
-  const texts = activeElements.filter((el) => el.type === "text");
-  const arrows = activeElements.filter((el) => el.type === "arrow");
-
-  const nodes = activeElements.map((el) => {
-    const node: Record<string, unknown> = {
-      id: el.id,
-      type: el.type,
-      x: el.x,
-      y: el.y,
-      width: el.width,
-      height: el.height,
-      angle: el.angle,
-      strokeColor: el.strokeColor,
-      backgroundColor: el.backgroundColor,
-    };
-    if (el.text !== undefined) {
-      node.text = el.text;
-    }
-    if (el.boundElements !== undefined && el.boundElements !== null) {
-      node.boundElements = el.boundElements;
-    }
-    if (el.startBinding !== undefined) {
-      node.startBinding = el.startBinding;
-    }
-    if (el.endBinding !== undefined) {
-      node.endBinding = el.endBinding;
-    }
-    return node;
-  });
-
-  const brokenBindingIds: string[] = [];
-
-  const arrowRelations = arrows.map((arrow) => {
-    const sb = arrow.startBinding;
-    const eb = arrow.endBinding;
-    const sbValid = sb ? activeIds.has(sb.elementId) : false;
-    const ebValid = eb ? activeIds.has(eb.elementId) : false;
-
-    if (sb && !sbValid) brokenBindingIds.push(arrow.id);
-    if (eb && !ebValid) brokenBindingIds.push(arrow.id);
-
-    let semantic_status: string;
-    if ((sb && !sbValid) || (eb && !ebValid)) {
-      semantic_status = "broken_visual_relation";
-    } else if (sbValid || ebValid) {
-      semantic_status = "bound_visual_relation";
-    } else {
-      semantic_status = "loose_visual_arrow";
-    }
-
-    return {
-      id: arrow.id,
-      startBinding: sb ?? null,
-      endBinding: eb ?? null,
-      semantic_status,
-    };
-  });
-
-  const candidateGroupings: Array<Record<string, unknown>> = [];
-  for (const text of texts) {
-    const cx = text.x + text.width / 2;
-    const cy = text.y + text.height / 2;
-    for (const shape of shapes) {
-      const left = shape.x;
-      const right = shape.x + shape.width;
-      const top = shape.y;
-      const bottom = shape.y + shape.height;
-      if (cx >= left && cx <= right && cy >= top && cy <= bottom) {
-        candidateGroupings.push({
-          shape_id: shape.id,
-          text_id: text.id,
-          text_preview:
-            (text.text ?? "").slice(0, 80) +
-            ((text.text ?? "").length > 80 ? "..." : ""),
-          confidence: 0.8,
-          status: "candidate_grouping",
-          recommended_action: "promote_to_semantic_card",
-        });
-      }
-    }
-  }
-
-  const summary = {
-    total_element_count_in_scene,
-    active_element_count: activeElements.length,
-    deleted_element_count: deletedElements.length,
-    text_count: texts.length,
-    arrow_count: arrows.length,
-    rectangle_count: activeElements.filter((el) => el.type === "rectangle").length,
-    ellipse_count: activeElements.filter((el) => el.type === "ellipse").length,
-    diamond_count: activeElements.filter((el) => el.type === "diamond").length,
-  };
-
-  const diagnostics: Array<Record<string, unknown>> = [];
-  if (brokenBindingIds.length > 0) {
-    diagnostics.push({
-      code: "binding_target_deleted",
-      severity: "warning",
-      message: "An active arrow is bound to a deleted/tombstoned element.",
-      object_ids: Array.from(new Set(brokenBindingIds)),
-    });
-  }
-
-  const context = {
-    schema: "recall-ai-context-excalidraw-v0",
-    screenshot_required: false,
-    summary,
-    policy: {
-      deleted_elements: "excluded_from_ai_context_by_default",
-      bound_arrow: "visual relation attached to elements",
-      loose_arrow: "candidate relation only",
-      text_and_shape: "candidate grouping only unless explicitly promoted",
-    },
-    excluded: {
-      deleted_element_count: deletedElements.length,
-      reason: "Deleted/tombstoned elements are ignored for AI understanding.",
-    },
-    nodes,
-    arrow_relations: arrowRelations,
-    candidate_groupings: candidateGroupings,
-    diagnostics,
-    instructions_for_ai: [
-      "This context is a structured representation of an Excalidraw board.",
-      "Deleted/tombstoned elements are excluded from AI context by default.",
-      "Bound arrows indicate visual attachment, not confirmed semantic edges.",
-      "Loose arrows are candidate relations requiring confirmation.",
-      "Shape + text proximity groupings are candidate semantic cards.",
-      "No screenshot is required; all spatial and structural data is included.",
-    ],
-  };
-
-  downloadJSON("recall-ai-context.json", context);
-}
-
-function downloadText(filename: string, content: string) {
-  const blob = new Blob([content], { type: "text/plain" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
-
-function exportTextGraph(elements: readonly LooseElement[]) {
-  const graph = buildBoardTextGraph(elements);
-  downloadJSON("recall-board-text-graph.json", graph);
-}
-
-function exportTextGraphPrompt(elements: readonly LooseElement[]) {
-  const graph = buildBoardTextGraph(elements);
-  const pretty = JSON.stringify(graph, null, 2);
-  const prompt = `You are reading a compact board text graph.
-
-Do not ask for a screenshot.
-Use only the nodes, edges, graph insights, unresolved arrows, and ungrouped text below.
-
-Each node is text found inside a shape or clear standalone text.
-Each edge means one node is connected to another by an arrow.
-Graph insights are deterministic structural summaries generated from the graph.
-
-Rules:
-- Preserve original wording.
-- Do not invent missing labels or relationships.
-- Say "unclear" when a relation is ambiguous.
-- Separate visible graph facts from likely interpretation.
-- Domain interpretations are allowed, but mark them as inference.
-- Treat bound_visual_relation as stronger than loose_inferred_relation.
-- Treat loose_inferred_relation as plausible but worth checking.
-
-Return:
-1. One-sentence summary
-2. Visible graph facts
-3. Likely interpretation
-4. Central/root node if identifiable
-5. Main branches
-6. Sub-branches
-7. Important relationships
-8. Unclear/unresolved arrows
-9. Ungrouped/disconnected text
-10. Suggested cleanup
-11. What this board seems to communicate
-
-GRAPH:
-
-${graph.plain_text_graph}
-
-## Full JSON
-\`\`\`json
-${pretty}
-\`\`\`
-`;
-  downloadText("recall-board-text-graph-prompt.md", prompt);
-}
+const EXPORT_OPTIONS: Array<{ format: ExportFormat; label: string }> = [
+  { format: "excalidraw", label: "Excalidraw JSON" },
+  { format: "ai-json", label: "AI Context JSON" },
+  { format: "text-graph-json", label: "Text Graph JSON" },
+  { format: "text-graph-md", label: "Text Graph Markdown" },
+  { format: "png", label: "PNG" },
+  { format: "svg", label: "SVG" },
+];
 
 // Extend window for automation
 declare global {
@@ -332,6 +52,7 @@ declare global {
       loadDiagramSpec: (json: RecallDiagramSpecV0) => Promise<{ success: boolean; errors: string[]; warnings: string[]; graph?: RecallGraphIR }>;
       normalizeDiagramSpec: (json: unknown) => ReturnType<typeof normalizeRecallDiagramSpec>;
       exportPNG: (filename?: string) => Promise<void>;
+      exportBoard: (format: ExportFormat, filename?: string) => Promise<void>;
       loadScene: (scene: { elements: unknown[] }) => void;
       getSceneSnapshot: () => { elements: unknown[]; appState: unknown };
       getTextGraph: () => unknown;
@@ -357,6 +78,7 @@ function App() {
   const [lastSavedAt, setLastSavedAt] = useState<number | null>(null);
   const [recentBoards, setRecentBoards] = useState<BoardMeta[]>(getRecentBoards);
   const [showRecent, setShowRecent] = useState(false);
+  const [showExport, setShowExport] = useState(false);
   const [autoSaveEnabled, setAutoSaveEnabled] = useState(() => getSettings().autoSaveEnabled);
 
   const handleChange = useCallback(
@@ -419,20 +141,40 @@ function App() {
     };
   }, [handleLoadGraph]);
 
+  const getImageElements = useCallback((): readonly LooseElement[] => (
+    (apiRef.current?.getSceneElements() as readonly LooseElement[] | undefined) ||
+    elementsRef.current
+  ), []);
+
+  const handleExport = useCallback(async (format: ExportFormat, filename?: string) => {
+    try {
+      const result = await exportAndSaveBoard(
+        format,
+        elementsRef.current,
+        appStateRef.current,
+        filesRef.current,
+        {
+          baseName: currentBoard?.name || "recall-board",
+          filename,
+          imageElements: getImageElements(),
+        }
+      );
+      if (!result.cancelled) {
+        updateSettings({ defaultExportFormat: format });
+        setLastLoadErrors([]);
+      }
+    } catch (err) {
+      setLastLoadErrors([`Export failed: ${err}`]);
+    } finally {
+      setShowExport(false);
+    }
+  }, [currentBoard, getImageElements]);
+
   const handleExportPNG = useCallback(async (filename?: string) => {
     const api = apiRef.current;
     if (!api) return;
-    const elements = api.getSceneElements();
-    const appState = api.getAppState();
-    const blob = await exportToBlob({
-      elements: elements as never,
-      appState: appState as never,
-      files: null,
-      mimeType: "image/png",
-      exportPadding: 20,
-    });
-    downloadBlob(filename || "recall-board.png", blob);
-  }, []);
+    await handleExport("png", filename);
+  }, [handleExport]);
 
   // Expose automation API on window
   useEffect(() => {
@@ -441,6 +183,7 @@ function App() {
       loadDiagramSpec: handleLoadDiagramSpec,
       normalizeDiagramSpec: normalizeRecallDiagramSpec,
       exportPNG: handleExportPNG,
+      exportBoard: handleExport,
       loadScene: (scene: { elements: unknown[] }) => {
         const restored = restoreElements(scene.elements as never, null);
         apiRef.current?.updateScene({ elements: restored, captureUpdate: "NEVER" as never });
@@ -489,7 +232,7 @@ function App() {
     return () => {
       delete window.__RECALL_API__;
     };
-  }, [handleLoadGraph, handleLoadDiagramSpec, handleExportPNG]);
+  }, [handleLoadGraph, handleLoadDiagramSpec, handleExportPNG, handleExport]);
 
   // Phase 0: Board persistence handlers
 
@@ -778,22 +521,6 @@ function App() {
     [handleLoadGraph, handleLoadDiagramSpec]
   );
 
-  const handleExportScene = useCallback(() => {
-    exportScene(elementsRef.current, appStateRef.current, filesRef.current);
-  }, []);
-
-  const handleExportAiContext = useCallback(() => {
-    exportAiContext(elementsRef.current);
-  }, []);
-
-  const handleExportTextGraph = useCallback(() => {
-    exportTextGraph(elementsRef.current);
-  }, []);
-
-  const handleExportTextGraphPrompt = useCallback(() => {
-    exportTextGraphPrompt(elementsRef.current);
-  }, []);
-
   const saveStatus = isSaving
     ? "saving"
     : isDirty
@@ -834,7 +561,10 @@ function App() {
 
           {/* Recent boards dropdown */}
           <div className="recent-dropdown">
-            <button onClick={() => setShowRecent(!showRecent)}>
+            <button onClick={() => {
+              setShowRecent(!showRecent);
+              setShowExport(false);
+            }}>
               Recent v
             </button>
             {showRecent && (
@@ -868,7 +598,6 @@ function App() {
 
           <span className="action-separator" />
 
-          {/* Legacy export actions */}
           <label className="file-input-label">
             <input
               type="file"
@@ -878,11 +607,27 @@ function App() {
             />
             Load Recall Graph IR
           </label>
-          <button onClick={() => handleExportPNG()}>Export PNG</button>
-          <button onClick={handleExportScene}>Export Scene JSON</button>
-          <button onClick={handleExportAiContext}>Export AI Context</button>
-          <button onClick={handleExportTextGraph}>Export Text Graph</button>
-          <button onClick={handleExportTextGraphPrompt}>Export Text Graph Prompt</button>
+          <div className="export-dropdown">
+            <button onClick={() => {
+              setShowExport(!showExport);
+              setShowRecent(false);
+            }}>
+              Export v
+            </button>
+            {showExport && (
+              <div className="export-menu">
+                {EXPORT_OPTIONS.map((option) => (
+                  <button
+                    key={option.format}
+                    className="export-item"
+                    onClick={() => handleExport(option.format)}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
           <button onClick={() => setShowTranscript(true)}>Parse Transcript</button>
         </div>
       </header>
