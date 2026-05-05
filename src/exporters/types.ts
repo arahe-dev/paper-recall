@@ -15,6 +15,8 @@ export type LooseElement = {
   text?: string;
   startBinding?: { elementId: string; focus: number; gap: number } | null;
   endBinding?: { elementId: string; focus: number; gap: number } | null;
+  link?: string | null;
+  customData?: Record<string, unknown>;
 };
 
 export type LooseAppState = {

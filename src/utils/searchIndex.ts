@@ -6,6 +6,7 @@ import {
   loadBoard,
   type BoardMeta,
 } from "./boardStorage";
+import { getSubpagesForBoard, type SubpageData } from "./subpageEngine";
 
 export type SearchDocument = {
   id: string;
@@ -20,6 +21,8 @@ export type SearchDocument = {
   snippet: string;
   elementId?: string;
   elementType?: string;
+  subpageId?: string;
+  subpageTitle?: string;
 };
 
 export type SearchResult = SearchDocument & {
@@ -62,6 +65,8 @@ function createIndex(): MiniSearch<SearchDocument> {
       "snippet",
       "elementId",
       "elementType",
+      "subpageId",
+      "subpageTitle",
     ],
     searchOptions: {
       boost: { title: 3, labels: 2 },
@@ -197,7 +202,72 @@ function documentsForBoard(board: BoardMeta, elements: readonly LooseElement[]):
     });
   }
 
+  for (const subpage of getSubpagesForBoard(board.id)) {
+    docs.push(...documentsForSubpage(board, subpage));
+  }
+
   return docs.filter((doc) => doc.title || doc.text || doc.labels);
+}
+
+function documentsForSubpage(board: BoardMeta, subpage: SubpageData): SearchDocument[] {
+  const graph = buildBoardTextGraph(subpage.elements);
+  const docs: SearchDocument[] = [];
+  const scope = `subpage-${subpage.id}`;
+
+  docs.push({
+    id: makeDocumentId(board.id, scope, subpage.id),
+    boardId: board.id,
+    boardPath: board.path,
+    boardName: board.name,
+    boardLastModified: board.lastModified,
+    boardElementCount: board.elementCount,
+    title: subpage.title,
+    text: graph.plain_text_graph,
+    labels: graph.nodes.map((node) => node.label).join(" "),
+    snippet: snippetFor(subpage.title, graph.nodes.map((node) => node.label).join(", ")),
+    subpageId: subpage.id,
+    subpageTitle: subpage.title,
+  });
+
+  for (const node of graph.nodes) {
+    docs.push({
+      id: makeDocumentId(board.id, `${scope}-node`, node.id),
+      boardId: board.id,
+      boardPath: board.path,
+      boardName: board.name,
+      boardLastModified: board.lastModified,
+      boardElementCount: board.elementCount,
+      title: node.label,
+      text: compactText(node.body, node.label),
+      labels: [subpage.title, node.label, node.shape_type].filter(Boolean).join(" "),
+      snippet: snippetFor(subpage.title, node.label, node.body),
+      elementId: node.source_shape_id || node.source_text_ids[0],
+      elementType: node.shape_type || "text",
+      subpageId: subpage.id,
+      subpageTitle: subpage.title,
+    });
+  }
+
+  for (const edge of graph.edges) {
+    docs.push({
+      id: makeDocumentId(board.id, `${scope}-edge`, edge.id),
+      boardId: board.id,
+      boardPath: board.path,
+      boardName: board.name,
+      boardLastModified: board.lastModified,
+      boardElementCount: board.elementCount,
+      title: edge.label || edge.semantic_relation || "Connection",
+      text: edge.plain_text,
+      labels: `${subpage.title} ${edge.from_label} ${edge.to_label} ${edge.label || ""}`,
+      snippet: snippetFor(subpage.title, edge.plain_text),
+      elementId: edge.source_arrow_id,
+      elementType: "arrow",
+      subpageId: subpage.id,
+      subpageTitle: subpage.title,
+    });
+  }
+
+  return docs;
 }
 
 export async function rebuildIndex(): Promise<SearchIndexStats> {

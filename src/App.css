@@ -79,6 +79,39 @@
   font-size: 12px;
 }
 
+.breadcrumb-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  background: var(--bg-panel-muted);
+  border-bottom: 1px solid var(--border-subtle);
+  overflow-x: auto;
+}
+
+.breadcrumb-bar button {
+  flex-shrink: 0;
+  color: var(--text-primary);
+  background: var(--bg-panel-hover);
+  border: 1px solid var(--border-panel);
+  border-radius: var(--radius-sm);
+  padding: 5px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  transition:
+    background var(--transition-default),
+    border-color var(--transition-default);
+}
+
+.breadcrumb-bar button:hover {
+  background: var(--bg-panel-active);
+  border-color: var(--border-strong);
+}
+
+.breadcrumb-back {
+  margin-left: auto;
+}
+
 .load-error {
   margin: 2px 0;
 }
@@ -943,6 +976,73 @@
 .backlink-item span {
   color: var(--text-muted);
   font-size: 12px;
+}
+
+.context-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1300;
+}
+
+.recall-context-menu {
+  position: fixed;
+  display: grid;
+  gap: 4px;
+  min-width: 190px;
+  padding: 6px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--glass-shadow);
+}
+
+.recall-context-menu button {
+  color: var(--text-primary);
+  background: var(--color-transparent);
+  border: 1px solid var(--color-transparent);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.recall-context-menu button:hover:not(:disabled) {
+  background: var(--bg-panel-hover);
+  border-color: var(--border-panel);
+}
+
+.recall-context-menu button:disabled {
+  color: var(--text-muted);
+  cursor: default;
+}
+
+.subpage-badge-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 16;
+  pointer-events: none;
+}
+
+.subpage-badge {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  color: var(--text-primary);
+  background: var(--color-accent);
+  border: 1px solid var(--glass-highlight);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-panel);
+  cursor: pointer;
+  pointer-events: auto;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.subpage-badge:hover {
+  border-color: var(--border-strong);
 }
 
 @media (max-width: 760px) {

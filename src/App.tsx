@@ -1,12 +1,14 @@
 import { useRef, useCallback, useState, useEffect } from "react";
-import { Excalidraw, exportToCanvas, restoreElements } from "@excalidraw/excalidraw";
+import { Excalidraw, exportToCanvas, restoreElements, viewportCoordsToSceneCoords } from "@excalidraw/excalidraw";
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import "@excalidraw/excalidraw/index.css";
 import "./App.css";
 import HomeScreen from "./components/HomeScreen";
 import BacklinksPanel from "./components/BacklinksPanel";
+import ContextMenu from "./components/ContextMenu";
 import GraphView from "./components/GraphView";
 import QuickSearch from "./components/QuickSearch";
+import SubpageBadge from "./components/SubpageBadge";
 import ThemeToggle from "./components/ThemeToggle";
 import TemplateGallery from "./components/TemplateGallery";
 import TranscriptPanel from "./TranscriptPanel";
@@ -61,6 +63,18 @@ import {
   search as searchBoards,
   type SearchResult,
 } from "./utils/searchIndex";
+import {
+  createSubpage,
+  deleteSubpage,
+  getElementSubpageId,
+  getSubpageBreadcrumbs,
+  navigateToSubpage,
+  saveSubpage,
+  withSubpageReference,
+  withoutSubpageReference,
+  type SubpageData,
+  type SubpageElement,
+} from "./utils/subpageEngine";
 
 type RecallExcalidrawAPI = ExcalidrawImperativeAPI & {
   scrollToContent?: (elements?: unknown, options?: { fitToViewport?: boolean; animate?: boolean }) => void;
@@ -96,11 +110,27 @@ declare global {
       getBacklinks?: (boardId: string) => LinkEntry[];
       openBoardById?: (boardId: string, path?: string) => Promise<boolean>;
       saveCurrentBoard?: () => Promise<BoardMeta | null>;
+      createSubpageForElement?: (elementId?: string) => Promise<string | null>;
+      openSubpage?: (subpageId: string) => Promise<boolean>;
+      getSubpageStack?: () => SubpageData[];
     };
   }
 }
 
 type SidebarTab = "graph" | "backlinks";
+type ContextMenuState = {
+  x: number;
+  y: number;
+  elementId: string;
+  subpageId: string | null;
+};
+
+function isBoardInteractionTarget(element: LooseElement): boolean {
+  if (element.isDeleted || element.type === "arrow" || element.type === "text") return false;
+  const customData = element.customData || {};
+  if (customData.recallIgnoreInTextGraph === true) return false;
+  return customData.recallEntityType !== "layout_background";
+}
 
 function App() {
   const { excalidrawTheme, canvasBackgroundColor } = useTheme();
@@ -125,6 +155,12 @@ function App() {
   const [quickSearchOpen, setQuickSearchOpen] = useState(false);
   const [sidebarTab, setSidebarTab] = useState<SidebarTab>("graph");
   const [allLinks, setAllLinks] = useState<LinkEntry[]>(() => getAllLinks());
+  const [subpageStack, setSubpageStack] = useState<SubpageData[]>([]);
+  const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
+  const [canvasSnapshot, setCanvasSnapshot] = useState<{
+    elements: readonly LooseElement[];
+    appState: LooseAppState;
+  }>({ elements: [], appState: {} });
   const [showTemplateGallery, setShowTemplateGallery] = useState(false);
   const [homeDismissed, setHomeDismissed] = useState(false);
   const [activeElementCount, setActiveElementCount] = useState(0);
@@ -136,6 +172,10 @@ function App() {
       elementsRef.current = elements as readonly LooseElement[];
       appStateRef.current = appState as LooseAppState;
       filesRef.current = files as LooseFiles;
+      setCanvasSnapshot({
+        elements: elements as readonly LooseElement[],
+        appState: appState as LooseAppState,
+      });
       const nextActiveCount = (elements as readonly LooseElement[]).filter((el) => !el.isDeleted).length;
       setActiveElementCount(nextActiveCount);
       if (nextActiveCount > 0) {
@@ -172,6 +212,18 @@ function App() {
         theme: excalidrawTheme,
       },
       captureUpdate: "NEVER" as never,
+    });
+    elementsRef.current = result.elements as readonly LooseElement[];
+    appStateRef.current = {
+      ...(appStateRef.current || {}),
+      viewBackgroundColor: json.layout.style === "readable_radial"
+        ? canvasBackgroundColor
+        : appState?.viewBackgroundColor || canvasBackgroundColor,
+      theme: excalidrawTheme,
+    };
+    setCanvasSnapshot({
+      elements: result.elements as readonly LooseElement[],
+      appState: appStateRef.current,
     });
     setActiveElementCount(result.elements.filter((el) => !el.isDeleted).length);
     setHomeDismissed(true);
@@ -288,6 +340,8 @@ function App() {
       loadScene: (scene: { elements: unknown[] }) => {
         const restored = restoreElements(scene.elements as never, null);
         apiRef.current?.updateScene({ elements: restored, captureUpdate: "NEVER" as never });
+        elementsRef.current = restored as readonly LooseElement[];
+        setCanvasSnapshot({ elements: restored as readonly LooseElement[], appState: appStateRef.current });
 
         requestAnimationFrame(() => {
           const els = apiRef.current?.getSceneElements() || restored;
@@ -372,6 +426,12 @@ function App() {
       appState: scene.appState as never,
       captureUpdate: "NEVER" as never,
     });
+    elementsRef.current = scene.elements as readonly LooseElement[];
+    appStateRef.current = scene.appState as LooseAppState;
+    setCanvasSnapshot({
+      elements: scene.elements as readonly LooseElement[],
+      appState: scene.appState as LooseAppState,
+    });
     setActiveElementCount((scene.elements as LooseElement[]).filter((el) => !el.isDeleted).length);
     setHomeDismissed(true);
   }, []);
@@ -387,6 +447,14 @@ function App() {
     syncBoardLinksFromElements(board, elements as LinkableElement[], boards);
     refreshLinks();
   }, [refreshLinks]);
+
+  const refreshSearchIndexForCurrentBoard = useCallback(async () => {
+    if (!currentBoard) return;
+    const rootScene = await loadBoard(currentBoard);
+    if (rootScene) {
+      indexBoard(currentBoard, rootScene.elements as LooseElement[]);
+    }
+  }, [currentBoard]);
 
   const saveSceneToBoard = useCallback(async (board: BoardMeta, scene: SceneData) => {
     saveInFlightRef.current = true;
@@ -411,7 +479,11 @@ function App() {
     if (!canDiscardDirty()) return;
     suppressDirtyUntilRef.current = Date.now() + 750;
     apiRef.current?.resetScene();
+    elementsRef.current = [];
+    setCanvasSnapshot({ elements: [], appState: appStateRef.current });
     setCurrentBoard(null);
+    setSubpageStack([]);
+    setContextMenu(null);
     setIsDirty(false);
     setLastSavedAt(null);
     setActiveElementCount(0);
@@ -426,6 +498,10 @@ function App() {
   }, [handleNewBoard]);
 
   const handleSaveAs = useCallback(async (): Promise<BoardMeta | null> => {
+    if (subpageStack.length > 0) {
+      setLastLoadErrors(["Use Save for subpages, or go back to the board before Save As."]);
+      return null;
+    }
     const scene = getCurrentScene();
     if (isTauriEnv()) {
       const meta = await saveBoardWithDialog(scene, currentBoard?.name || "board.excalidraw");
@@ -455,15 +531,34 @@ function App() {
       setHomeDismissed(true);
       return updated;
     }
-  }, [createCurrentThumbnail, currentBoard, getCurrentScene, syncIndexesForBoard]);
+  }, [createCurrentThumbnail, currentBoard, getCurrentScene, subpageStack.length, syncIndexesForBoard]);
 
   const handleSaveBoard = useCallback(async (): Promise<BoardMeta | null> => {
+    const currentSubpage = subpageStack[subpageStack.length - 1];
+    if (currentBoard && currentSubpage) {
+      const updated = saveSubpage(
+        currentSubpage.id,
+        elementsRef.current,
+        appStateRef.current,
+        currentSubpage.title
+      );
+      if (updated) {
+        setSubpageStack((prev) => prev.map((item) => item.id === updated.id ? updated : item));
+        await refreshSearchIndexForCurrentBoard();
+        setIsDirty(false);
+        setLastSavedAt(updated.updatedAt);
+        setLastLoadErrors([]);
+        return currentBoard;
+      }
+      setLastLoadErrors([`Failed to save subpage: ${currentSubpage.title}`]);
+      return null;
+    }
     const scene = getCurrentScene();
     if (currentBoard) {
       return saveSceneToBoard(currentBoard, scene);
     }
     return handleSaveAs();
-  }, [currentBoard, getCurrentScene, handleSaveAs, saveSceneToBoard]);
+  }, [currentBoard, getCurrentScene, handleSaveAs, refreshSearchIndexForCurrentBoard, saveSceneToBoard, subpageStack]);
 
   const handleOpenBoard = useCallback(async () => {
     if (!canDiscardDirty()) return;
@@ -472,6 +567,7 @@ function App() {
       if (result) {
         restoreScene(result.scene);
         setCurrentBoard(result.meta);
+        setSubpageStack([]);
         setIsDirty(false);
         setLastSavedAt(result.meta.lastModified);
         setRecentBoards(getRecentBoards());
@@ -490,6 +586,7 @@ function App() {
     if (scene) {
       restoreScene(scene);
       setCurrentBoard(meta);
+      setSubpageStack([]);
       setIsDirty(false);
       setLastSavedAt(meta.lastModified);
       setShowRecent(false);
@@ -626,6 +723,154 @@ function App() {
     }, 80);
   }, []);
 
+  const loadSubpageScene = useCallback((subpage: SubpageData, stack: SubpageData[]) => {
+    const appState = {
+      ...subpage.appState,
+      viewBackgroundColor: subpage.appState.viewBackgroundColor || canvasBackgroundColor,
+      theme: excalidrawTheme,
+    };
+    suppressDirtyUntilRef.current = Date.now() + 750;
+    apiRef.current?.updateScene({
+      elements: subpage.elements as never,
+      appState: appState as never,
+      captureUpdate: "NEVER" as never,
+    });
+    elementsRef.current = subpage.elements;
+    appStateRef.current = appState;
+    setCanvasSnapshot({ elements: subpage.elements, appState });
+    setActiveElementCount(subpage.elements.filter((element) => !element.isDeleted).length);
+    setSubpageStack(stack);
+    setIsDirty(false);
+    setHomeDismissed(true);
+    setContextMenu(null);
+    setLastLoadErrors([]);
+  }, [canvasBackgroundColor, excalidrawTheme]);
+
+  const persistActiveSceneBeforeNavigation = useCallback(async () => {
+    if (!currentBoard) return false;
+    const currentSubpage = subpageStack[subpageStack.length - 1];
+    if (currentSubpage) {
+      const updated = saveSubpage(
+        currentSubpage.id,
+        elementsRef.current,
+        appStateRef.current,
+        currentSubpage.title
+      );
+      if (!updated) {
+        setLastLoadErrors([`Failed to save subpage: ${currentSubpage.title}`]);
+        return false;
+      }
+      setSubpageStack((prev) => prev.map((item) => item.id === updated.id ? updated : item));
+      await refreshSearchIndexForCurrentBoard();
+      setIsDirty(false);
+      setLastSavedAt(updated.updatedAt);
+      return true;
+    }
+    await saveSceneToBoard(currentBoard, getCurrentScene());
+    return true;
+  }, [currentBoard, getCurrentScene, refreshSearchIndexForCurrentBoard, saveSceneToBoard, subpageStack]);
+
+  const openSubpageById = useCallback(async (subpageId: string): Promise<boolean> => {
+    const target = navigateToSubpage(subpageId);
+    if (!target) {
+      setLastLoadErrors([`Subpage not found: ${subpageId}`]);
+      return false;
+    }
+    if (currentBoard && !(await persistActiveSceneBeforeNavigation())) return false;
+    const stack = getSubpageBreadcrumbs(subpageId);
+    loadSubpageScene(target, stack.length > 0 ? stack : [target]);
+    return true;
+  }, [currentBoard, loadSubpageScene, persistActiveSceneBeforeNavigation]);
+
+  const navigateToBreadcrumb = useCallback(async (index: number) => {
+    if (!currentBoard) return;
+    if (!(await persistActiveSceneBeforeNavigation())) return;
+    if (index <= 0) {
+      const rootScene = await loadBoard(currentBoard);
+      if (!rootScene) {
+        setLastLoadErrors([`Failed to load board: ${currentBoard.name}`]);
+        return;
+      }
+      restoreScene(rootScene);
+      setSubpageStack([]);
+      setIsDirty(false);
+      setLastLoadErrors([]);
+      return;
+    }
+    const nextStack = subpageStack.slice(0, index);
+    const target = nextStack[nextStack.length - 1];
+    if (target) loadSubpageScene(target, nextStack);
+  }, [currentBoard, loadSubpageScene, persistActiveSceneBeforeNavigation, restoreScene, subpageStack]);
+
+  const scenePointFromClient = useCallback((clientX: number, clientY: number): { x: number; y: number } | null => {
+    const appState = apiRef.current?.getAppState() as LooseAppState | undefined;
+    const zoom = appState?.zoom;
+    if (
+      !zoom ||
+      typeof zoom !== "object" ||
+      typeof appState?.offsetLeft !== "number" ||
+      typeof appState.offsetTop !== "number" ||
+      typeof appState.scrollX !== "number" ||
+      typeof appState.scrollY !== "number"
+    ) {
+      return null;
+    }
+    return viewportCoordsToSceneCoords(
+      { clientX, clientY },
+      {
+        zoom: zoom as never,
+        offsetLeft: appState.offsetLeft,
+        offsetTop: appState.offsetTop,
+        scrollX: appState.scrollX,
+        scrollY: appState.scrollY,
+      }
+    );
+  }, []);
+
+  const elementAtClientPoint = useCallback((clientX: number, clientY: number): SubpageElement | null => {
+    const point = scenePointFromClient(clientX, clientY);
+    if (!point) return null;
+    const elements = (
+      (apiRef.current as RecallExcalidrawAPI | null)?.getSceneElementsIncludingDeleted?.() ||
+      apiRef.current?.getSceneElements() ||
+      elementsRef.current
+    ) as readonly SubpageElement[];
+    const hitPadding = 6;
+    for (const element of [...elements].reverse()) {
+      if (!isBoardInteractionTarget(element)) continue;
+      const minX = Math.min(element.x, element.x + element.width) - hitPadding;
+      const maxX = Math.max(element.x, element.x + element.width) + hitPadding;
+      const minY = Math.min(element.y, element.y + element.height) - hitPadding;
+      const maxY = Math.max(element.y, element.y + element.height) + hitPadding;
+      if (point.x >= minX && point.x <= maxX && point.y >= minY && point.y <= maxY) {
+        return element;
+      }
+    }
+    return null;
+  }, [scenePointFromClient]);
+
+  const updateElementInScene = useCallback((
+    elementId: string,
+    updater: (element: SubpageElement) => SubpageElement
+  ): readonly SubpageElement[] => {
+    const currentElements = (
+      (apiRef.current as RecallExcalidrawAPI | null)?.getSceneElementsIncludingDeleted?.() ||
+      apiRef.current?.getSceneElements() ||
+      elementsRef.current
+    ) as readonly SubpageElement[];
+    const updatedElements = currentElements.map((element) => (
+      element.id === elementId ? updater(element) : element
+    ));
+    apiRef.current?.updateScene({
+      elements: updatedElements as never,
+      captureUpdate: "IMMEDIATELY" as never,
+    });
+    elementsRef.current = updatedElements as readonly LooseElement[];
+    setCanvasSnapshot({ elements: updatedElements as readonly LooseElement[], appState: appStateRef.current });
+    setIsDirty(true);
+    return updatedElements;
+  }, []);
+
   const handleOpenBoardById = useCallback(async (boardId: string, path?: string): Promise<boolean> => {
     if (!canDiscardDirty()) return false;
     const meta = await findBoardMeta(boardId, path);
@@ -640,6 +885,7 @@ function App() {
     }
     restoreScene(scene);
     setCurrentBoard(meta);
+    setSubpageStack([]);
     setIsDirty(false);
     setLastSavedAt(meta.lastModified);
     setRecentBoards(getRecentBoards());
@@ -666,14 +912,24 @@ function App() {
     }
     restoreScene(scene);
     setCurrentBoard(meta);
+    setSubpageStack([]);
     setIsDirty(false);
     setLastSavedAt(meta.lastModified);
     setRecentBoards(getRecentBoards());
     setQuickSearchOpen(false);
     setHomeDismissed(true);
     setLastLoadErrors([]);
+    if (result.subpageId) {
+      const subpage = navigateToSubpage(result.subpageId);
+      if (subpage) {
+        const stack = getSubpageBreadcrumbs(result.subpageId);
+        loadSubpageScene(subpage, stack.length > 0 ? stack : [subpage]);
+        scrollToElement(result.elementId, subpage.elements);
+        return;
+      }
+    }
     scrollToElement(result.elementId, scene.elements);
-  }, [canDiscardDirty, restoreScene, scrollToElement]);
+  }, [canDiscardDirty, loadSubpageScene, restoreScene, scrollToElement]);
 
   const selectBoardLinkTarget = useCallback(async (targetBoardId?: string): Promise<BoardMeta | null> => {
     const boards = await listBoards();
@@ -703,16 +959,14 @@ function App() {
       apiRef.current?.getSceneElements() ||
       elementsRef.current
     ) as readonly LooseElement[];
-    if (sourceElementId && elements.some((element) => element.id === sourceElementId && !element.isDeleted)) {
+    if (sourceElementId && elements.some((element) => element.id === sourceElementId && isBoardInteractionTarget(element))) {
       return sourceElementId;
     }
     const selectedElementIds = apiRef.current?.getAppState().selectedElementIds as Record<string, boolean> | undefined;
     const selectedId = Object.entries(selectedElementIds || {})
-      .find(([id, selected]) => selected && elements.some((element) => element.id === id && !element.isDeleted))?.[0];
+      .find(([id, selected]) => selected && elements.some((element) => element.id === id && isBoardInteractionTarget(element)))?.[0];
     if (selectedId) return selectedId;
-    return elements.find((element) => !element.isDeleted && element.type !== "text")?.id ||
-      elements.find((element) => !element.isDeleted)?.id ||
-      null;
+    return elements.find(isBoardInteractionTarget)?.id || null;
   }, []);
 
   const handleCreateBoardLink = useCallback(async (
@@ -763,6 +1017,97 @@ function App() {
     event.preventDefault();
     void handleOpenBoardById(targetId);
   }, [handleOpenBoardById]);
+
+  const findElementById = useCallback((elementId: string | undefined): SubpageElement | null => {
+    const elements = (
+      (apiRef.current as RecallExcalidrawAPI | null)?.getSceneElementsIncludingDeleted?.() ||
+      apiRef.current?.getSceneElements() ||
+      elementsRef.current
+    ) as readonly SubpageElement[];
+    if (!elementId) {
+      return elements.find(isBoardInteractionTarget) || null;
+    }
+    const element = elements.find((candidate) => candidate.id === elementId && !candidate.isDeleted) || null;
+    return element && isBoardInteractionTarget(element) ? element : null;
+  }, []);
+
+  const handleCreateSubpageForElement = useCallback(async (elementId?: string): Promise<string | null> => {
+    if (!currentBoard) {
+      setLastLoadErrors(["Save the current board before creating a subpage."]);
+      return null;
+    }
+    const element = findElementById(elementId || contextMenu?.elementId);
+    if (!element) {
+      setLastLoadErrors(["Right-click or select an element before creating a subpage."]);
+      return null;
+    }
+    const existingSubpageId = getElementSubpageId(element);
+    if (existingSubpageId) {
+      await openSubpageById(existingSubpageId);
+      return existingSubpageId;
+    }
+    const currentSubpage = subpageStack[subpageStack.length - 1];
+    const subpage = createSubpage(
+      element,
+      currentBoard.id,
+      currentBoard.name,
+      currentSubpage?.id
+    );
+    updateElementInScene(element.id, (nextElement) => withSubpageReference(nextElement, subpage.id, subpage.title));
+    setContextMenu(null);
+    await openSubpageById(subpage.id);
+    return subpage.id;
+  }, [contextMenu, currentBoard, findElementById, openSubpageById, subpageStack, updateElementInScene]);
+
+  const handleDeleteSubpageForElement = useCallback(async (elementId?: string) => {
+    const element = findElementById(elementId || contextMenu?.elementId);
+    const subpageId = getElementSubpageId(element);
+    if (!element || !subpageId) return;
+    if (!window.confirm("Delete this subpage and its nested subpages?")) return;
+    deleteSubpage(subpageId);
+    updateElementInScene(element.id, withoutSubpageReference);
+    setContextMenu(null);
+    await refreshSearchIndexForCurrentBoard();
+  }, [contextMenu, findElementById, refreshSearchIndexForCurrentBoard, updateElementInScene]);
+
+  const handleNavigateSubpageForElement = useCallback(async (elementId?: string) => {
+    const element = findElementById(elementId || contextMenu?.elementId);
+    const subpageId = getElementSubpageId(element);
+    setContextMenu(null);
+    if (subpageId) {
+      await openSubpageById(subpageId);
+    }
+  }, [contextMenu, findElementById, openSubpageById]);
+
+  const handleBoardContextMenu = useCallback((event: React.MouseEvent<HTMLElement>) => {
+    const target = event.target as HTMLElement;
+    if (target.closest(".top-bar, .board-side-panel, .quick-search-panel, .template-overlay, .home-screen")) {
+      return;
+    }
+    const element = elementAtClientPoint(event.clientX, event.clientY);
+    if (!element) return;
+    event.preventDefault();
+    event.stopPropagation();
+    setContextMenu({
+      x: event.clientX,
+      y: event.clientY,
+      elementId: element.id,
+      subpageId: getElementSubpageId(element),
+    });
+  }, [elementAtClientPoint]);
+
+  const handleBoardDoubleClick = useCallback((event: React.MouseEvent<HTMLElement>) => {
+    const target = event.target as HTMLElement;
+    if (target.closest(".top-bar, .board-side-panel, .template-overlay, .home-screen")) {
+      return;
+    }
+    const element = elementAtClientPoint(event.clientX, event.clientY);
+    const subpageId = getElementSubpageId(element);
+    if (subpageId) {
+      event.preventDefault();
+      void openSubpageById(subpageId);
+    }
+  }, [elementAtClientPoint, openSubpageById]);
 
   const handleAutoSaveToggle = useCallback((enabled: boolean) => {
     setAutoSaveEnabled(enabled);
@@ -873,6 +1218,7 @@ function App() {
       const loaded = await handleLoadGraph(template.ir);
       if (!loaded.success) return;
       setCurrentBoard(null);
+      setSubpageStack([]);
       setIsDirty(true);
       setLastSavedAt(null);
       setShowTemplateGallery(false);
@@ -959,8 +1305,11 @@ function App() {
       getBacklinks: (boardId: string) => getBacklinks(boardId),
       openBoardById: handleOpenBoardById,
       saveCurrentBoard: handleSaveBoard,
+      createSubpageForElement: handleCreateSubpageForElement,
+      openSubpage: openSubpageById,
+      getSubpageStack: () => subpageStack,
     } as Window["__RECALL_API__"];
-  }, [handleCreateBoardLink, handleOpenBoardById, handleSaveBoard]);
+  }, [handleCreateBoardLink, handleCreateSubpageForElement, handleOpenBoardById, handleSaveBoard, openSubpageById, subpageStack]);
 
   const saveStatus = isSaving
     ? "saving"
@@ -1098,6 +1447,30 @@ function App() {
         style={{ display: "none" }}
       />
 
+      {currentBoard && subpageStack.length > 0 && (
+        <nav className="breadcrumb-bar" aria-label="Subpage breadcrumbs">
+          <button type="button" onClick={() => void navigateToBreadcrumb(0)}>
+            Board: {currentBoard.name}
+          </button>
+          {subpageStack.map((subpage, index) => (
+            <button
+              type="button"
+              key={subpage.id}
+              onClick={() => void navigateToBreadcrumb(index + 1)}
+            >
+              Subpage: {subpage.title}
+            </button>
+          ))}
+          <button
+            type="button"
+            className="breadcrumb-back"
+            onClick={() => void navigateToBreadcrumb(subpageStack.length - 1)}
+          >
+            Go Back
+          </button>
+        </nav>
+      )}
+
       {lastLoadErrors.length > 0 && (
         <div className="load-errors">
           {lastLoadErrors.map((err, i) => (
@@ -1108,12 +1481,21 @@ function App() {
           </button>
         </div>
       )}
-      <main className="board">
+      <main
+        className="board"
+        onContextMenuCapture={handleBoardContextMenu}
+        onDoubleClickCapture={handleBoardDoubleClick}
+      >
         <Excalidraw
           onChange={handleChange}
           excalidrawAPI={handleExcalidrawAPI}
           onLinkOpen={handleLinkOpen}
           theme={excalidrawTheme}
+        />
+        <SubpageBadge
+          elements={canvasSnapshot.elements}
+          appState={canvasSnapshot.appState}
+          onOpen={(subpageId) => void openSubpageById(subpageId)}
         />
         {!homeDismissed && !currentBoard && activeElementCount === 0 && (
           <HomeScreen
@@ -1179,6 +1561,21 @@ function App() {
               )}
             </div>
           </aside>
+        )}
+        {contextMenu && (
+          <ContextMenu
+            x={contextMenu.x}
+            y={contextMenu.y}
+            hasSubpage={Boolean(contextMenu.subpageId)}
+            onCreateSubpage={() => void handleCreateSubpageForElement(contextMenu.elementId)}
+            onNavigateSubpage={() => void handleNavigateSubpageForElement(contextMenu.elementId)}
+            onDeleteSubpage={() => void handleDeleteSubpageForElement(contextMenu.elementId)}
+            onLinkBoard={() => {
+              setContextMenu(null);
+              void handleCreateBoardLink(undefined, contextMenu.elementId);
+            }}
+            onClose={() => setContextMenu(null)}
+          />
         )}
       </main>
       <QuickSearch
