@@ -3,6 +3,7 @@ import { Excalidraw, restoreElements } from "@excalidraw/excalidraw";
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import "@excalidraw/excalidraw/index.css";
 import "./App.css";
+import ThemeToggle from "./components/ThemeToggle";
 import TranscriptPanel from "./TranscriptPanel";
 import { buildBoardTextGraph } from "./boardTextGraph";
 import type { LooseAppState, LooseElement, LooseFiles } from "./exporters/types";
@@ -28,6 +29,7 @@ import {
   isTauriEnv,
 } from "./utils/boardStorage";
 import { exportAndSaveBoard, type ExportFormat } from "./utils/exportEngine";
+import { useTheme } from "./hooks/useTheme";
 import { getSettings, updateSettings } from "./utils/settingsStore";
 
 type RecallExcalidrawAPI = ExcalidrawImperativeAPI & {
@@ -61,6 +63,7 @@ declare global {
 }
 
 function App() {
+  const { excalidrawTheme, canvasBackgroundColor } = useTheme();
   const elementsRef = useRef<readonly LooseElement[]>([]);
   const appStateRef = useRef<LooseAppState>({});
   const filesRef = useRef<LooseFiles>({});
@@ -112,8 +115,9 @@ function App() {
       elements: result.elements,
       appState: {
         viewBackgroundColor: json.layout.style === "readable_radial"
-          ? "#ffffff"
-          : appState?.viewBackgroundColor || "#ffffff",
+          ? canvasBackgroundColor
+          : appState?.viewBackgroundColor || canvasBackgroundColor,
+        theme: excalidrawTheme,
       },
       captureUpdate: "NEVER" as never,
     });
@@ -124,7 +128,17 @@ function App() {
     }, 50);
 
     return { success: true, errors: [] };
-  }, []);
+  }, [canvasBackgroundColor, excalidrawTheme]);
+
+  useEffect(() => {
+    apiRef.current?.updateScene({
+      appState: {
+        theme: excalidrawTheme,
+        viewBackgroundColor: canvasBackgroundColor,
+      },
+      captureUpdate: "NEVER" as never,
+    });
+  }, [canvasBackgroundColor, excalidrawTheme]);
 
   const handleLoadDiagramSpec = useCallback(async (json: RecallDiagramSpecV0) => {
     const normalization = normalizeRecallDiagramSpec(json);
@@ -558,6 +572,7 @@ function App() {
             />
             Auto-save
           </label>
+          <ThemeToggle compact />
 
           {/* Recent boards dropdown */}
           <div className="recent-dropdown">
@@ -652,7 +667,11 @@ function App() {
         </div>
       )}
       <main className="board">
-        <Excalidraw onChange={handleChange} excalidrawAPI={handleExcalidrawAPI} />
+        <Excalidraw
+          onChange={handleChange}
+          excalidrawAPI={handleExcalidrawAPI}
+          theme={excalidrawTheme}
+        />
       </main>
       {showTranscript && (
         <TranscriptPanel onClose={() => setShowTranscript(false)} />

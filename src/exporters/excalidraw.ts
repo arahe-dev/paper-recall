@@ -8,6 +8,7 @@ export function sanitizeExportAppState(appState: LooseAppState): Record<string, 
     currentItemFillStyle: appState.currentItemFillStyle,
     currentItemStrokeWidth: appState.currentItemStrokeWidth,
     currentItemRoughness: appState.currentItemRoughness,
+    theme: appState.theme,
   };
 }
 

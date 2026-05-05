@@ -1,4 +1,4 @@
-export type ThemePreference = "dark" | "light" | "system";
+export type ThemePreference = "dark" | "light" | "tinted" | "system";
 
 export interface RecallSettings {
   theme: ThemePreference;
@@ -9,7 +9,7 @@ export interface RecallSettings {
 const SETTINGS_KEY = "recall_settings";
 
 const DEFAULT_SETTINGS: RecallSettings = {
-  theme: "dark",
+  theme: "system",
   autoSaveEnabled: true,
   defaultExportFormat: "excalidraw",
 };
@@ -37,7 +37,9 @@ export function updateSettings(patch: Partial<RecallSettings>): RecallSettings {
 function normalizeSettings(value: unknown): RecallSettings {
   const input = value && typeof value === "object" ? value as Partial<RecallSettings> : {};
   return {
-    theme: input.theme === "light" || input.theme === "system" ? input.theme : DEFAULT_SETTINGS.theme,
+    theme: input.theme === "dark" || input.theme === "light" || input.theme === "tinted" || input.theme === "system"
+      ? input.theme
+      : DEFAULT_SETTINGS.theme,
     autoSaveEnabled: typeof input.autoSaveEnabled === "boolean"
       ? input.autoSaveEnabled
       : DEFAULT_SETTINGS.autoSaveEnabled,
