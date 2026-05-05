@@ -1,0 +1,1927 @@
+{
+  "generated_at": "2026-05-05T03:48:44.020Z",
+  "run_dir": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839",
+  "iteration_dir": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04",
+  "url": "http://localhost:5173",
+  "thresholds": {
+    "readability": 0.95,
+    "parseFidelity": 0.99
+  },
+  "pass": true,
+  "bad_perfect_count": 0,
+  "bad_perfect_scenarios": [],
+  "benchmark_count": 24,
+  "style_count": 10,
+  "rows": [
+    {
+      "scenario": "deadlock_concept_map",
+      "category": "core_generic",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "active_element_count": 28,
+          "semantic_node_count": 7,
+          "semantic_text_count": 7,
+          "arrow_count": 6,
+          "overlap_pair_count": 0,
+          "degenerate_arrow_count": 0,
+          "unbound_arrow_count": 0,
+          "missing_arrowhead_count": 0,
+          "arrow_node_hit_count": 0,
+          "arrow_text_hit_count": 0,
+          "edge_crossing_count": 0,
+          "long_diagonal_edge_count": 0,
+          "diagram_type_defect_count": 0,
+          "dense_complexity_defect_count": 0,
+          "png_dimensions": {
+            "width": 698,
+            "height": 505
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expected_node_count": 7,
+          "actual_node_count": 7,
+          "expected_edge_count": 6,
+          "actual_edge_count": 6,
+          "expected_group_count": 0,
+          "actual_group_count": 0,
+          "expected_annotation_count": 0,
+          "actual_annotation_count": 0,
+          "unresolved_arrow_count": 0,
+          "ungrouped_text_count": 0,
+          "loose_edge_count": 0
+        }
+      },
+      "pass": true,
+      "artifacts": {
+        "spec": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\deadlock_concept_map\\deadlock_concept_map.recall-diagram-spec.json",
+        "graph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\deadlock_concept_map\\deadlock_concept_map.recall-graph-ir.json",
+        "png": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\deadlock_concept_map\\deadlock_concept_map.png",
+        "scene": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\deadlock_concept_map\\deadlock_concept_map.excalidraw-scene.json",
+        "textGraph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\deadlock_concept_map\\deadlock_concept_map.text-graph.json",
+        "validation": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\deadlock_concept_map\\validation.json"
+      }
+    },
+    {
+      "scenario": "incident_response_process_flow",
+      "category": "core_generic",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "active_element_count": 17,
+          "semantic_node_count": 6,
+          "semantic_text_count": 6,
+          "arrow_count": 5,
+          "overlap_pair_count": 0,
+          "degenerate_arrow_count": 0,
+          "unbound_arrow_count": 0,
+          "missing_arrowhead_count": 0,
+          "arrow_node_hit_count": 0,
+          "arrow_text_hit_count": 0,
+          "edge_crossing_count": 0,
+          "long_diagonal_edge_count": 0,
+          "diagram_type_defect_count": 0,
+          "dense_complexity_defect_count": 0,
+          "png_dimensions": {
+            "width": 1457,
+            "height": 96
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expected_node_count": 6,
+          "actual_node_count": 6,
+          "expected_edge_count": 5,
+          "actual_edge_count": 5,
+          "expected_group_count": 0,
+          "actual_group_count": 0,
+          "expected_annotation_count": 0,
+          "actual_annotation_count": 0,
+          "unresolved_arrow_count": 0,
+          "ungrouped_text_count": 0,
+          "loose_edge_count": 0
+        }
+      },
+      "pass": true,
+      "artifacts": {
+        "spec": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\incident_response_process_flow\\incident_response_process_flow.recall-diagram-spec.json",
+        "graph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\incident_response_process_flow\\incident_response_process_flow.recall-graph-ir.json",
+        "png": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\incident_response_process_flow\\incident_response_process_flow.png",
+        "scene": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\incident_response_process_flow\\incident_response_process_flow.excalidraw-scene.json",
+        "textGraph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\incident_response_process_flow\\incident_response_process_flow.text-graph.json",
+        "validation": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\incident_response_process_flow\\validation.json"
+      }
+    },
+    {
+      "scenario": "password_reset_flowchart",
+      "category": "core_generic",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "active_element_count": 23,
+          "semantic_node_count": 7,
+          "semantic_text_count": 7,
+          "arrow_count": 7,
+          "overlap_pair_count": 0,
+          "degenerate_arrow_count": 0,
+          "unbound_arrow_count": 0,
+          "missing_arrowhead_count": 0,
+          "arrow_node_hit_count": 0,
+          "arrow_text_hit_count": 0,
+          "edge_crossing_count": 0,
+          "long_diagonal_edge_count": 0,
+          "diagram_type_defect_count": 0,
+          "dense_complexity_defect_count": 0,
+          "png_dimensions": {
+            "width": 439,
+            "height": 1126
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expected_node_count": 7,
+          "actual_node_count": 7,
+          "expected_edge_count": 7,
+          "actual_edge_count": 7,
+          "expected_group_count": 0,
+          "actual_group_count": 0,
+          "expected_annotation_count": 0,
+          "actual_annotation_count": 0,
+          "unresolved_arrow_count": 0,
+          "ungrouped_text_count": 0,
+          "loose_edge_count": 0
+        }
+      },
+      "pass": true,
+      "artifacts": {
+        "spec": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\password_reset_flowchart\\password_reset_flowchart.recall-diagram-spec.json",
+        "graph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\password_reset_flowchart\\password_reset_flowchart.recall-graph-ir.json",
+        "png": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\password_reset_flowchart\\password_reset_flowchart.png",
+        "scene": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\password_reset_flowchart\\password_reset_flowchart.excalidraw-scene.json",
+        "textGraph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\password_reset_flowchart\\password_reset_flowchart.text-graph.json",
+        "validation": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\password_reset_flowchart\\validation.json"
+      }
+    },
+    {
+      "scenario": "team_hierarchy",
+      "category": "core_generic",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "active_element_count": 20,
+          "semantic_node_count": 7,
+          "semantic_text_count": 7,
+          "arrow_count": 6,
+          "overlap_pair_count": 0,
+          "degenerate_arrow_count": 0,
+          "unbound_arrow_count": 0,
+          "missing_arrowhead_count": 0,
+          "arrow_node_hit_count": 0,
+          "arrow_text_hit_count": 0,
+          "edge_crossing_count": 0,
+          "long_diagonal_edge_count": 0,
+          "diagram_type_defect_count": 0,
+          "dense_complexity_defect_count": 0,
+          "png_dimensions": {
+            "width": 594,
+            "height": 508
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expected_node_count": 7,
+          "actual_node_count": 7,
+          "expected_edge_count": 6,
+          "actual_edge_count": 6,
+          "expected_group_count": 0,
+          "actual_group_count": 0,
+          "expected_annotation_count": 0,
+          "actual_annotation_count": 0,
+          "unresolved_arrow_count": 0,
+          "ungrouped_text_count": 0,
+          "loose_edge_count": 0
+        }
+      },
+      "pass": true,
+      "artifacts": {
+        "spec": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\team_hierarchy\\team_hierarchy.recall-diagram-spec.json",
+        "graph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\team_hierarchy\\team_hierarchy.recall-graph-ir.json",
+        "png": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\team_hierarchy\\team_hierarchy.png",
+        "scene": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\team_hierarchy\\team_hierarchy.excalidraw-scene.json",
+        "textGraph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\team_hierarchy\\team_hierarchy.text-graph.json",
+        "validation": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\team_hierarchy\\validation.json"
+      }
+    },
+    {
+      "scenario": "esp32_imu_hub",
+      "category": "core_generic",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "active_element_count": 26,
+          "semantic_node_count": 7,
+          "semantic_text_count": 7,
+          "arrow_count": 6,
+          "overlap_pair_count": 0,
+          "degenerate_arrow_count": 0,
+          "unbound_arrow_count": 0,
+          "missing_arrowhead_count": 0,
+          "arrow_node_hit_count": 0,
+          "arrow_text_hit_count": 0,
+          "edge_crossing_count": 0,
+          "long_diagonal_edge_count": 0,
+          "diagram_type_defect_count": 0,
+          "dense_complexity_defect_count": 0,
+          "png_dimensions": {
+            "width": 540,
+            "height": 434
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expected_node_count": 7,
+          "actual_node_count": 7,
+          "expected_edge_count": 6,
+          "actual_edge_count": 6,
+          "expected_group_count": 0,
+          "actual_group_count": 0,
+          "expected_annotation_count": 0,
+          "actual_annotation_count": 0,
+          "unresolved_arrow_count": 0,
+          "ungrouped_text_count": 0,
+          "loose_edge_count": 0
+        }
+      },
+      "pass": true,
+      "artifacts": {
+        "spec": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\esp32_imu_hub\\esp32_imu_hub.recall-diagram-spec.json",
+        "graph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\esp32_imu_hub\\esp32_imu_hub.recall-graph-ir.json",
+        "png": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\esp32_imu_hub\\esp32_imu_hub.png",
+        "scene": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\esp32_imu_hub\\esp32_imu_hub.excalidraw-scene.json",
+        "textGraph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\esp32_imu_hub\\esp32_imu_hub.text-graph.json",
+        "validation": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\esp32_imu_hub\\validation.json"
+      }
+    },
+    {
+      "scenario": "krebs_cycle",
+      "category": "core_generic",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "active_element_count": 29,
+          "semantic_node_count": 8,
+          "semantic_text_count": 8,
+          "arrow_count": 8,
+          "overlap_pair_count": 0,
+          "degenerate_arrow_count": 0,
+          "unbound_arrow_count": 0,
+          "missing_arrowhead_count": 0,
+          "arrow_node_hit_count": 0,
+          "arrow_text_hit_count": 0,
+          "edge_crossing_count": 0,
+          "long_diagonal_edge_count": 0,
+          "diagram_type_defect_count": 0,
+          "dense_complexity_defect_count": 0,
+          "png_dimensions": {
+            "width": 712,
+            "height": 608
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expected_node_count": 8,
+          "actual_node_count": 8,
+          "expected_edge_count": 8,
+          "actual_edge_count": 8,
+          "expected_group_count": 0,
+          "actual_group_count": 0,
+          "expected_annotation_count": 0,
+          "actual_annotation_count": 0,
+          "unresolved_arrow_count": 0,
+          "ungrouped_text_count": 0,
+          "loose_edge_count": 0
+        }
+      },
+      "pass": true,
+      "artifacts": {
+        "spec": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\krebs_cycle\\krebs_cycle.recall-diagram-spec.json",
+        "graph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\krebs_cycle\\krebs_cycle.recall-graph-ir.json",
+        "png": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\krebs_cycle\\krebs_cycle.png",
+        "scene": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\krebs_cycle\\krebs_cycle.excalidraw-scene.json",
+        "textGraph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\krebs_cycle\\krebs_cycle.text-graph.json",
+        "validation": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\krebs_cycle\\validation.json"
+      }
+    },
+    {
+      "scenario": "hamlet_theme_map",
+      "category": "core_generic",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "active_element_count": 22,
+          "semantic_node_count": 6,
+          "semantic_text_count": 6,
+          "arrow_count": 5,
+          "overlap_pair_count": 0,
+          "degenerate_arrow_count": 0,
+          "unbound_arrow_count": 0,
+          "missing_arrowhead_count": 0,
+          "arrow_node_hit_count": 0,
+          "arrow_text_hit_count": 0,
+          "edge_crossing_count": 0,
+          "long_diagonal_edge_count": 0,
+          "diagram_type_defect_count": 0,
+          "dense_complexity_defect_count": 0,
+          "png_dimensions": {
+            "width": 1058,
+            "height": 324
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expected_node_count": 6,
+          "actual_node_count": 6,
+          "expected_edge_count": 5,
+          "actual_edge_count": 5,
+          "expected_group_count": 0,
+          "actual_group_count": 0,
+          "expected_annotation_count": 0,
+          "actual_annotation_count": 0,
+          "unresolved_arrow_count": 0,
+          "ungrouped_text_count": 0,
+          "loose_edge_count": 0
+        }
+      },
+      "pass": true,
+      "artifacts": {
+        "spec": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\hamlet_theme_map\\hamlet_theme_map.recall-diagram-spec.json",
+        "graph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\hamlet_theme_map\\hamlet_theme_map.recall-graph-ir.json",
+        "png": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\hamlet_theme_map\\hamlet_theme_map.png",
+        "scene": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\hamlet_theme_map\\hamlet_theme_map.excalidraw-scene.json",
+        "textGraph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\hamlet_theme_map\\hamlet_theme_map.text-graph.json",
+        "validation": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\hamlet_theme_map\\validation.json"
+      }
+    },
+    {
+      "scenario": "database_replication_architecture",
+      "category": "core_generic",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "active_element_count": 25,
+          "semantic_node_count": 6,
+          "semantic_text_count": 6,
+          "arrow_count": 5,
+          "overlap_pair_count": 0,
+          "degenerate_arrow_count": 0,
+          "unbound_arrow_count": 0,
+          "missing_arrowhead_count": 0,
+          "arrow_node_hit_count": 0,
+          "arrow_text_hit_count": 0,
+          "edge_crossing_count": 0,
+          "long_diagonal_edge_count": 0,
+          "diagram_type_defect_count": 0,
+          "dense_complexity_defect_count": 0,
+          "png_dimensions": {
+            "width": 1072,
+            "height": 283
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expected_node_count": 6,
+          "actual_node_count": 6,
+          "expected_edge_count": 5,
+          "actual_edge_count": 5,
+          "expected_group_count": 1,
+          "actual_group_count": 1,
+          "expected_annotation_count": 0,
+          "actual_annotation_count": 0,
+          "unresolved_arrow_count": 0,
+          "ungrouped_text_count": 0,
+          "loose_edge_count": 0
+        }
+      },
+      "pass": true,
+      "artifacts": {
+        "spec": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\database_replication_architecture\\database_replication_architecture.recall-diagram-spec.json",
+        "graph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\database_replication_architecture\\database_replication_architecture.recall-graph-ir.json",
+        "png": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\database_replication_architecture\\database_replication_architecture.png",
+        "scene": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\database_replication_architecture\\database_replication_architecture.excalidraw-scene.json",
+        "textGraph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\database_replication_architecture\\database_replication_architecture.text-graph.json",
+        "validation": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\database_replication_architecture\\validation.json"
+      }
+    },
+    {
+      "scenario": "exam_preparation_plan",
+      "category": "core_generic",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "active_element_count": 21,
+          "semantic_node_count": 6,
+          "semantic_text_count": 6,
+          "arrow_count": 6,
+          "overlap_pair_count": 0,
+          "degenerate_arrow_count": 0,
+          "unbound_arrow_count": 0,
+          "missing_arrowhead_count": 0,
+          "arrow_node_hit_count": 0,
+          "arrow_text_hit_count": 0,
+          "edge_crossing_count": 0,
+          "long_diagonal_edge_count": 0,
+          "diagram_type_defect_count": 0,
+          "dense_complexity_defect_count": 0,
+          "png_dimensions": {
+            "width": 430,
+            "height": 1114
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expected_node_count": 6,
+          "actual_node_count": 6,
+          "expected_edge_count": 6,
+          "actual_edge_count": 6,
+          "expected_group_count": 0,
+          "actual_group_count": 0,
+          "expected_annotation_count": 1,
+          "actual_annotation_count": 1,
+          "unresolved_arrow_count": 0,
+          "ungrouped_text_count": 0,
+          "loose_edge_count": 0
+        }
+      },
+      "pass": true,
+      "artifacts": {
+        "spec": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\exam_preparation_plan\\exam_preparation_plan.recall-diagram-spec.json",
+        "graph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\exam_preparation_plan\\exam_preparation_plan.recall-graph-ir.json",
+        "png": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\exam_preparation_plan\\exam_preparation_plan.png",
+        "scene": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\exam_preparation_plan\\exam_preparation_plan.excalidraw-scene.json",
+        "textGraph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\exam_preparation_plan\\exam_preparation_plan.text-graph.json",
+        "validation": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\exam_preparation_plan\\validation.json"
+      }
+    },
+    {
+      "scenario": "storage_comparison_matrix",
+      "category": "core_generic",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "active_element_count": 23,
+          "semantic_node_count": 6,
+          "semantic_text_count": 6,
+          "arrow_count": 0,
+          "overlap_pair_count": 0,
+          "degenerate_arrow_count": 0,
+          "unbound_arrow_count": 0,
+          "missing_arrowhead_count": 0,
+          "arrow_node_hit_count": 0,
+          "arrow_text_hit_count": 0,
+          "edge_crossing_count": 0,
+          "long_diagonal_edge_count": 0,
+          "diagram_type_defect_count": 0,
+          "dense_complexity_defect_count": 0,
+          "png_dimensions": {
+            "width": 909,
+            "height": 316
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expected_node_count": 6,
+          "actual_node_count": 6,
+          "expected_edge_count": 0,
+          "actual_edge_count": 0,
+          "expected_group_count": 0,
+          "actual_group_count": 0,
+          "expected_annotation_count": 0,
+          "actual_annotation_count": 0,
+          "unresolved_arrow_count": 0,
+          "ungrouped_text_count": 0,
+          "loose_edge_count": 0
+        }
+      },
+      "pass": true,
+      "artifacts": {
+        "spec": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\storage_comparison_matrix\\storage_comparison_matrix.recall-diagram-spec.json",
+        "graph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\storage_comparison_matrix\\storage_comparison_matrix.recall-graph-ir.json",
+        "png": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\storage_comparison_matrix\\storage_comparison_matrix.png",
+        "scene": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\storage_comparison_matrix\\storage_comparison_matrix.excalidraw-scene.json",
+        "textGraph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\storage_comparison_matrix\\storage_comparison_matrix.text-graph.json",
+        "validation": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\storage_comparison_matrix\\validation.json"
+      }
+    },
+    {
+      "scenario": "project_timeline",
+      "category": "core_generic",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "active_element_count": 20,
+          "semantic_node_count": 5,
+          "semantic_text_count": 5,
+          "arrow_count": 4,
+          "overlap_pair_count": 0,
+          "degenerate_arrow_count": 0,
+          "unbound_arrow_count": 0,
+          "missing_arrowhead_count": 0,
+          "arrow_node_hit_count": 0,
+          "arrow_text_hit_count": 0,
+          "edge_crossing_count": 0,
+          "long_diagonal_edge_count": 0,
+          "diagram_type_defect_count": 0,
+          "dense_complexity_defect_count": 0,
+          "png_dimensions": {
+            "width": 1150,
+            "height": 126
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expected_node_count": 5,
+          "actual_node_count": 5,
+          "expected_edge_count": 4,
+          "actual_edge_count": 4,
+          "expected_group_count": 0,
+          "actual_group_count": 0,
+          "expected_annotation_count": 0,
+          "actual_annotation_count": 0,
+          "unresolved_arrow_count": 0,
+          "ungrouped_text_count": 0,
+          "loose_edge_count": 0
+        }
+      },
+      "pass": true,
+      "artifacts": {
+        "spec": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\project_timeline\\project_timeline.recall-diagram-spec.json",
+        "graph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\project_timeline\\project_timeline.recall-graph-ir.json",
+        "png": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\project_timeline\\project_timeline.png",
+        "scene": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\project_timeline\\project_timeline.excalidraw-scene.json",
+        "textGraph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\project_timeline\\project_timeline.text-graph.json",
+        "validation": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\project_timeline\\validation.json"
+      }
+    },
+    {
+      "scenario": "data_pipeline_block_diagram",
+      "category": "core_generic",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "active_element_count": 14,
+          "semantic_node_count": 5,
+          "semantic_text_count": 5,
+          "arrow_count": 4,
+          "overlap_pair_count": 0,
+          "degenerate_arrow_count": 0,
+          "unbound_arrow_count": 0,
+          "missing_arrowhead_count": 0,
+          "arrow_node_hit_count": 0,
+          "arrow_text_hit_count": 0,
+          "edge_crossing_count": 0,
+          "long_diagonal_edge_count": 0,
+          "diagram_type_defect_count": 0,
+          "dense_complexity_defect_count": 0,
+          "png_dimensions": {
+            "width": 1332,
+            "height": 88
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expected_node_count": 5,
+          "actual_node_count": 5,
+          "expected_edge_count": 4,
+          "actual_edge_count": 4,
+          "expected_group_count": 0,
+          "actual_group_count": 0,
+          "expected_annotation_count": 0,
+          "actual_annotation_count": 0,
+          "unresolved_arrow_count": 0,
+          "ungrouped_text_count": 0,
+          "loose_edge_count": 0
+        }
+      },
+      "pass": true,
+      "artifacts": {
+        "spec": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\data_pipeline_block_diagram\\data_pipeline_block_diagram.recall-diagram-spec.json",
+        "graph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\data_pipeline_block_diagram\\data_pipeline_block_diagram.recall-graph-ir.json",
+        "png": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\data_pipeline_block_diagram\\data_pipeline_block_diagram.png",
+        "scene": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\data_pipeline_block_diagram\\data_pipeline_block_diagram.excalidraw-scene.json",
+        "textGraph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\data_pipeline_block_diagram\\data_pipeline_block_diagram.text-graph.json",
+        "validation": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\data_pipeline_block_diagram\\validation.json"
+      }
+    },
+    {
+      "scenario": "latency_cause_effect",
+      "category": "core_generic",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "active_element_count": 22,
+          "semantic_node_count": 6,
+          "semantic_text_count": 6,
+          "arrow_count": 5,
+          "overlap_pair_count": 0,
+          "degenerate_arrow_count": 0,
+          "unbound_arrow_count": 0,
+          "missing_arrowhead_count": 0,
+          "arrow_node_hit_count": 0,
+          "arrow_text_hit_count": 0,
+          "edge_crossing_count": 0,
+          "long_diagonal_edge_count": 0,
+          "diagram_type_defect_count": 0,
+          "dense_complexity_defect_count": 0,
+          "png_dimensions": {
+            "width": 794,
+            "height": 324
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expected_node_count": 6,
+          "actual_node_count": 6,
+          "expected_edge_count": 5,
+          "actual_edge_count": 5,
+          "expected_group_count": 0,
+          "actual_group_count": 0,
+          "expected_annotation_count": 0,
+          "actual_annotation_count": 0,
+          "unresolved_arrow_count": 0,
+          "ungrouped_text_count": 0,
+          "loose_edge_count": 0
+        }
+      },
+      "pass": true,
+      "artifacts": {
+        "spec": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\latency_cause_effect\\latency_cause_effect.recall-diagram-spec.json",
+        "graph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\latency_cause_effect\\latency_cause_effect.recall-graph-ir.json",
+        "png": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\latency_cause_effect\\latency_cause_effect.png",
+        "scene": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\latency_cause_effect\\latency_cause_effect.excalidraw-scene.json",
+        "textGraph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\latency_cause_effect\\latency_cause_effect.text-graph.json",
+        "validation": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\latency_cause_effect\\validation.json"
+      }
+    },
+    {
+      "scenario": "mixed_complexity_graph",
+      "category": "core_generic",
+      "readability": {
+        "score": 0.96,
+        "pass": true,
+        "defects": [
+          "edge crossings: arrow-edge_2/arrow-edge_8"
+        ],
+        "metrics": {
+          "active_element_count": 25,
+          "semantic_node_count": 7,
+          "semantic_text_count": 7,
+          "arrow_count": 8,
+          "overlap_pair_count": 0,
+          "degenerate_arrow_count": 0,
+          "unbound_arrow_count": 0,
+          "missing_arrowhead_count": 0,
+          "arrow_node_hit_count": 0,
+          "arrow_text_hit_count": 0,
+          "edge_crossing_count": 1,
+          "long_diagonal_edge_count": 0,
+          "diagram_type_defect_count": 0,
+          "dense_complexity_defect_count": 0,
+          "png_dimensions": {
+            "width": 1532,
+            "height": 272
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expected_node_count": 7,
+          "actual_node_count": 7,
+          "expected_edge_count": 8,
+          "actual_edge_count": 8,
+          "expected_group_count": 0,
+          "actual_group_count": 0,
+          "expected_annotation_count": 0,
+          "actual_annotation_count": 0,
+          "unresolved_arrow_count": 0,
+          "ungrouped_text_count": 0,
+          "loose_edge_count": 0
+        }
+      },
+      "pass": true,
+      "artifacts": {
+        "spec": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\mixed_complexity_graph\\mixed_complexity_graph.recall-diagram-spec.json",
+        "graph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\mixed_complexity_graph\\mixed_complexity_graph.recall-graph-ir.json",
+        "png": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\mixed_complexity_graph\\mixed_complexity_graph.png",
+        "scene": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\mixed_complexity_graph\\mixed_complexity_graph.excalidraw-scene.json",
+        "textGraph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\mixed_complexity_graph\\mixed_complexity_graph.text-graph.json",
+        "validation": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\mixed_complexity_graph\\validation.json"
+      }
+    },
+    {
+      "scenario": "long_labels",
+      "category": "edge_case",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "active_element_count": 10,
+          "semantic_node_count": 3,
+          "semantic_text_count": 3,
+          "arrow_count": 2,
+          "overlap_pair_count": 0,
+          "degenerate_arrow_count": 0,
+          "unbound_arrow_count": 0,
+          "missing_arrowhead_count": 0,
+          "arrow_node_hit_count": 0,
+          "arrow_text_hit_count": 0,
+          "edge_crossing_count": 0,
+          "long_diagonal_edge_count": 0,
+          "diagram_type_defect_count": 0,
+          "dense_complexity_defect_count": 0,
+          "png_dimensions": {
+            "width": 1140,
+            "height": 132
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expected_node_count": 3,
+          "actual_node_count": 3,
+          "expected_edge_count": 2,
+          "actual_edge_count": 2,
+          "expected_group_count": 0,
+          "actual_group_count": 0,
+          "expected_annotation_count": 0,
+          "actual_annotation_count": 0,
+          "unresolved_arrow_count": 0,
+          "ungrouped_text_count": 0,
+          "loose_edge_count": 0
+        }
+      },
+      "pass": true,
+      "artifacts": {
+        "spec": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\long_labels\\long_labels.recall-diagram-spec.json",
+        "graph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\long_labels\\long_labels.recall-graph-ir.json",
+        "png": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\long_labels\\long_labels.png",
+        "scene": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\long_labels\\long_labels.excalidraw-scene.json",
+        "textGraph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\long_labels\\long_labels.text-graph.json",
+        "validation": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\long_labels\\validation.json"
+      }
+    },
+    {
+      "scenario": "dense_graph",
+      "category": "edge_case",
+      "readability": {
+        "score": 0.96,
+        "pass": true,
+        "defects": [
+          "dense graph remains high-complexity; split/cluster review recommended"
+        ],
+        "metrics": {
+          "active_element_count": 46,
+          "semantic_node_count": 14,
+          "semantic_text_count": 14,
+          "arrow_count": 13,
+          "overlap_pair_count": 0,
+          "degenerate_arrow_count": 0,
+          "unbound_arrow_count": 0,
+          "missing_arrowhead_count": 0,
+          "arrow_node_hit_count": 0,
+          "arrow_text_hit_count": 0,
+          "edge_crossing_count": 0,
+          "long_diagonal_edge_count": 0,
+          "diagram_type_defect_count": 0,
+          "dense_complexity_defect_count": 1,
+          "png_dimensions": {
+            "width": 1115,
+            "height": 610
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expected_node_count": 14,
+          "actual_node_count": 14,
+          "expected_edge_count": 13,
+          "actual_edge_count": 13,
+          "expected_group_count": 0,
+          "actual_group_count": 0,
+          "expected_annotation_count": 0,
+          "actual_annotation_count": 0,
+          "unresolved_arrow_count": 0,
+          "ungrouped_text_count": 0,
+          "loose_edge_count": 0
+        }
+      },
+      "pass": true,
+      "artifacts": {
+        "spec": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\dense_graph\\dense_graph.recall-diagram-spec.json",
+        "graph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\dense_graph\\dense_graph.recall-graph-ir.json",
+        "png": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\dense_graph\\dense_graph.png",
+        "scene": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\dense_graph\\dense_graph.excalidraw-scene.json",
+        "textGraph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\dense_graph\\dense_graph.text-graph.json",
+        "validation": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\dense_graph\\validation.json"
+      }
+    },
+    {
+      "scenario": "sparse_graph",
+      "category": "edge_case",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "active_element_count": 13,
+          "semantic_node_count": 4,
+          "semantic_text_count": 4,
+          "arrow_count": 1,
+          "overlap_pair_count": 0,
+          "degenerate_arrow_count": 0,
+          "unbound_arrow_count": 0,
+          "missing_arrowhead_count": 0,
+          "arrow_node_hit_count": 0,
+          "arrow_text_hit_count": 0,
+          "edge_crossing_count": 0,
+          "long_diagonal_edge_count": 0,
+          "diagram_type_defect_count": 0,
+          "dense_complexity_defect_count": 0,
+          "png_dimensions": {
+            "width": 285,
+            "height": 246
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expected_node_count": 4,
+          "actual_node_count": 4,
+          "expected_edge_count": 1,
+          "actual_edge_count": 1,
+          "expected_group_count": 0,
+          "actual_group_count": 0,
+          "expected_annotation_count": 0,
+          "actual_annotation_count": 0,
+          "unresolved_arrow_count": 0,
+          "ungrouped_text_count": 0,
+          "loose_edge_count": 0
+        }
+      },
+      "pass": true,
+      "artifacts": {
+        "spec": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\sparse_graph\\sparse_graph.recall-diagram-spec.json",
+        "graph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\sparse_graph\\sparse_graph.recall-graph-ir.json",
+        "png": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\sparse_graph\\sparse_graph.png",
+        "scene": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\sparse_graph\\sparse_graph.excalidraw-scene.json",
+        "textGraph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\sparse_graph\\sparse_graph.text-graph.json",
+        "validation": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\sparse_graph\\validation.json"
+      }
+    },
+    {
+      "scenario": "disconnected_clusters",
+      "category": "edge_case",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "active_element_count": 19,
+          "semantic_node_count": 5,
+          "semantic_text_count": 5,
+          "arrow_count": 2,
+          "overlap_pair_count": 0,
+          "degenerate_arrow_count": 0,
+          "unbound_arrow_count": 0,
+          "missing_arrowhead_count": 0,
+          "arrow_node_hit_count": 0,
+          "arrow_text_hit_count": 0,
+          "edge_crossing_count": 0,
+          "long_diagonal_edge_count": 0,
+          "diagram_type_defect_count": 0,
+          "dense_complexity_defect_count": 0,
+          "png_dimensions": {
+            "width": 531,
+            "height": 286
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expected_node_count": 5,
+          "actual_node_count": 5,
+          "expected_edge_count": 2,
+          "actual_edge_count": 2,
+          "expected_group_count": 2,
+          "actual_group_count": 2,
+          "expected_annotation_count": 0,
+          "actual_annotation_count": 0,
+          "unresolved_arrow_count": 0,
+          "ungrouped_text_count": 0,
+          "loose_edge_count": 0
+        }
+      },
+      "pass": true,
+      "artifacts": {
+        "spec": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\disconnected_clusters\\disconnected_clusters.recall-diagram-spec.json",
+        "graph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\disconnected_clusters\\disconnected_clusters.recall-graph-ir.json",
+        "png": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\disconnected_clusters\\disconnected_clusters.png",
+        "scene": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\disconnected_clusters\\disconnected_clusters.excalidraw-scene.json",
+        "textGraph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\disconnected_clusters\\disconnected_clusters.text-graph.json",
+        "validation": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\disconnected_clusters\\validation.json"
+      }
+    },
+    {
+      "scenario": "cross_links",
+      "category": "edge_case",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "active_element_count": 22,
+          "semantic_node_count": 6,
+          "semantic_text_count": 6,
+          "arrow_count": 7,
+          "overlap_pair_count": 0,
+          "degenerate_arrow_count": 0,
+          "unbound_arrow_count": 0,
+          "missing_arrowhead_count": 0,
+          "arrow_node_hit_count": 0,
+          "arrow_text_hit_count": 0,
+          "edge_crossing_count": 0,
+          "long_diagonal_edge_count": 0,
+          "diagram_type_defect_count": 0,
+          "dense_complexity_defect_count": 0,
+          "png_dimensions": {
+            "width": 1042,
+            "height": 213
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expected_node_count": 6,
+          "actual_node_count": 6,
+          "expected_edge_count": 7,
+          "actual_edge_count": 7,
+          "expected_group_count": 0,
+          "actual_group_count": 0,
+          "expected_annotation_count": 0,
+          "actual_annotation_count": 0,
+          "unresolved_arrow_count": 0,
+          "ungrouped_text_count": 0,
+          "loose_edge_count": 0
+        }
+      },
+      "pass": true,
+      "artifacts": {
+        "spec": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\cross_links\\cross_links.recall-diagram-spec.json",
+        "graph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\cross_links\\cross_links.recall-graph-ir.json",
+        "png": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\cross_links\\cross_links.png",
+        "scene": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\cross_links\\cross_links.excalidraw-scene.json",
+        "textGraph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\cross_links\\cross_links.text-graph.json",
+        "validation": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\cross_links\\validation.json"
+      }
+    },
+    {
+      "scenario": "annotations",
+      "category": "edge_case",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "active_element_count": 9,
+          "semantic_node_count": 3,
+          "semantic_text_count": 3,
+          "arrow_count": 2,
+          "overlap_pair_count": 0,
+          "degenerate_arrow_count": 0,
+          "unbound_arrow_count": 0,
+          "missing_arrowhead_count": 0,
+          "arrow_node_hit_count": 0,
+          "arrow_text_hit_count": 0,
+          "edge_crossing_count": 0,
+          "long_diagonal_edge_count": 0,
+          "diagram_type_defect_count": 0,
+          "dense_complexity_defect_count": 0,
+          "png_dimensions": {
+            "width": 560,
+            "height": 171
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expected_node_count": 3,
+          "actual_node_count": 3,
+          "expected_edge_count": 2,
+          "actual_edge_count": 2,
+          "expected_group_count": 0,
+          "actual_group_count": 0,
+          "expected_annotation_count": 1,
+          "actual_annotation_count": 1,
+          "unresolved_arrow_count": 0,
+          "ungrouped_text_count": 0,
+          "loose_edge_count": 0
+        }
+      },
+      "pass": true,
+      "artifacts": {
+        "spec": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\annotations\\annotations.recall-diagram-spec.json",
+        "graph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\annotations\\annotations.recall-graph-ir.json",
+        "png": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\annotations\\annotations.png",
+        "scene": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\annotations\\annotations.excalidraw-scene.json",
+        "textGraph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\annotations\\annotations.text-graph.json",
+        "validation": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\annotations\\validation.json"
+      }
+    },
+    {
+      "scenario": "groups",
+      "category": "edge_case",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "active_element_count": 16,
+          "semantic_node_count": 4,
+          "semantic_text_count": 4,
+          "arrow_count": 3,
+          "overlap_pair_count": 0,
+          "degenerate_arrow_count": 0,
+          "unbound_arrow_count": 0,
+          "missing_arrowhead_count": 0,
+          "arrow_node_hit_count": 0,
+          "arrow_text_hit_count": 0,
+          "edge_crossing_count": 0,
+          "long_diagonal_edge_count": 0,
+          "diagram_type_defect_count": 0,
+          "dense_complexity_defect_count": 0,
+          "png_dimensions": {
+            "width": 1058,
+            "height": 168
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expected_node_count": 4,
+          "actual_node_count": 4,
+          "expected_edge_count": 3,
+          "actual_edge_count": 3,
+          "expected_group_count": 2,
+          "actual_group_count": 2,
+          "expected_annotation_count": 0,
+          "actual_annotation_count": 0,
+          "unresolved_arrow_count": 0,
+          "ungrouped_text_count": 0,
+          "loose_edge_count": 0
+        }
+      },
+      "pass": true,
+      "artifacts": {
+        "spec": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\groups\\groups.recall-diagram-spec.json",
+        "graph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\groups\\groups.recall-graph-ir.json",
+        "png": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\groups\\groups.png",
+        "scene": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\groups\\groups.excalidraw-scene.json",
+        "textGraph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\groups\\groups.text-graph.json",
+        "validation": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\groups\\validation.json"
+      }
+    },
+    {
+      "scenario": "deleted_elements",
+      "category": "edge_case",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "active_element_count": 8,
+          "semantic_node_count": 3,
+          "semantic_text_count": 3,
+          "arrow_count": 2,
+          "overlap_pair_count": 0,
+          "degenerate_arrow_count": 0,
+          "unbound_arrow_count": 0,
+          "missing_arrowhead_count": 0,
+          "arrow_node_hit_count": 0,
+          "arrow_text_hit_count": 0,
+          "edge_crossing_count": 0,
+          "long_diagonal_edge_count": 0,
+          "diagram_type_defect_count": 0,
+          "dense_complexity_defect_count": 0,
+          "png_dimensions": {
+            "width": 516,
+            "height": 96
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expected_node_count": 3,
+          "actual_node_count": 3,
+          "expected_edge_count": 2,
+          "actual_edge_count": 2,
+          "expected_group_count": 0,
+          "actual_group_count": 0,
+          "expected_annotation_count": 0,
+          "actual_annotation_count": 0,
+          "unresolved_arrow_count": 0,
+          "ungrouped_text_count": 0,
+          "loose_edge_count": 0
+        }
+      },
+      "pass": true,
+      "artifacts": {
+        "spec": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\deleted_elements\\deleted_elements.recall-diagram-spec.json",
+        "graph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\deleted_elements\\deleted_elements.recall-graph-ir.json",
+        "png": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\deleted_elements\\deleted_elements.png",
+        "scene": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\deleted_elements\\deleted_elements.excalidraw-scene.json",
+        "textGraph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\deleted_elements\\deleted_elements.text-graph.json",
+        "validation": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\deleted_elements\\validation.json"
+      }
+    },
+    {
+      "scenario": "loose_arrows",
+      "category": "edge_case",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "active_element_count": 8,
+          "semantic_node_count": 3,
+          "semantic_text_count": 3,
+          "arrow_count": 2,
+          "overlap_pair_count": 0,
+          "degenerate_arrow_count": 0,
+          "unbound_arrow_count": 2,
+          "missing_arrowhead_count": 0,
+          "arrow_node_hit_count": 0,
+          "arrow_text_hit_count": 0,
+          "edge_crossing_count": 0,
+          "long_diagonal_edge_count": 0,
+          "diagram_type_defect_count": 0,
+          "dense_complexity_defect_count": 0,
+          "png_dimensions": {
+            "width": 499,
+            "height": 96
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expected_node_count": 3,
+          "actual_node_count": 3,
+          "expected_edge_count": 2,
+          "actual_edge_count": 2,
+          "expected_group_count": 0,
+          "actual_group_count": 0,
+          "expected_annotation_count": 0,
+          "actual_annotation_count": 0,
+          "unresolved_arrow_count": 0,
+          "ungrouped_text_count": 0,
+          "loose_edge_count": 2
+        }
+      },
+      "pass": true,
+      "artifacts": {
+        "spec": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\loose_arrows\\loose_arrows.recall-diagram-spec.json",
+        "graph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\loose_arrows\\loose_arrows.recall-graph-ir.json",
+        "png": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\loose_arrows\\loose_arrows.png",
+        "scene": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\loose_arrows\\loose_arrows.excalidraw-scene.json",
+        "textGraph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\loose_arrows\\loose_arrows.text-graph.json",
+        "validation": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\loose_arrows\\validation.json"
+      }
+    },
+    {
+      "scenario": "human_edited_generated_board",
+      "category": "edge_case",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "active_element_count": 11,
+          "semantic_node_count": 4,
+          "semantic_text_count": 4,
+          "arrow_count": 3,
+          "overlap_pair_count": 0,
+          "degenerate_arrow_count": 0,
+          "unbound_arrow_count": 0,
+          "missing_arrowhead_count": 0,
+          "arrow_node_hit_count": 0,
+          "arrow_text_hit_count": 0,
+          "edge_crossing_count": 0,
+          "long_diagonal_edge_count": 0,
+          "diagram_type_defect_count": 0,
+          "dense_complexity_defect_count": 0,
+          "png_dimensions": {
+            "width": 814,
+            "height": 96
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expected_node_count": 4,
+          "actual_node_count": 4,
+          "expected_edge_count": 3,
+          "actual_edge_count": 3,
+          "expected_group_count": 0,
+          "actual_group_count": 0,
+          "expected_annotation_count": 0,
+          "actual_annotation_count": 0,
+          "unresolved_arrow_count": 0,
+          "ungrouped_text_count": 0,
+          "loose_edge_count": 0
+        }
+      },
+      "pass": true,
+      "artifacts": {
+        "spec": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\human_edited_generated_board\\human_edited_generated_board.recall-diagram-spec.json",
+        "graph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\human_edited_generated_board\\human_edited_generated_board.recall-graph-ir.json",
+        "png": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\human_edited_generated_board\\human_edited_generated_board.png",
+        "scene": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\human_edited_generated_board\\human_edited_generated_board.excalidraw-scene.json",
+        "textGraph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\human_edited_generated_board\\human_edited_generated_board.text-graph.json",
+        "validation": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\human_edited_generated_board\\validation.json"
+      }
+    },
+    {
+      "scenario": "style_readable_default",
+      "category": "style_variant",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "active_element_count": 28,
+          "semantic_node_count": 7,
+          "semantic_text_count": 7,
+          "arrow_count": 6,
+          "overlap_pair_count": 0,
+          "degenerate_arrow_count": 0,
+          "unbound_arrow_count": 0,
+          "missing_arrowhead_count": 0,
+          "arrow_node_hit_count": 0,
+          "arrow_text_hit_count": 0,
+          "edge_crossing_count": 0,
+          "long_diagonal_edge_count": 0,
+          "diagram_type_defect_count": 0,
+          "dense_complexity_defect_count": 0,
+          "png_dimensions": {
+            "width": 698,
+            "height": 505
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expected_node_count": 7,
+          "actual_node_count": 7,
+          "expected_edge_count": 6,
+          "actual_edge_count": 6,
+          "expected_group_count": 0,
+          "actual_group_count": 0,
+          "expected_annotation_count": 0,
+          "actual_annotation_count": 0,
+          "unresolved_arrow_count": 0,
+          "ungrouped_text_count": 0,
+          "loose_edge_count": 0
+        }
+      },
+      "pass": true,
+      "artifacts": {
+        "spec": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_default\\style_readable_default.recall-diagram-spec.json",
+        "graph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_default\\style_readable_default.recall-graph-ir.json",
+        "png": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_default\\style_readable_default.png",
+        "scene": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_default\\style_readable_default.excalidraw-scene.json",
+        "textGraph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_default\\style_readable_default.text-graph.json",
+        "validation": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_default\\validation.json"
+      }
+    },
+    {
+      "scenario": "style_readable_compact",
+      "category": "style_variant",
+      "readability": {
+        "score": 0.96,
+        "pass": true,
+        "defects": [
+          "dense graph remains high-complexity; split/cluster review recommended"
+        ],
+        "metrics": {
+          "active_element_count": 46,
+          "semantic_node_count": 14,
+          "semantic_text_count": 14,
+          "arrow_count": 13,
+          "overlap_pair_count": 0,
+          "degenerate_arrow_count": 0,
+          "unbound_arrow_count": 0,
+          "missing_arrowhead_count": 0,
+          "arrow_node_hit_count": 0,
+          "arrow_text_hit_count": 0,
+          "edge_crossing_count": 0,
+          "long_diagonal_edge_count": 0,
+          "diagram_type_defect_count": 0,
+          "dense_complexity_defect_count": 1,
+          "png_dimensions": {
+            "width": 911,
+            "height": 536
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expected_node_count": 14,
+          "actual_node_count": 14,
+          "expected_edge_count": 13,
+          "actual_edge_count": 13,
+          "expected_group_count": 0,
+          "actual_group_count": 0,
+          "expected_annotation_count": 0,
+          "actual_annotation_count": 0,
+          "unresolved_arrow_count": 0,
+          "ungrouped_text_count": 0,
+          "loose_edge_count": 0
+        }
+      },
+      "pass": true,
+      "artifacts": {
+        "spec": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_compact\\style_readable_compact.recall-diagram-spec.json",
+        "graph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_compact\\style_readable_compact.recall-graph-ir.json",
+        "png": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_compact\\style_readable_compact.png",
+        "scene": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_compact\\style_readable_compact.excalidraw-scene.json",
+        "textGraph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_compact\\style_readable_compact.text-graph.json",
+        "validation": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_compact\\validation.json"
+      }
+    },
+    {
+      "scenario": "style_readable_spacious",
+      "category": "style_variant",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "active_element_count": 20,
+          "semantic_node_count": 7,
+          "semantic_text_count": 7,
+          "arrow_count": 6,
+          "overlap_pair_count": 0,
+          "degenerate_arrow_count": 0,
+          "unbound_arrow_count": 0,
+          "missing_arrowhead_count": 0,
+          "arrow_node_hit_count": 0,
+          "arrow_text_hit_count": 0,
+          "edge_crossing_count": 0,
+          "long_diagonal_edge_count": 0,
+          "diagram_type_defect_count": 0,
+          "dense_complexity_defect_count": 0,
+          "png_dimensions": {
+            "width": 594,
+            "height": 508
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expected_node_count": 7,
+          "actual_node_count": 7,
+          "expected_edge_count": 6,
+          "actual_edge_count": 6,
+          "expected_group_count": 0,
+          "actual_group_count": 0,
+          "expected_annotation_count": 0,
+          "actual_annotation_count": 0,
+          "unresolved_arrow_count": 0,
+          "ungrouped_text_count": 0,
+          "loose_edge_count": 0
+        }
+      },
+      "pass": true,
+      "artifacts": {
+        "spec": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_spacious\\style_readable_spacious.recall-diagram-spec.json",
+        "graph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_spacious\\style_readable_spacious.recall-graph-ir.json",
+        "png": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_spacious\\style_readable_spacious.png",
+        "scene": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_spacious\\style_readable_spacious.excalidraw-scene.json",
+        "textGraph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_spacious\\style_readable_spacious.text-graph.json",
+        "validation": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_spacious\\validation.json"
+      }
+    },
+    {
+      "scenario": "style_readable_radial",
+      "category": "style_variant",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "active_element_count": 26,
+          "semantic_node_count": 7,
+          "semantic_text_count": 7,
+          "arrow_count": 6,
+          "overlap_pair_count": 0,
+          "degenerate_arrow_count": 0,
+          "unbound_arrow_count": 0,
+          "missing_arrowhead_count": 0,
+          "arrow_node_hit_count": 0,
+          "arrow_text_hit_count": 0,
+          "edge_crossing_count": 0,
+          "long_diagonal_edge_count": 0,
+          "diagram_type_defect_count": 0,
+          "dense_complexity_defect_count": 0,
+          "png_dimensions": {
+            "width": 540,
+            "height": 434
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expected_node_count": 7,
+          "actual_node_count": 7,
+          "expected_edge_count": 6,
+          "actual_edge_count": 6,
+          "expected_group_count": 0,
+          "actual_group_count": 0,
+          "expected_annotation_count": 0,
+          "actual_annotation_count": 0,
+          "unresolved_arrow_count": 0,
+          "ungrouped_text_count": 0,
+          "loose_edge_count": 0
+        }
+      },
+      "pass": true,
+      "artifacts": {
+        "spec": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_radial\\style_readable_radial.recall-diagram-spec.json",
+        "graph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_radial\\style_readable_radial.recall-graph-ir.json",
+        "png": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_radial\\style_readable_radial.png",
+        "scene": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_radial\\style_readable_radial.excalidraw-scene.json",
+        "textGraph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_radial\\style_readable_radial.text-graph.json",
+        "validation": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_radial\\validation.json"
+      }
+    },
+    {
+      "scenario": "style_readable_flowchart",
+      "category": "style_variant",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "active_element_count": 23,
+          "semantic_node_count": 7,
+          "semantic_text_count": 7,
+          "arrow_count": 7,
+          "overlap_pair_count": 0,
+          "degenerate_arrow_count": 0,
+          "unbound_arrow_count": 0,
+          "missing_arrowhead_count": 0,
+          "arrow_node_hit_count": 0,
+          "arrow_text_hit_count": 0,
+          "edge_crossing_count": 0,
+          "long_diagonal_edge_count": 0,
+          "diagram_type_defect_count": 0,
+          "dense_complexity_defect_count": 0,
+          "png_dimensions": {
+            "width": 439,
+            "height": 1126
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expected_node_count": 7,
+          "actual_node_count": 7,
+          "expected_edge_count": 7,
+          "actual_edge_count": 7,
+          "expected_group_count": 0,
+          "actual_group_count": 0,
+          "expected_annotation_count": 0,
+          "actual_annotation_count": 0,
+          "unresolved_arrow_count": 0,
+          "ungrouped_text_count": 0,
+          "loose_edge_count": 0
+        }
+      },
+      "pass": true,
+      "artifacts": {
+        "spec": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_flowchart\\style_readable_flowchart.recall-diagram-spec.json",
+        "graph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_flowchart\\style_readable_flowchart.recall-graph-ir.json",
+        "png": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_flowchart\\style_readable_flowchart.png",
+        "scene": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_flowchart\\style_readable_flowchart.excalidraw-scene.json",
+        "textGraph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_flowchart\\style_readable_flowchart.text-graph.json",
+        "validation": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_flowchart\\validation.json"
+      }
+    },
+    {
+      "scenario": "style_readable_block_diagram",
+      "category": "style_variant",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "active_element_count": 14,
+          "semantic_node_count": 5,
+          "semantic_text_count": 5,
+          "arrow_count": 4,
+          "overlap_pair_count": 0,
+          "degenerate_arrow_count": 0,
+          "unbound_arrow_count": 0,
+          "missing_arrowhead_count": 0,
+          "arrow_node_hit_count": 0,
+          "arrow_text_hit_count": 0,
+          "edge_crossing_count": 0,
+          "long_diagonal_edge_count": 0,
+          "diagram_type_defect_count": 0,
+          "dense_complexity_defect_count": 0,
+          "png_dimensions": {
+            "width": 1332,
+            "height": 88
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expected_node_count": 5,
+          "actual_node_count": 5,
+          "expected_edge_count": 4,
+          "actual_edge_count": 4,
+          "expected_group_count": 0,
+          "actual_group_count": 0,
+          "expected_annotation_count": 0,
+          "actual_annotation_count": 0,
+          "unresolved_arrow_count": 0,
+          "ungrouped_text_count": 0,
+          "loose_edge_count": 0
+        }
+      },
+      "pass": true,
+      "artifacts": {
+        "spec": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_block_diagram\\style_readable_block_diagram.recall-diagram-spec.json",
+        "graph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_block_diagram\\style_readable_block_diagram.recall-graph-ir.json",
+        "png": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_block_diagram\\style_readable_block_diagram.png",
+        "scene": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_block_diagram\\style_readable_block_diagram.excalidraw-scene.json",
+        "textGraph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_block_diagram\\style_readable_block_diagram.text-graph.json",
+        "validation": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_block_diagram\\validation.json"
+      }
+    },
+    {
+      "scenario": "style_readable_system_architecture",
+      "category": "style_variant",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "active_element_count": 25,
+          "semantic_node_count": 6,
+          "semantic_text_count": 6,
+          "arrow_count": 5,
+          "overlap_pair_count": 0,
+          "degenerate_arrow_count": 0,
+          "unbound_arrow_count": 0,
+          "missing_arrowhead_count": 0,
+          "arrow_node_hit_count": 0,
+          "arrow_text_hit_count": 0,
+          "edge_crossing_count": 0,
+          "long_diagonal_edge_count": 0,
+          "diagram_type_defect_count": 0,
+          "dense_complexity_defect_count": 0,
+          "png_dimensions": {
+            "width": 1072,
+            "height": 283
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expected_node_count": 6,
+          "actual_node_count": 6,
+          "expected_edge_count": 5,
+          "actual_edge_count": 5,
+          "expected_group_count": 1,
+          "actual_group_count": 1,
+          "expected_annotation_count": 0,
+          "actual_annotation_count": 0,
+          "unresolved_arrow_count": 0,
+          "ungrouped_text_count": 0,
+          "loose_edge_count": 0
+        }
+      },
+      "pass": true,
+      "artifacts": {
+        "spec": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_system_architecture\\style_readable_system_architecture.recall-diagram-spec.json",
+        "graph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_system_architecture\\style_readable_system_architecture.recall-graph-ir.json",
+        "png": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_system_architecture\\style_readable_system_architecture.png",
+        "scene": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_system_architecture\\style_readable_system_architecture.excalidraw-scene.json",
+        "textGraph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_system_architecture\\style_readable_system_architecture.text-graph.json",
+        "validation": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_system_architecture\\validation.json"
+      }
+    },
+    {
+      "scenario": "style_readable_timeline",
+      "category": "style_variant",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "active_element_count": 20,
+          "semantic_node_count": 5,
+          "semantic_text_count": 5,
+          "arrow_count": 4,
+          "overlap_pair_count": 0,
+          "degenerate_arrow_count": 0,
+          "unbound_arrow_count": 0,
+          "missing_arrowhead_count": 0,
+          "arrow_node_hit_count": 0,
+          "arrow_text_hit_count": 0,
+          "edge_crossing_count": 0,
+          "long_diagonal_edge_count": 0,
+          "diagram_type_defect_count": 0,
+          "dense_complexity_defect_count": 0,
+          "png_dimensions": {
+            "width": 1150,
+            "height": 126
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expected_node_count": 5,
+          "actual_node_count": 5,
+          "expected_edge_count": 4,
+          "actual_edge_count": 4,
+          "expected_group_count": 0,
+          "actual_group_count": 0,
+          "expected_annotation_count": 0,
+          "actual_annotation_count": 0,
+          "unresolved_arrow_count": 0,
+          "ungrouped_text_count": 0,
+          "loose_edge_count": 0
+        }
+      },
+      "pass": true,
+      "artifacts": {
+        "spec": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_timeline\\style_readable_timeline.recall-diagram-spec.json",
+        "graph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_timeline\\style_readable_timeline.recall-graph-ir.json",
+        "png": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_timeline\\style_readable_timeline.png",
+        "scene": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_timeline\\style_readable_timeline.excalidraw-scene.json",
+        "textGraph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_timeline\\style_readable_timeline.text-graph.json",
+        "validation": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_timeline\\validation.json"
+      }
+    },
+    {
+      "scenario": "style_readable_matrix",
+      "category": "style_variant",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "active_element_count": 23,
+          "semantic_node_count": 6,
+          "semantic_text_count": 6,
+          "arrow_count": 0,
+          "overlap_pair_count": 0,
+          "degenerate_arrow_count": 0,
+          "unbound_arrow_count": 0,
+          "missing_arrowhead_count": 0,
+          "arrow_node_hit_count": 0,
+          "arrow_text_hit_count": 0,
+          "edge_crossing_count": 0,
+          "long_diagonal_edge_count": 0,
+          "diagram_type_defect_count": 0,
+          "dense_complexity_defect_count": 0,
+          "png_dimensions": {
+            "width": 909,
+            "height": 316
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expected_node_count": 6,
+          "actual_node_count": 6,
+          "expected_edge_count": 0,
+          "actual_edge_count": 0,
+          "expected_group_count": 0,
+          "actual_group_count": 0,
+          "expected_annotation_count": 0,
+          "actual_annotation_count": 0,
+          "unresolved_arrow_count": 0,
+          "ungrouped_text_count": 0,
+          "loose_edge_count": 0
+        }
+      },
+      "pass": true,
+      "artifacts": {
+        "spec": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_matrix\\style_readable_matrix.recall-diagram-spec.json",
+        "graph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_matrix\\style_readable_matrix.recall-graph-ir.json",
+        "png": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_matrix\\style_readable_matrix.png",
+        "scene": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_matrix\\style_readable_matrix.excalidraw-scene.json",
+        "textGraph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_matrix\\style_readable_matrix.text-graph.json",
+        "validation": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_matrix\\validation.json"
+      }
+    },
+    {
+      "scenario": "style_readable_cycle",
+      "category": "style_variant",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "active_element_count": 29,
+          "semantic_node_count": 8,
+          "semantic_text_count": 8,
+          "arrow_count": 8,
+          "overlap_pair_count": 0,
+          "degenerate_arrow_count": 0,
+          "unbound_arrow_count": 0,
+          "missing_arrowhead_count": 0,
+          "arrow_node_hit_count": 0,
+          "arrow_text_hit_count": 0,
+          "edge_crossing_count": 0,
+          "long_diagonal_edge_count": 0,
+          "diagram_type_defect_count": 0,
+          "dense_complexity_defect_count": 0,
+          "png_dimensions": {
+            "width": 712,
+            "height": 608
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expected_node_count": 8,
+          "actual_node_count": 8,
+          "expected_edge_count": 8,
+          "actual_edge_count": 8,
+          "expected_group_count": 0,
+          "actual_group_count": 0,
+          "expected_annotation_count": 0,
+          "actual_annotation_count": 0,
+          "unresolved_arrow_count": 0,
+          "ungrouped_text_count": 0,
+          "loose_edge_count": 0
+        }
+      },
+      "pass": true,
+      "artifacts": {
+        "spec": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_cycle\\style_readable_cycle.recall-diagram-spec.json",
+        "graph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_cycle\\style_readable_cycle.recall-graph-ir.json",
+        "png": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_cycle\\style_readable_cycle.png",
+        "scene": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_cycle\\style_readable_cycle.excalidraw-scene.json",
+        "textGraph": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_cycle\\style_readable_cycle.text-graph.json",
+        "validation": "C:\\Users\\arahe\\recall-board-excalidraw\\research-runs\\universal-diagram-planner\\20260505-080839\\iter-04\\style_readable_cycle\\validation.json"
+      }
+    }
+  ]
+}

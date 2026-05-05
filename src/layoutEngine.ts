@@ -28,6 +28,7 @@ export interface PositionedEdge {
 export interface LayoutResult {
   nodes: PositionedNode[];
   edges: PositionedEdge[];
+  decorations?: PositionedDecoration[];
   groups?: PositionedGroup[];
   annotations?: PositionedAnnotation[];
   bounds: { minX: number; minY: number; maxX: number; maxY: number };
@@ -55,6 +56,22 @@ export interface PositionedAnnotation {
   y: number;
   width: number;
   height: number;
+}
+
+export interface PositionedDecoration {
+  id: string;
+  kind:
+    | "timeline_baseline"
+    | "timeline_tick"
+    | "matrix_grid"
+    | "matrix_grid_line"
+    | "matrix_column_header"
+    | "matrix_row_header";
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  text?: string;
 }
 
 function estimateTextWidth(text: string, fontSize: number): number {
@@ -413,13 +430,19 @@ function layoutTimeline(graph: RecallGraphIR, preset: StylePreset, childrenMap: 
 
   let x = 0;
   const y = 0;
+  const decorations: PositionedDecoration[] = [];
+  const tickCenters: number[] = [];
+  const showTimelineAxis = graph.diagram_type === "timeline";
+  let maxNodeHeight = 0;
   for (const node of sorted) {
     const size = computeNodeSize(node, preset);
+    const width = Math.max(size.width, preset.nodeMinWidth);
+    maxNodeHeight = Math.max(maxNodeHeight, size.height);
     positioned.set(node.id, {
       id: node.id,
       x,
       y,
-      width: Math.max(size.width, preset.nodeMinWidth),
+      width,
       height: size.height,
       label: node.label,
       body: node.body,
@@ -427,14 +450,43 @@ function layoutTimeline(graph: RecallGraphIR, preset: StylePreset, childrenMap: 
       level: 0,
       children: childrenMap.get(node.id) || [],
     });
-    x += Math.max(size.width, preset.nodeMinWidth) + preset.horizontalSpacing;
+    tickCenters.push(x + width / 2);
+    x += width + preset.horizontalSpacing;
   }
 
-  return finalizeManualLayout(graph, positioned, childrenMap, graph.layout.direction || "LR");
+  if (showTimelineAxis && tickCenters.length > 0) {
+    const baselineY = maxNodeHeight + Math.max(28, preset.verticalSpacing * 0.32);
+    const minTick = Math.min(...tickCenters);
+    const maxTick = Math.max(...tickCenters);
+    decorations.push({
+      id: "timeline-baseline",
+      kind: "timeline_baseline",
+      x: minTick,
+      y: baselineY,
+      width: Math.max(1, maxTick - minTick),
+      height: 2,
+    });
+    tickCenters.forEach((cx, index) => {
+      decorations.push({
+        id: `timeline-tick-${sorted[index].id}`,
+        kind: "timeline_tick",
+        x: cx - 1,
+        y: baselineY - 10,
+        width: 2,
+        height: 20,
+      });
+    });
+  }
+
+  return withDecorations(
+    finalizeManualLayout(graph, positioned, childrenMap, graph.layout.direction || "LR"),
+    decorations
+  );
 }
 
 function layoutMatrix(graph: RecallGraphIR, preset: StylePreset, childrenMap: Map<string, string[]>): LayoutResult {
   const positioned = new Map<string, PositionedNode>();
+  const showMatrixAxes = graph.diagram_type === "comparison";
   const sorted = [...graph.nodes].sort((a, b) => {
     const oa = a.order ?? Infinity;
     const ob = b.order ?? Infinity;
@@ -448,7 +500,9 @@ function layoutMatrix(graph: RecallGraphIR, preset: StylePreset, childrenMap: Ma
     const row = Number.isFinite(Number(hint.row)) ? Number(hint.row) : Math.floor(index / fallbackColumnCount);
     const column = Number.isFinite(Number(hint.column)) ? Number(hint.column) : index % fallbackColumnCount;
     const size = computeNodeSize(node, preset);
-    return { node, row, column, size };
+    const body = node.body || "";
+    const rowLabel = body.includes(":") ? body.split(":")[0].trim() : `Row ${row + 1}`;
+    return { node, row, column, size, rowLabel };
   });
 
   const colWidths = new Map<number, number>();
@@ -461,12 +515,14 @@ function layoutMatrix(graph: RecallGraphIR, preset: StylePreset, childrenMap: Ma
   const rows = [...rowHeights.keys()].sort((a, b) => a - b);
   const xByColumn = new Map<number, number>();
   const yByRow = new Map<number, number>();
-  let x = 0;
+  const rowHeaderWidth = showMatrixAxes && entries.length > 0 ? 110 : 0;
+  const columnHeaderHeight = showMatrixAxes && entries.length > 0 ? 52 : 0;
+  let x = rowHeaderWidth;
   for (const column of columns) {
     xByColumn.set(column, x);
     x += (colWidths.get(column) || preset.nodeWidth) + preset.horizontalSpacing;
   }
-  let y = 0;
+  let y = columnHeaderHeight;
   for (const row of rows) {
     yByRow.set(row, y);
     y += (rowHeights.get(row) || preset.nodeHeight) + preset.verticalSpacing * 0.65;
@@ -491,7 +547,70 @@ function layoutMatrix(graph: RecallGraphIR, preset: StylePreset, childrenMap: Ma
     });
   }
 
-  return finalizeManualLayout(graph, positioned, childrenMap, graph.layout.direction || "TD");
+  const decorations: PositionedDecoration[] = [];
+  if (showMatrixAxes && entries.length > 0) {
+    const left = rowHeaderWidth - 18;
+    const top = columnHeaderHeight - 18;
+    const right = Math.max(...columns.map((column) => (xByColumn.get(column) || 0) + (colWidths.get(column) || preset.nodeWidth))) + 18;
+    const bottom = Math.max(...rows.map((row) => (yByRow.get(row) || 0) + (rowHeights.get(row) || preset.nodeHeight))) + 18;
+    decorations.push({
+      id: "matrix-grid",
+      kind: "matrix_grid",
+      x: left,
+      y: top,
+      width: right - left,
+      height: bottom - top,
+    });
+    for (const column of columns) {
+      const colX = xByColumn.get(column) || 0;
+      const colW = colWidths.get(column) || preset.nodeWidth;
+      const label = entries.find((entry) => entry.column === column)?.node.label || `Column ${column + 1}`;
+      decorations.push({
+        id: `matrix-column-header-${column}`,
+        kind: "matrix_column_header",
+        x: colX,
+        y: 0,
+        width: colW,
+        height: columnHeaderHeight - 10,
+        text: label,
+      });
+      decorations.push({
+        id: `matrix-vline-${column}`,
+        kind: "matrix_grid_line",
+        x: colX - preset.horizontalSpacing * 0.25,
+        y: top,
+        width: 1,
+        height: bottom - top,
+      });
+    }
+    for (const row of rows) {
+      const rowY = yByRow.get(row) || 0;
+      const rowH = rowHeights.get(row) || preset.nodeHeight;
+      const label = entries.find((entry) => entry.row === row)?.rowLabel || `Row ${row + 1}`;
+      decorations.push({
+        id: `matrix-row-header-${row}`,
+        kind: "matrix_row_header",
+        x: 0,
+        y: rowY,
+        width: rowHeaderWidth - 22,
+        height: rowH,
+        text: label,
+      });
+      decorations.push({
+        id: `matrix-hline-${row}`,
+        kind: "matrix_grid_line",
+        x: left,
+        y: rowY - preset.verticalSpacing * 0.2,
+        width: right - left,
+        height: 1,
+      });
+    }
+  }
+
+  return withDecorations(
+    finalizeManualLayout(graph, positioned, childrenMap, graph.layout.direction || "TD"),
+    decorations
+  );
 }
 
 function layoutCycle(graph: RecallGraphIR, preset: StylePreset, childrenMap: Map<string, string[]>): LayoutResult {
@@ -847,6 +966,22 @@ function finalizeManualLayout(
   };
 }
 
+function withDecorations(result: LayoutResult, decorations: PositionedDecoration[]): LayoutResult {
+  if (decorations.length === 0) return result;
+  let { minX, minY, maxX, maxY } = result.bounds;
+  for (const decoration of decorations) {
+    minX = Math.min(minX, decoration.x);
+    minY = Math.min(minY, decoration.y);
+    maxX = Math.max(maxX, decoration.x + decoration.width);
+    maxY = Math.max(maxY, decoration.y + decoration.height);
+  }
+  return {
+    ...result,
+    decorations,
+    bounds: { minX, minY, maxX, maxY },
+  };
+}
+
 function addDecorations(graph: RecallGraphIR, preset: StylePreset, result: LayoutResult): LayoutResult {
   const nodesById = new Map(result.nodes.map((node) => [node.id, node]));
   const padding = 24;
@@ -902,6 +1037,12 @@ function addDecorations(graph: RecallGraphIR, preset: StylePreset, result: Layou
   let minY = result.bounds.minY;
   let maxX = result.bounds.maxX;
   let maxY = result.bounds.maxY;
+  for (const decoration of result.decorations || []) {
+    minX = Math.min(minX, decoration.x);
+    minY = Math.min(minY, decoration.y);
+    maxX = Math.max(maxX, decoration.x + decoration.width);
+    maxY = Math.max(maxY, decoration.y + decoration.height);
+  }
   for (const group of groups) {
     minX = Math.min(minX, group.x);
     minY = Math.min(minY, group.y);

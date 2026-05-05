@@ -9,6 +9,19 @@ export function layoutToExcalidrawSkeleton(
   preset: StylePreset
 ): Skeleton[] {
   const elements: Skeleton[] = [];
+  const strategy = layout.strategy || "mixed";
+
+  function nodeShapeType(node: { kind?: string }): "rectangle" | "diamond" {
+    return node.kind === "decision" ? "diamond" : "rectangle";
+  }
+
+  function nodeVisualLabel(node: { label: string; body?: string }): string {
+    if (strategy === "matrix" && node.body && node.body.includes(":")) {
+      const separator = node.body.indexOf(":");
+      return node.body.slice(separator + 1).trim();
+    }
+    return node.body ? `${node.label}\n${node.body}` : node.label;
+  }
 
   // Group backgrounds are parse-back metadata carriers, not semantic nodes.
   for (const group of layout.groups || []) {
@@ -43,6 +56,88 @@ export function layoutToExcalidrawSkeleton(
         },
       } : {}),
     });
+  }
+
+  for (const decoration of layout.decorations || []) {
+    if (decoration.kind === "timeline_baseline" || decoration.kind === "timeline_tick") {
+      elements.push({
+        type: "rectangle",
+        id: `decoration-${decoration.id}`,
+        x: decoration.x,
+        y: decoration.y,
+        width: Math.max(1, decoration.width),
+        height: Math.max(1, decoration.height),
+        strokeColor: "#8a8f98",
+        backgroundColor: "#8a8f98",
+        fillStyle: "solid",
+        strokeWidth: 0,
+        roughness: 0,
+        opacity: decoration.kind === "timeline_baseline" ? 45 : 65,
+        customData: {
+          recallEntityType: decoration.kind,
+          recallIgnoreInTextGraph: true,
+        },
+      });
+    } else if (decoration.kind === "matrix_grid") {
+      elements.push({
+        type: "rectangle",
+        id: `decoration-${decoration.id}`,
+        x: decoration.x,
+        y: decoration.y,
+        width: decoration.width,
+        height: decoration.height,
+        strokeColor: "#a8b0bb",
+        backgroundColor: "#f8fafc",
+        fillStyle: "solid",
+        strokeWidth: 1,
+        roughness: 0,
+        opacity: 30,
+        roundness: { type: 1, value: Math.max(8, preset.cornerRadius) },
+        customData: {
+          recallEntityType: "matrix_grid",
+          recallIgnoreInTextGraph: true,
+        },
+      });
+    } else if (decoration.kind === "matrix_grid_line") {
+      elements.push({
+        type: "rectangle",
+        id: `decoration-${decoration.id}`,
+        x: decoration.x,
+        y: decoration.y,
+        width: Math.max(1, decoration.width),
+        height: Math.max(1, decoration.height),
+        strokeColor: "#c2c8d0",
+        backgroundColor: "#c2c8d0",
+        fillStyle: "solid",
+        strokeWidth: 0,
+        roughness: 0,
+        opacity: 35,
+        customData: {
+          recallEntityType: "matrix_grid_line",
+          recallIgnoreInTextGraph: true,
+        },
+      });
+    } else {
+      elements.push({
+        type: "text",
+        id: `decoration-${decoration.id}`,
+        x: decoration.x,
+        y: decoration.y,
+        width: decoration.width,
+        height: decoration.height,
+        text: decoration.text || "",
+        fontSize: Math.max(13, preset.fontSize - 1),
+        fontFamily: preset.fontFamily,
+        textAlign: decoration.kind === "matrix_row_header" ? "right" : "center",
+        verticalAlign: "middle",
+        strokeColor: "#4b5563",
+        backgroundColor: "transparent",
+        customData: {
+          recallEntityType: decoration.kind,
+          recallIgnoreInTextGraph: true,
+        },
+      });
+    }
   }
 
   // Subtree background rectangles (behind nodes/arrows)
@@ -99,10 +194,11 @@ export function layoutToExcalidrawSkeleton(
     }
   }
 
-  // Create rectangles for nodes
+  // Create shapes for nodes
   for (const node of layout.nodes) {
+    const shapeType = nodeShapeType(node);
     const rect: Skeleton = {
-      type: "rectangle",
+      type: shapeType,
       id: `rect-${node.id}`,
       x: node.x,
       y: node.y,
@@ -121,9 +217,10 @@ export function layoutToExcalidrawSkeleton(
         recallLabel: node.label,
         recallKind: node.kind || "node",
         ...(node.body ? { recallBody: node.body } : {}),
+        ...(strategy === "matrix" ? { recallVisualLabel: nodeVisualLabel(node) } : {}),
       },
       label: {
-        text: node.body ? `${node.label}\n${node.body}` : node.label,
+        text: nodeVisualLabel(node),
         fontSize: preset.fontSize,
         fontFamily: preset.fontFamily,
         textAlign: "center",
@@ -133,7 +230,6 @@ export function layoutToExcalidrawSkeleton(
     elements.push(rect);
   }
 
-  const strategy = layout.strategy || "mixed";
   const useBusRouting = strategy === "tree" || strategy === "mixed";
 
   // Create arrows for edges
@@ -154,8 +250,51 @@ export function layoutToExcalidrawSkeleton(
       layout.direction === "LR" &&
       fromNode.x > toNode.x &&
       Math.abs((fromNode.y + fromNode.height / 2) - (toNode.y + toNode.height / 2)) < preset.verticalSpacing;
+    const isTopReturningEdge =
+      layout.direction === "TD" &&
+      strategy !== "hub_spoke" &&
+      strategy !== "cycle" &&
+      fromNode.y > toNode.y + toNode.height * 0.5;
+    const isMatrixRowWrap =
+      strategy === "matrix" &&
+      fromNode.x > toNode.x + toNode.width * 0.5 &&
+      Math.abs((fromNode.y + fromNode.height / 2) - (toNode.y + toNode.height / 2)) > preset.verticalSpacing * 0.35;
 
-    if (isLeftReturningEdge) {
+    if (isTopReturningEdge) {
+      sourceX = fromNode.x + fromNode.width;
+      sourceY = fromNode.y + fromNode.height / 2;
+      targetX = toNode.x + toNode.width;
+      targetY = toNode.y + toNode.height / 2;
+      const laneX = Math.max(...layout.nodes.map((node) => node.x + node.width)) + preset.horizontalSpacing * 0.65;
+      const px = targetX - sourceX;
+      const py = targetY - sourceY;
+      const laneDx = laneX - sourceX;
+      width = Math.abs(Math.max(px, laneDx) - Math.min(0, px, laneDx));
+      height = Math.abs(py);
+      points = [
+        [0, 0],
+        [laneDx, 0],
+        [laneDx, py],
+        [px, py],
+      ];
+    } else if (isMatrixRowWrap) {
+      sourceX = fromNode.x + fromNode.width / 2;
+      sourceY = fromNode.y + fromNode.height;
+      targetX = toNode.x + toNode.width / 2;
+      targetY = toNode.y;
+      const laneY = (sourceY + targetY) / 2;
+      const px = targetX - sourceX;
+      const py = targetY - sourceY;
+      const laneDy = laneY - sourceY;
+      width = Math.abs(px);
+      height = Math.abs(Math.max(py, laneDy) - Math.min(0, py, laneDy));
+      points = [
+        [0, 0],
+        [0, laneDy],
+        [px, laneDy],
+        [px, py],
+      ];
+    } else if (isLeftReturningEdge) {
       sourceX = fromNode.x;
       sourceY = fromNode.y + fromNode.height / 2;
       targetX = toNode.x + toNode.width;
@@ -262,11 +401,11 @@ export function layoutToExcalidrawSkeleton(
       points,
       start: {
         id: `rect-${fromNode.id}`,
-        type: "rectangle",
+        type: nodeShapeType(fromNode),
       },
       end: {
         id: `rect-${toNode.id}`,
-        type: "rectangle",
+        type: nodeShapeType(toNode),
       },
       startBinding: {
         elementId: `rect-${fromNode.id}`,

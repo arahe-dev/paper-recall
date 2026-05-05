@@ -24,6 +24,18 @@ const root = resolve(__dirname, "..");
 const READABILITY_THRESHOLD = 0.95;
 const PARSE_THRESHOLD = 0.99;
 
+const strictIteration04BeforeScores = {
+  exam_preparation_plan: { score: 0.65, reason: "feedback edge visually cut through the main vertical flow" },
+  dense_graph: { score: 0.60, reason: "long diagonal cross-row arrows dominated the board" },
+  mixed_complexity_graph: { score: 0.70, reason: "oversized feedback loop and long cross-link were visually awkward" },
+  storage_comparison_matrix: { score: 0.70, reason: "floating cards lacked visible matrix axes/grid semantics" },
+  project_timeline: { score: 0.75, reason: "plain process chain lacked timeline baseline/ticks" },
+  cross_links: { score: 0.78, reason: "parallel target edges and labels crowded convergence points" },
+  password_reset_flowchart: { score: 0.80, reason: "decision rendered as a rounded rectangle with awkward branch routing" },
+  groups: { score: 0.82, reason: "group labels and oversized boundary looked rough" },
+  long_labels: { score: 0.85, reason: "labels fit but edge labels were cramped and visual density was weak" },
+};
+
 const styleNames = [
   "readable_default",
   "readable_compact",
@@ -781,6 +793,128 @@ function countPolylineRectHits(points, rects, excludedNodeIds = new Set()) {
   return hits.size;
 }
 
+function segmentsForArrow(arrow) {
+  const points = arrowAbsPoints(arrow);
+  const segments = [];
+  for (let i = 1; i < points.length; i++) {
+    segments.push({ a: points[i - 1], b: points[i], arrow });
+  }
+  return segments;
+}
+
+function nearSamePoint(a, b, epsilon = 4) {
+  return Math.hypot(a.x - b.x, a.y - b.y) <= epsilon;
+}
+
+function orientation(a, b, c) {
+  const value = (b.y - a.y) * (c.x - b.x) - (b.x - a.x) * (c.y - b.y);
+  if (Math.abs(value) < 0.001) return 0;
+  return value > 0 ? 1 : 2;
+}
+
+function onSegment(a, b, c) {
+  return (
+    b.x <= Math.max(a.x, c.x) + 0.001 &&
+    b.x + 0.001 >= Math.min(a.x, c.x) &&
+    b.y <= Math.max(a.y, c.y) + 0.001 &&
+    b.y + 0.001 >= Math.min(a.y, c.y)
+  );
+}
+
+function segmentsIntersect(s1, s2) {
+  if (
+    nearSamePoint(s1.a, s2.a) ||
+    nearSamePoint(s1.a, s2.b) ||
+    nearSamePoint(s1.b, s2.a) ||
+    nearSamePoint(s1.b, s2.b)
+  ) {
+    return false;
+  }
+  const o1 = orientation(s1.a, s1.b, s2.a);
+  const o2 = orientation(s1.a, s1.b, s2.b);
+  const o3 = orientation(s2.a, s2.b, s1.a);
+  const o4 = orientation(s2.a, s2.b, s1.b);
+  if (o1 !== o2 && o3 !== o4) return true;
+  if (o1 === 0 && onSegment(s1.a, s2.a, s1.b)) return true;
+  if (o2 === 0 && onSegment(s1.a, s2.b, s1.b)) return true;
+  if (o3 === 0 && onSegment(s2.a, s1.a, s2.b)) return true;
+  if (o4 === 0 && onSegment(s2.a, s1.b, s2.b)) return true;
+  return false;
+}
+
+function countArrowCrossings(arrows) {
+  const segments = arrows.flatMap(segmentsForArrow);
+  const crossings = [];
+  for (let i = 0; i < segments.length; i++) {
+    for (let j = i + 1; j < segments.length; j++) {
+      const a = segments[i];
+      const b = segments[j];
+      if (a.arrow.id === b.arrow.id) continue;
+      const aEndpoints = new Set([a.arrow.customData?.recallFromNodeId, a.arrow.customData?.recallToNodeId].filter(Boolean));
+      const bEndpoints = new Set([b.arrow.customData?.recallFromNodeId, b.arrow.customData?.recallToNodeId].filter(Boolean));
+      if ([...aEndpoints].some((id) => bEndpoints.has(id))) continue;
+      if (segmentsIntersect(a, b)) crossings.push(`${a.arrow.id}/${b.arrow.id}`);
+    }
+  }
+  return crossings;
+}
+
+function longDiagonalSegments(arrows, options) {
+  const strategy = options.spec?.layout?.strategy;
+  const diagramType = options.spec?.diagram_type;
+  if (strategy === "cycle" || diagramType === "cycle" || options.allowLongDiagonals) return [];
+  const offenders = [];
+  for (const arrow of arrows) {
+    for (const segment of segmentsForArrow(arrow)) {
+      const dx = Math.abs(segment.b.x - segment.a.x);
+      const dy = Math.abs(segment.b.y - segment.a.y);
+      const length = Math.hypot(dx, dy);
+      if (length > 280 && dx > 120 && dy > 70) offenders.push(arrow.id);
+    }
+  }
+  return [...new Set(offenders)];
+}
+
+function diagramTypeDefects(scene, options) {
+  const defects = [];
+  const spec = options.spec || {};
+  const strategy = spec.layout?.strategy;
+  const diagramType = spec.diagram_type;
+  const active = activeElements(scene);
+  const entityCounts = new Map();
+  for (const el of active) {
+    const type = el.customData?.recallEntityType;
+    if (type) entityCounts.set(type, (entityCounts.get(type) || 0) + 1);
+  }
+
+  if (diagramType === "timeline") {
+    const baselineCount = entityCounts.get("timeline_baseline") || 0;
+    const tickCount = entityCounts.get("timeline_tick") || 0;
+    const nodeCount = nodeShapes(scene).length;
+    if (baselineCount < 1 || tickCount < Math.max(2, nodeCount)) {
+      defects.push("timeline lacks visible baseline/tick structure");
+    }
+  }
+
+  if (diagramType === "comparison") {
+    if ((entityCounts.get("matrix_grid") || 0) < 1) defects.push("matrix lacks visible grid/background");
+    if ((entityCounts.get("matrix_column_header") || 0) < 2) defects.push("matrix lacks column headers");
+    if ((entityCounts.get("matrix_row_header") || 0) < 1) defects.push("matrix lacks row headers");
+  }
+
+  const decisionIds = new Set((spec.nodes || []).filter((node) => node.kind === "decision").map((node) => node.id));
+  if (decisionIds.size > 0) {
+    const badDecisionShapes = nodeShapes(scene).filter(
+      (shape) => decisionIds.has(shape.customData?.recallNodeId) && shape.type !== "diamond"
+    );
+    if (badDecisionShapes.length > 0) {
+      defects.push(`flowchart decision nodes not diamond: ${badDecisionShapes.map((shape) => shape.customData?.recallNodeId).join(", ")}`);
+    }
+  }
+
+  return defects;
+}
+
 function scoreReadability(scene, pngPath, options = {}) {
   const defects = [];
   const active = activeElements(scene);
@@ -809,6 +943,13 @@ function scoreReadability(scene, pngPath, options = {}) {
   const missingArrowheads = [];
   const arrowNodeHits = [];
   const arrowTextHits = [];
+  const edgeCrossings = countArrowCrossings(arrows);
+  const longDiagonals = longDiagonalSegments(arrows, options);
+  const typeDefects = diagramTypeDefects(scene, options);
+  const denseComplexityDefects = [];
+  if (shapes.length >= 12 && arrows.length >= 10) {
+    denseComplexityDefects.push("dense graph remains high-complexity; split/cluster review recommended");
+  }
   for (const arrow of arrows) {
     const points = arrowAbsPoints(arrow);
     if (polylineLength(points) < 12) degenerateArrows.push(arrow.id);
@@ -836,6 +977,10 @@ function scoreReadability(scene, pngPath, options = {}) {
   if (missingArrowheads.length > 0) defects.push(`missing arrowheads: ${missingArrowheads.join(", ")}`);
   if (arrowNodeHits.length > 0) defects.push(`arrows pass through nodes: ${arrowNodeHits.slice(0, 5).join(", ")}`);
   if (arrowTextHits.length > 0) defects.push(`arrows pass through text: ${arrowTextHits.slice(0, 5).join(", ")}`);
+  if (edgeCrossings.length > 0) defects.push(`edge crossings: ${edgeCrossings.slice(0, 5).join(", ")}`);
+  if (longDiagonals.length > 0) defects.push(`long diagonal edges: ${longDiagonals.slice(0, 5).join(", ")}`);
+  defects.push(...typeDefects);
+  defects.push(...denseComplexityDefects);
 
   let score = 1;
   score -= Math.min(0.55, overlapPairs.length * 0.18);
@@ -844,6 +989,10 @@ function scoreReadability(scene, pngPath, options = {}) {
   score -= Math.min(0.3, missingArrowheads.length * 0.05);
   score -= Math.min(0.45, arrowNodeHits.length * 0.05);
   score -= Math.min(0.35, arrowTextHits.length * 0.05);
+  score -= Math.min(0.35, edgeCrossings.length * 0.04);
+  score -= Math.min(0.3, longDiagonals.length * 0.04);
+  score -= Math.min(0.25, typeDefects.length * 0.04);
+  score -= Math.min(0.08, denseComplexityDefects.length * 0.04);
   score = Math.max(0, Math.min(1, score));
 
   return {
@@ -861,6 +1010,10 @@ function scoreReadability(scene, pngPath, options = {}) {
       missing_arrowhead_count: missingArrowheads.length,
       arrow_node_hit_count: arrowNodeHits.length,
       arrow_text_hit_count: arrowTextHits.length,
+      edge_crossing_count: edgeCrossings.length,
+      long_diagonal_edge_count: longDiagonals.length,
+      diagram_type_defect_count: typeDefects.length,
+      dense_complexity_defect_count: denseComplexityDefects.length,
       png_dimensions: pngPath ? pngDimensions(pngPath) : null,
     },
   };
@@ -1010,6 +1163,28 @@ function summaryMarkdown(rows, title) {
     lines.push(`| ${row.scenario} | ${row.category} | ${row.readability.score.toFixed(2)} | ${row.parse.score.toFixed(2)} | ${row.pass ? "PASS" : "FAIL"} |`);
   }
   lines.push("");
+  return lines.join("\n");
+}
+
+function strictIteration04Markdown(rows) {
+  const byScenario = new Map(rows.map((row) => [row.scenario, row]));
+  const lines = [
+    "# Strict Iteration 04 Review",
+    "",
+    "This pass treats validator-clean geometry as necessary but not sufficient. It adds penalties for diagram-type fidelity, edge crossings, long diagonal links, and known visual roughness called out during multimodal review.",
+    "",
+    "| Scenario | Before harsh visual score | After readability | After parse | Outcome | Review note |",
+    "|---|---:|---:|---:|---|---|",
+  ];
+  for (const [scenario, before] of Object.entries(strictIteration04BeforeScores)) {
+    const row = byScenario.get(scenario);
+    lines.push(`| ${scenario} | ${before.score.toFixed(2)} | ${row ? row.readability.score.toFixed(2) : "n/a"} | ${row ? row.parse.score.toFixed(2) : "n/a"} | ${row?.pass ? "PASS" : "CHECK"} | ${before.reason} |`);
+  }
+  lines.push(
+    "",
+    "Known limitations remain documented instead of hidden by fake perfect scores. A final `1.00` now requires clean deterministic geometry plus clean diagram-type checks for timelines, matrices, and flowchart decisions.",
+    ""
+  );
   return lines.join("\n");
 }
 
@@ -1270,6 +1445,11 @@ async function main() {
     const benchmarkRows = rows.filter((row) => row.category !== "style_variant");
     const styleRows = rows.filter((row) => row.category === "style_variant");
     const pass = rows.every((row) => row.pass);
+    const badPerfectRows = rows.filter(
+      (row) =>
+        (row.readability.score === 1 && row.readability.defects.length > 0) ||
+        (row.parse.score === 1 && row.parse.defects.length > 0)
+    );
     const manifest = {
       generated_at: new Date().toISOString(),
       run_dir: runDir,
@@ -1277,6 +1457,8 @@ async function main() {
       url,
       thresholds: { readability: READABILITY_THRESHOLD, parseFidelity: PARSE_THRESHOLD },
       pass,
+      bad_perfect_count: badPerfectRows.length,
+      bad_perfect_scenarios: badPerfectRows.map((row) => row.scenario),
       benchmark_count: benchmarkRows.length,
       style_count: styleRows.length,
       rows,
@@ -1284,7 +1466,12 @@ async function main() {
     writeFileSync(resolve(iterDir, "manifest.json"), JSON.stringify(manifest, null, 2));
     writeFileSync(resolve(iterDir, "scores.md"), summaryMarkdown(benchmarkRows, "Universal Diagram Benchmark Scores"));
     writeFileSync(resolve(iterDir, "style-scores.md"), summaryMarkdown(styleRows, "Universal Diagram Style Scores"));
+    writeFileSync(resolve(iterDir, "strict-iteration-04-review.md"), strictIteration04Markdown(rows));
     writeFileSync(resolve(iterDir, "contact-sheet.html"), contactSheetHtml(rows));
+    const contactPage = await browser.newPage({ viewport: { width: 1800, height: 2400 }, deviceScaleFactor: 1 });
+    await contactPage.goto(`file:///${resolve(iterDir, "contact-sheet.html").replace(/\\/g, "/")}`);
+    await contactPage.screenshot({ path: resolve(iterDir, "contact-sheet.png"), fullPage: true });
+    await contactPage.close();
     writeFileSync(resolve(iterDir, "visual-review.md"), [
       "# Visual Review",
       "",
@@ -1314,6 +1501,7 @@ async function main() {
       "",
       `Status: ${pass ? "PASS" : "FAIL"}`,
       `Artifacts: ${iterDir}`,
+      `Contact sheet: ${resolve(iterDir, "contact-sheet.png")}`,
       "",
       "## Architecture",
       "- Canonical AI contract: Recall Diagram Spec v0.",
@@ -1324,12 +1512,21 @@ async function main() {
       "",
       "## Benchmark Scores",
       summaryMarkdown(benchmarkRows, "Generic Diagram Generation And Parse-Back"),
+      "## Strict Iteration 04 Review",
+      strictIteration04Markdown(rows).replace(/^# Strict Iteration 04 Review\n\n/, ""),
+      "## No Fake Perfect Score Audit",
+      `badPerfectCount: ${badPerfectRows.length}`,
+      badPerfectRows.length
+        ? `badPerfectScenarios: ${badPerfectRows.map((row) => row.scenario).join(", ")}`
+        : "badPerfectScenarios: none",
+      "",
       "## Style Scores",
       summaryMarkdown(styleRows, "Style Variant Validation"),
       "## Limitations",
       "- This is a generic diagram planner, not a domain solver or formal verifier.",
       "- Domain correctness requires future domain-specific IR plus solver/verifier plugins.",
       "- Human-drawn ambiguous boards still depend on geometry fallback confidence.",
+      "- Dense and mixed-complexity graphs are now passable but intentionally non-perfect when the diagram remains high-complexity or has a residual crossing.",
       "",
       "## Commands",
       "- npm run build",
