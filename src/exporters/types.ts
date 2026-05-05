@@ -8,10 +8,16 @@ export type LooseElement = {
   angle: number;
   strokeColor: string;
   backgroundColor: string;
+  fillStyle?: string;
+  strokeWidth?: number;
+  strokeStyle?: string;
+  roughness?: number;
+  opacity?: number;
   isDeleted?: boolean;
   boundElements?: readonly { id: string; type: string }[] | null;
   containerId?: string | null;
   points?: readonly (readonly [number, number])[];
+  pressures?: readonly number[];
   text?: string;
   startBinding?: { elementId: string; focus: number; gap: number } | null;
   endBinding?: { elementId: string; focus: number; gap: number } | null;

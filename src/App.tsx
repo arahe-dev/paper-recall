@@ -1,5 +1,11 @@
 import { useRef, useCallback, useState, useEffect } from "react";
-import { Excalidraw, exportToCanvas, restoreElements, viewportCoordsToSceneCoords } from "@excalidraw/excalidraw";
+import {
+  Excalidraw,
+  convertToExcalidrawElements,
+  exportToCanvas,
+  restoreElements,
+  viewportCoordsToSceneCoords,
+} from "@excalidraw/excalidraw";
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import "@excalidraw/excalidraw/index.css";
 import "./App.css";
@@ -39,6 +45,7 @@ import {
 import { exportAndSaveBoard, type ExportFormat } from "./utils/exportEngine";
 import { useTheme } from "./hooks/useTheme";
 import { getSettings, updateSettings } from "./utils/settingsStore";
+import { recognizeShape, type GestureRecognition } from "./utils/gestureRecognizer";
 import {
   getAllTemplates,
   saveAsTemplate,
@@ -132,6 +139,71 @@ function isBoardInteractionTarget(element: LooseElement): boolean {
   return customData.recallEntityType !== "layout_background";
 }
 
+type SnappedElementSkeleton = Record<string, unknown> & {
+  id: string;
+  type: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
+function makeSnappedSkeleton(element: LooseElement, recognition: GestureRecognition): SnappedElementSkeleton | null {
+  if (!recognition.shape) return null;
+  const baseStyle = {
+    strokeColor: element.strokeColor || "#1e1e1e",
+    backgroundColor: recognition.shape === "line" || recognition.shape === "arrow"
+      ? "transparent"
+      : element.backgroundColor || "transparent",
+    fillStyle: "solid",
+    strokeWidth: element.strokeWidth || 2,
+    strokeStyle: "solid",
+    roughness: element.roughness ?? 1,
+    opacity: 100,
+    angle: 0,
+    customData: {
+      ...(element.customData || {}),
+      recallEntityType: "snapped_shape",
+      recallSnappedShape: recognition.shape,
+      recallOriginalFreedrawId: element.id,
+      recallSnappedConfidence: Number(recognition.confidence.toFixed(3)),
+    },
+  };
+
+  if (recognition.shape === "line" || recognition.shape === "arrow") {
+    const start = recognition.start || recognition.simplified[0];
+    const end = recognition.end || recognition.simplified[recognition.simplified.length - 1];
+    if (!start || !end) return null;
+    const x = element.x + start[0];
+    const y = element.y + start[1];
+    const width = end[0] - start[0];
+    const height = end[1] - start[1];
+    return {
+      ...baseStyle,
+      type: recognition.shape,
+      id: `snap-${element.id}`,
+      x,
+      y,
+      width: Math.abs(width),
+      height: Math.abs(height),
+      points: [[0, 0], [width, height]],
+      ...(recognition.shape === "arrow" ? { endArrowhead: "arrow" } : {}),
+    };
+  }
+
+  const minSize = 24;
+  return {
+    ...baseStyle,
+    type: recognition.shape,
+    id: `snap-${element.id}`,
+    x: element.x + recognition.bounds.minX,
+    y: element.y + recognition.bounds.minY,
+    width: Math.max(minSize, recognition.bounds.width),
+    height: Math.max(minSize, recognition.bounds.height),
+    roundness: recognition.shape === "rectangle" ? { type: 1, value: 8 } : undefined,
+  };
+}
+
 function App() {
   const { excalidrawTheme, canvasBackgroundColor } = useTheme();
   const elementsRef = useRef<readonly LooseElement[]>([]);
@@ -142,6 +214,8 @@ function App() {
   const suppressDirtyUntilRef = useRef(0);
   const autoSavePromptedRef = useRef(false);
   const saveInFlightRef = useRef(false);
+  const snappedFreedrawIdsRef = useRef<Set<string>>(new Set());
+  const snapInFlightRef = useRef(false);
   const [showTranscript, setShowTranscript] = useState(false);
   const [lastLoadErrors, setLastLoadErrors] = useState<string[]>([]);
 
@@ -166,17 +240,71 @@ function App() {
   const [activeElementCount, setActiveElementCount] = useState(0);
   const [templates, setTemplates] = useState<RecallTemplate[]>(getAllTemplates);
   const [autoSaveEnabled, setAutoSaveEnabled] = useState(() => getSettings().autoSaveEnabled);
+  const [autoSnapEnabled, setAutoSnapEnabled] = useState(() => getSettings().autoSnapEnabled);
+  const [snapConfidenceThreshold, setSnapConfidenceThreshold] = useState(() => getSettings().snapConfidenceThreshold);
+  const [snapFeedback, setSnapFeedback] = useState<string | null>(null);
+
+  const maybeSnapFreedrawElements = useCallback((
+    elements: readonly LooseElement[],
+    appState: LooseAppState
+  ) => {
+    if (!autoSnapEnabled || snapInFlightRef.current) return;
+    if (appState.cursorButton !== "up") return;
+
+    const replacements = new Map<string, LooseElement>();
+    for (const element of elements) {
+      if (
+        element.isDeleted ||
+        element.type !== "freedraw" ||
+        snappedFreedrawIdsRef.current.has(element.id) ||
+        !Array.isArray(element.points) ||
+        element.points.length < 4
+      ) {
+        continue;
+      }
+      snappedFreedrawIdsRef.current.add(element.id);
+      const recognition = recognizeShape(element.points, element.pressures || []);
+      if (!recognition.shape || recognition.confidence < snapConfidenceThreshold) continue;
+      const skeleton = makeSnappedSkeleton(element, recognition);
+      if (!skeleton) continue;
+      const [snapped] = convertToExcalidrawElements([skeleton] as never, { regenerateIds: false });
+      if (snapped) {
+        replacements.set(element.id, snapped as LooseElement);
+      }
+    }
+
+    if (replacements.size === 0) return;
+    const nextElements = elements.map((element) => replacements.get(element.id) || element);
+    const snappedLabels = Array.from(replacements.values())
+      .map((element) => String(element.customData?.recallSnappedShape || "shape"));
+    snapInFlightRef.current = true;
+    window.requestAnimationFrame(() => {
+      apiRef.current?.updateScene({
+        elements: nextElements as never,
+        captureUpdate: "IMMEDIATELY" as never,
+      });
+      elementsRef.current = nextElements;
+      setCanvasSnapshot({ elements: nextElements, appState: appStateRef.current });
+      setSnapFeedback(`Snapped to ${snappedLabels.join(", ")}`);
+      window.setTimeout(() => setSnapFeedback(null), 1400);
+      window.setTimeout(() => {
+        snapInFlightRef.current = false;
+      }, 0);
+    });
+  }, [autoSnapEnabled, snapConfidenceThreshold]);
 
   const handleChange = useCallback(
     (elements: readonly unknown[], appState: unknown, files: unknown) => {
-      elementsRef.current = elements as readonly LooseElement[];
-      appStateRef.current = appState as LooseAppState;
+      const looseElements = elements as readonly LooseElement[];
+      const looseAppState = appState as LooseAppState;
+      elementsRef.current = looseElements;
+      appStateRef.current = looseAppState;
       filesRef.current = files as LooseFiles;
       setCanvasSnapshot({
-        elements: elements as readonly LooseElement[],
-        appState: appState as LooseAppState,
+        elements: looseElements,
+        appState: looseAppState,
       });
-      const nextActiveCount = (elements as readonly LooseElement[]).filter((el) => !el.isDeleted).length;
+      const nextActiveCount = looseElements.filter((el) => !el.isDeleted).length;
       setActiveElementCount(nextActiveCount);
       if (nextActiveCount > 0) {
         setHomeDismissed(true);
@@ -185,8 +313,9 @@ function App() {
         lastChangeAtRef.current = Date.now();
         setIsDirty(true);
       }
+      maybeSnapFreedrawElements(looseElements, looseAppState);
     },
-    []
+    [maybeSnapFreedrawElements]
   );
 
   const handleExcalidrawAPI = useCallback((api: ExcalidrawImperativeAPI) => {
@@ -1114,6 +1243,17 @@ function App() {
     updateSettings({ autoSaveEnabled: enabled });
   }, []);
 
+  const handleAutoSnapToggle = useCallback((enabled: boolean) => {
+    setAutoSnapEnabled(enabled);
+    updateSettings({ autoSnapEnabled: enabled });
+  }, []);
+
+  const handleSnapThresholdChange = useCallback((value: number) => {
+    const normalized = Math.max(0.5, Math.min(0.95, value));
+    setSnapConfidenceThreshold(normalized);
+    updateSettings({ snapConfidenceThreshold: normalized });
+  }, []);
+
   const handleBrowserFileInput = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
@@ -1362,6 +1502,25 @@ function App() {
             />
             Auto-save
           </label>
+          <label className="auto-save-toggle">
+            <input
+              type="checkbox"
+              checked={autoSnapEnabled}
+              onChange={(event) => handleAutoSnapToggle(event.currentTarget.checked)}
+            />
+            Auto-snap
+          </label>
+          <label className="snap-threshold">
+            <span>Snap</span>
+            <input
+              type="number"
+              min="0.5"
+              max="0.95"
+              step="0.05"
+              value={snapConfidenceThreshold}
+              onChange={(event) => handleSnapThresholdChange(Number(event.currentTarget.value))}
+            />
+          </label>
           <ThemeToggle compact />
 
           {/* Recent boards dropdown */}
@@ -1497,6 +1656,11 @@ function App() {
           appState={canvasSnapshot.appState}
           onOpen={(subpageId) => void openSubpageById(subpageId)}
         />
+        {snapFeedback && (
+          <div className="snap-feedback" role="status">
+            {snapFeedback}
+          </div>
+        )}
         {!homeDismissed && !currentBoard && activeElementCount === 0 && (
           <HomeScreen
             templates={templates}
