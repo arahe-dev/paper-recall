@@ -25,5 +25,12 @@ dist-ssr
 
 # Research artifacts
 research-output/
+research-runs/
 /analyze-snapshots.mjs
 /test-layout.mjs
+
+# Release staging
+release-artifacts/
+
+# Tauri
+src-tauri/target/

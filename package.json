@@ -1,17 +1,23 @@
 {
   "name": "recall-board-excalidraw",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
+  "packageManager": "pnpm@10.33.3",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "build:frameless": "tsc -b && vite build --mode frameless",
+    "check": "pnpm run lint && pnpm run build",
     "lint": "eslint .",
     "preview": "vite preview",
     "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build",
     "tauri:dev:frameless": "tauri dev --config src-tauri/tauri.frameless.conf.json",
-    "tauri:build:frameless": "tauri build --config src-tauri/tauri.frameless.conf.json"
+    "tauri:build:frameless": "tauri build --config src-tauri/tauri.frameless.conf.json",
+    "audit:js": "pnpm audit",
+    "audit:rust": "cargo audit --manifest-path src-tauri/Cargo.toml"
   },
   "dependencies": {
     "@excalidraw/excalidraw": "^0.18.1",

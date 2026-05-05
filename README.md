@@ -1,139 +1,123 @@
-# recall-board-excalidraw
+# Recall Board
 
-A fast prototype to test whether Excalidraw can become the board foundation for Recall.
+Recall Board is a local-first desktop and browser app for building editable Excalidraw boards, saving them locally, and exporting compact AI-readable board context without screenshots.
 
-## What this prototype is
+The current build is an early Windows desktop release of the Recall board prototype. It is useful for testing diagram capture, board persistence, templates, import/export, and text-graph parse-back.
 
-This is a minimal Vite + React + TypeScript app wrapping the `@excalidraw/excalidraw` editor. It explores:
+## Download
 
-- Infinite canvas
-- Editable objects (rectangles, ellipses, diamonds, text, arrows)
-- Arrows and bindings
-- Scene JSON export
-- Screenshot-free AI context export with deleted-element filtering
-- Compact board text graph export (nodes + edges for fast AI reading)
-- Transcript/log parser for importing build/session logs into structured notes
+Latest Windows test build:
 
-This is **not** the final Recall app. It is a stable, simple wrapper to validate the approach.
+- [Download Windows setup exe](https://github.com/arahe-dev/paper-recall/releases/download/v0.1.0/Recall-Board-Setup-0.1.0-x64.exe)
+- [Download Windows MSI](https://github.com/arahe-dev/paper-recall/releases/download/v0.1.0/Recall-Board-0.1.0-x64.msi)
+- [Download portable app exe](https://github.com/arahe-dev/paper-recall/releases/download/v0.1.0/Recall-Board-Portable-0.1.0-x64.exe)
+- [Download frameless traffic-light setup exe](https://github.com/arahe-dev/paper-recall/releases/download/v0.1.0/Recall-Board-Frameless-Setup-0.1.0-x64.exe)
 
-## Install and run
+Windows may show an unknown publisher warning because this test build is not code signed yet.
 
-```bash
+## What It Does
+
+- Opens an editable Excalidraw canvas.
+- Saves, opens, duplicates, renames, and deletes local boards.
+- Shows recent boards.
+- Provides templates for common board shapes.
+- Imports Recall Graph IR JSON.
+- Exports Excalidraw scene JSON, compact text graph JSON, AI context JSON, and prompt text.
+- Parses build/session transcripts into structured summaries.
+- Runs as a browser dev app or a native Tauri desktop app.
+- Includes an optional frameless desktop shell with custom window controls for testing.
+
+## Install From Source
+
+Requirements:
+
+- Node.js 24 or newer
+- Corepack
+- Rust stable toolchain
+- Windows 10/11 for the current packaged desktop build
+
+Install dependencies:
+
+```powershell
 cd C:\Users\arahe\recall-board-excalidraw
-npm install
-npm run dev
+corepack enable
+corepack pnpm install
 ```
 
-Then open the printed localhost URL (e.g. `http://localhost:5173/`).
+Run in browser mode:
 
-## Build
-
-```bash
-npm run build
+```powershell
+corepack pnpm dev
 ```
 
-## How to test
+Build the web app:
 
-### Board AI Context
+```powershell
+corepack pnpm run build
+```
 
-1. Open the app in your browser.
-2. Draw a rectangle and place a text box inside it.
-3. Draw an arrow between two shapes.
-4. Draw another rectangle + text.
-5. **Delete** at least one element.
-6. Click **Export AI Context** in the top bar.
-7. Open the downloaded `recall-ai-context.json`.
-8. Paste the JSON into an AI chat without any screenshot.
+Run the normal native desktop shell:
 
-The AI context includes:
-- All **active** elements with positions, sizes, colors, and text
-- Deleted/tombstoned elements are **excluded** by default
-- Arrow bindings (if Excalidraw provides them)
-- Broken bindings detected when an active arrow points to a deleted element
-- Candidate groupings when text centers fall inside shape bounds
-- `screenshot_required: false`
+```powershell
+corepack pnpm tauri:dev
+```
 
-### Transcript Parser
+Run the frameless custom-chrome shell:
 
-1. Click **Parse Transcript** in the top bar.
-2. Paste a terminal or agent log into the textarea.
-3. Click **Parse**.
-4. Review the summary cards and extracted sections.
-5. Click **Export Transcript JSON** or **Export Transcript Markdown**.
+```powershell
+corepack pnpm tauri:dev:frameless
+```
 
-The parser extracts:
-- Commands (npm, cargo, git, etc.)
-- File changes (created/modified/deleted)
-- Errors and warnings
-- Verification checks (build/test results)
-- Commits
-- Next steps / TODOs
+Build Windows installers:
 
-### Board Text Graph
+```powershell
+corepack pnpm tauri:build
+corepack pnpm tauri:build:frameless
+```
 
-1. Draw a rectangle with text (e.g. "hello").
-2. Draw another rectangle with text (e.g. "world").
-3. Draw an arrow from "hello" to "world".
-4. Click **Export Text Graph** in the top bar.
-5. Open `recall-board-text-graph.json`.
-6. Confirm it contains nodes with labels "hello" and "world" with an edge between them.
-7. Click **Export Text Graph Prompt** to download a `.txt` file with instructions for an AI to explain the board from the graph.
+## Basic Use
 
-The text graph:
-- Converts "text inside shape + arrows" into nodes and edges
-- Groups text into shapes (via `containerId`, `boundElements`, or geometry)
-- Labels nodes from contained text; extra text becomes body
-- Excludes deleted elements
-- Resolves bound arrows (confidence 1.0) and loose arrows via geometry (confidence ~0.7)
-- Flags unresolved arrows and ungrouped text separately
-- Preserves original labels exactly — no summarization, no typos fixed
-- Never infers meaning beyond visible text and arrows
+1. Launch Recall Board.
+2. Create a new board or open a recent board.
+3. Draw with the Excalidraw tools.
+4. Use **Save** or **Save As** to persist the board.
+5. Use **Export** for AI context, text graph, Excalidraw scene, or prompt files.
+6. Use **Load Recall Graph IR** to import a structured graph.
+7. Use **Parse Transcript** to convert terminal or agent logs into a structured summary.
 
-The export includes **graph_insights**:
-- **Root detection**: finds nodes with highest outgoing edge count and no incoming edges
-- **Leaf detection**: finds nodes with incoming edges but no outgoing edges
-- **Direct branch count**: outgoing edges from the top root node
-- **Max depth estimate**: longest directed path from root using BFS
-- **Relation status counts**: bound vs loose inferred edges
-- **Lowest-confidence edge**: identifies the edge most likely needing verification
+## AI Context and Parse-Back
 
-This helps AI explain boards quickly without screenshots. Models should separate visible graph facts from likely interpretation.
+Recall Board is designed so an AI can understand a board from structured text instead of a screenshot.
 
-Example of exported insights for an ESP32-to-five-IMUs board:
-- Root: `esp 32` (5 outgoing, 0 incoming)
-- Direct branches: 5
-- Leaves: `imu 0 thumb`, `imu 1 index finger`, `imu 2 middle finger`, `imu 3 back of hand`, `imu 4 wrist relative`
-- Max depth: 1
-- Relation statuses: 4 bound, 1 loose inferred
-- Lowest confidence edge: `esp 32 connects to imu 2 middle finger` (0.75, loose_inferred_relation)
+The compact text graph export:
 
-## Policy
+- Groups text inside shapes into labeled nodes.
+- Converts bound arrows into high-confidence relations.
+- Converts loose arrows into lower-confidence inferred relations.
+- Excludes deleted Excalidraw elements.
+- Reports unresolved arrows and ungrouped text separately.
+- Preserves visible labels instead of summarizing them.
 
-### Board Context
+This makes the board easier to pass back into an AI model as graph data.
 
-- **Deleted/tombstoned elements** are excluded from AI context by default. Scene JSON may still include raw scene data for fidelity.
-- **Bound arrows** (attached to elements) are treated as **visual relations**, not confirmed semantic connectors.
-- **Loose arrows** (no binding) are treated as **candidate relations only**.
-- **Broken arrows** (active arrow bound to deleted element) are flagged as `broken_visual_relation` with a diagnostic warning.
-- **Shape + text proximity** (text center inside shape bounds) is treated as a **candidate grouping only** unless explicitly promoted.
-- No full semantic connectors are implemented yet. Do not treat candidates as confirmed graph edges.
+## Documentation
 
-### Transcript Context
+- [User guide](docs/user-guide.md)
+- [Developer guide](docs/developer-guide.md)
+- [Security scan notes](docs/security-scan.md)
+- [Release notes](CHANGELOG.md)
+- [Universal diagram planner plan](docs/universal-diagram-planner-plan.md)
 
-- The transcript parser is **heuristic v0** and deterministic. It does not use AI.
-- It is **separate** from board/scene understanding.
-- It turns pasted terminal/agent logs into structured session summaries.
+GitHub Wiki source pages are also kept in `docs/wiki/` so they can be mirrored to the repository wiki or reused for GitHub Pages.
 
-## Next steps
+## Security Status
 
-- Define a semantic card convention (shape + text + metadata)
-- Define a connector convention (explicit semantic edges beyond visual arrows)
-- Local save/load (IndexedDB or filesystem)
-- Import/export cleanup and versioning
-- Optional Rust core later for graph operations and persistence
+The latest scan found known transitive advisories from Excalidraw's Mermaid parser dependency chain. A forced npm audit fix would downgrade Excalidraw and risk breaking the app, so it was not applied. See [Security scan notes](docs/security-scan.md) for details.
 
-## Tech stack
+## Project Status
 
-- Vite
-- React + TypeScript
-- `@excalidraw/excalidraw` (v0.18.1)
+This is a prototype-quality release. The board editor and desktop packaging are usable, but the installer is unsigned and the custom frameless titlebar is still a separate feasibility build rather than the default production shell.
+
+## License
+
+No open-source license has been selected yet. Treat the code as source-available until a license is added.
