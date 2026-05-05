@@ -4,10 +4,564 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Recall Board is a local-first Excalidraw desktop app for editable diagrams and screenshot-free AI context export."
+    />
+    <meta property="og:title" content="Recall Board" />
+    <meta
+      property="og:description"
+      content="Editable Excalidraw boards, local persistence, AI-readable text graph exports, and Windows desktop packaging."
+    />
+    <meta property="og:type" content="website" />
     <title>Recall Board</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        background: #0f1115;
+        color: #f5f7fb;
+      }
+
+      html,
+      body,
+      #root {
+        min-height: 100%;
+        margin: 0;
+      }
+
+      body {
+        background:
+          radial-gradient(circle at 18% 8%, rgba(77, 123, 255, 0.2), transparent 30rem),
+          radial-gradient(circle at 82% 12%, rgba(48, 211, 173, 0.16), transparent 26rem),
+          linear-gradient(180deg, #0f1115 0%, #171b23 48%, #101217 100%);
+      }
+
+      .pages-landing {
+        min-height: 100vh;
+        color: #f5f7fb;
+      }
+
+      .pages-shell {
+        width: min(1120px, calc(100% - 40px));
+        margin: 0 auto;
+        padding: 24px 0 48px;
+      }
+
+      .pages-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 14px 0;
+      }
+
+      .pages-brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        color: #ffffff;
+        font-size: 15px;
+        font-weight: 760;
+        letter-spacing: 0;
+        text-decoration: none;
+      }
+
+      .pages-mark {
+        display: grid;
+        width: 34px;
+        height: 34px;
+        place-items: center;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 12px;
+        background:
+          linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.04)),
+          #202634;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+      }
+
+      .pages-nav-links {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .pages-nav-links a,
+      .pages-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 38px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 999px;
+        padding: 0 14px;
+        color: #dbe3f4;
+        background: rgba(255, 255, 255, 0.06);
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 650;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      }
+
+      .pages-nav-links a:hover,
+      .pages-button:hover {
+        border-color: rgba(255, 255, 255, 0.22);
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .pages-hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+        gap: 22px;
+        align-items: stretch;
+        margin-top: 28px;
+      }
+
+      .pages-hero-copy,
+      .pages-panel,
+      .pages-card {
+        border: 1px solid rgba(255, 255, 255, 0.11);
+        background: rgba(21, 25, 34, 0.72);
+        box-shadow:
+          0 24px 70px rgba(0, 0, 0, 0.32),
+          inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(18px) saturate(140%);
+        -webkit-backdrop-filter: blur(18px) saturate(140%);
+      }
+
+      .pages-hero-copy {
+        border-radius: 28px;
+        padding: clamp(28px, 5vw, 54px);
+      }
+
+      .pages-kicker {
+        display: inline-flex;
+        align-items: center;
+        width: fit-content;
+        border: 1px solid rgba(88, 166, 255, 0.3);
+        border-radius: 999px;
+        padding: 7px 11px;
+        color: #aecdff;
+        background: rgba(88, 166, 255, 0.1);
+        font-size: 12px;
+        font-weight: 760;
+      }
+
+      .pages-hero h1 {
+        max-width: 760px;
+        margin: 20px 0 16px;
+        color: #ffffff;
+        font-size: clamp(42px, 8vw, 78px);
+        line-height: 0.98;
+        letter-spacing: 0;
+      }
+
+      .pages-hero p {
+        max-width: 680px;
+        margin: 0;
+        color: #bec8db;
+        font-size: clamp(17px, 2.2vw, 21px);
+        line-height: 1.58;
+      }
+
+      .pages-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 28px;
+      }
+
+      .pages-button.primary {
+        border-color: rgba(255, 255, 255, 0.24);
+        color: #ffffff;
+        background: linear-gradient(180deg, #4f7dff 0%, #315bdc 100%);
+        box-shadow:
+          0 14px 34px rgba(49, 91, 220, 0.38),
+          inset 0 1px 0 rgba(255, 255, 255, 0.22);
+      }
+
+      .pages-panel {
+        display: grid;
+        border-radius: 28px;
+        padding: 18px;
+      }
+
+      .pages-window {
+        display: grid;
+        min-height: 100%;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 22px;
+        background: #141820;
+      }
+
+      .pages-window-bar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 38px;
+        padding: 0 14px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.045);
+      }
+
+      .pages-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+      }
+
+      .pages-dot.red {
+        background: #ff5f57;
+      }
+
+      .pages-dot.yellow {
+        background: #febc2e;
+      }
+
+      .pages-dot.green {
+        background: #28c840;
+      }
+
+      .pages-board-preview {
+        position: relative;
+        min-height: 392px;
+        background:
+          linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+          #11151d;
+        background-size: 28px 28px;
+      }
+
+      .pages-node,
+      .pages-note {
+        position: absolute;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 16px;
+        color: #edf3ff;
+        background: rgba(31, 39, 54, 0.92);
+        box-shadow: 0 16px 34px rgba(0, 0, 0, 0.22);
+        font-size: 13px;
+        font-weight: 720;
+      }
+
+      .pages-node {
+        display: grid;
+        width: 138px;
+        min-height: 64px;
+        place-items: center;
+        padding: 10px;
+        text-align: center;
+      }
+
+      .pages-note {
+        right: 26px;
+        bottom: 24px;
+        width: 210px;
+        padding: 14px;
+        color: #bfc9dc;
+        font-weight: 600;
+        line-height: 1.45;
+      }
+
+      .pages-node.one {
+        left: 34px;
+        top: 58px;
+      }
+
+      .pages-node.two {
+        left: 244px;
+        top: 58px;
+      }
+
+      .pages-node.three {
+        left: 136px;
+        top: 214px;
+      }
+
+      .pages-line {
+        position: absolute;
+        height: 2px;
+        background: linear-gradient(90deg, #62d6b4, #6a8dff);
+        transform-origin: left center;
+      }
+
+      .pages-line.a {
+        left: 183px;
+        top: 93px;
+        width: 62px;
+      }
+
+      .pages-line.b {
+        left: 156px;
+        top: 140px;
+        width: 118px;
+        transform: rotate(56deg);
+      }
+
+      .pages-line.c {
+        left: 272px;
+        top: 140px;
+        width: 106px;
+        transform: rotate(124deg);
+      }
+
+      .pages-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 18px;
+      }
+
+      .pages-card {
+        border-radius: 22px;
+        padding: 20px;
+      }
+
+      .pages-card h2 {
+        margin: 0 0 8px;
+        color: #ffffff;
+        font-size: 18px;
+        letter-spacing: 0;
+      }
+
+      .pages-card p,
+      .pages-card li {
+        color: #bdc7d8;
+        font-size: 14px;
+        line-height: 1.55;
+      }
+
+      .pages-card p {
+        margin: 0;
+      }
+
+      .pages-card ul {
+        margin: 10px 0 0;
+        padding-left: 18px;
+      }
+
+      .pages-downloads {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 32px;
+      }
+
+      .pages-download {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.11);
+        border-radius: 18px;
+        padding: 16px;
+        color: #eef4ff;
+        background: rgba(255, 255, 255, 0.055);
+        text-decoration: none;
+      }
+
+      .pages-download strong {
+        display: block;
+        color: #ffffff;
+        font-size: 15px;
+      }
+
+      .pages-download span {
+        display: block;
+        margin-top: 4px;
+        color: #aeb9ca;
+        font-size: 13px;
+      }
+
+      .pages-footer {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-top: 32px;
+        padding: 18px 0 0;
+        color: #8d99ad;
+        font-size: 13px;
+      }
+
+      .pages-footer a {
+        color: #bfd2ff;
+        text-decoration: none;
+      }
+
+      @media (max-width: 880px) {
+        .pages-nav {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .pages-hero,
+        .pages-grid,
+        .pages-downloads {
+          grid-template-columns: 1fr;
+        }
+
+        .pages-board-preview {
+          min-height: 330px;
+        }
+
+        .pages-node.two {
+          left: auto;
+          right: 28px;
+        }
+
+        .pages-note {
+          left: 24px;
+          right: 24px;
+          width: auto;
+        }
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <div id="root">
+      <main class="pages-landing">
+        <div class="pages-shell">
+          <nav class="pages-nav" aria-label="Recall Board site navigation">
+            <a class="pages-brand" href="https://github.com/arahe-dev/paper-recall">
+              <span class="pages-mark">R</span>
+              <span>Recall Board</span>
+            </a>
+            <div class="pages-nav-links">
+              <a href="docs/user-guide.html">Guide</a>
+              <a href="docs/developer-guide.html">Developers</a>
+              <a href="docs/security-scan.html">Security</a>
+              <a href="https://github.com/arahe-dev/paper-recall/releases/tag/v0.1.0">Release</a>
+            </div>
+          </nav>
+
+          <section class="pages-hero">
+            <div class="pages-hero-copy">
+              <span class="pages-kicker">Windows desktop test release v0.1.0</span>
+              <h1>Editable diagrams that AI can read without screenshots.</h1>
+              <p>
+                Recall Board wraps Excalidraw with local board persistence, templates,
+                import/export tools, and compact text graph exports for AI parse-back.
+              </p>
+              <div class="pages-actions">
+                <a
+                  class="pages-button primary"
+                  href="https://github.com/arahe-dev/paper-recall/releases/download/v0.1.0/Recall-Board-Setup-0.1.0-x64.exe"
+                >
+                  Download setup exe
+                </a>
+                <a
+                  class="pages-button"
+                  href="https://github.com/arahe-dev/paper-recall/releases/download/v0.1.0/Recall-Board-Frameless-Setup-0.1.0-x64.exe"
+                >
+                  Frameless test build
+                </a>
+              </div>
+            </div>
+
+            <div class="pages-panel" aria-label="Recall Board preview">
+              <div class="pages-window">
+                <div class="pages-window-bar">
+                  <span class="pages-dot red"></span>
+                  <span class="pages-dot yellow"></span>
+                  <span class="pages-dot green"></span>
+                </div>
+                <div class="pages-board-preview">
+                  <div class="pages-node one">Editable board</div>
+                  <div class="pages-node two">Text graph export</div>
+                  <div class="pages-node three">AI-readable context</div>
+                  <div class="pages-line a"></div>
+                  <div class="pages-line b"></div>
+                  <div class="pages-line c"></div>
+                  <div class="pages-note">
+                    Local-first boards stay editable, while exports preserve structure for
+                    fast model recall.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="pages-grid" aria-label="Recall Board features">
+            <article class="pages-card">
+              <h2>Build Boards</h2>
+              <p>Create Excalidraw diagrams with shapes, arrows, text, templates, and recent-board persistence.</p>
+            </article>
+            <article class="pages-card">
+              <h2>Export Context</h2>
+              <p>Export AI context JSON, text graph JSON, Excalidraw scene files, and prompt-ready graph summaries.</p>
+            </article>
+            <article class="pages-card">
+              <h2>Run Locally</h2>
+              <p>Use the Windows installer, portable exe, browser dev mode, or Tauri desktop shell.</p>
+            </article>
+          </section>
+
+          <section class="pages-card" style="margin-top: 18px" aria-label="Download options">
+            <h2>Downloads</h2>
+            <div class="pages-downloads">
+              <a
+                class="pages-download"
+                href="https://github.com/arahe-dev/paper-recall/releases/download/v0.1.0/Recall-Board-Setup-0.1.0-x64.exe"
+              >
+                <span>
+                  <strong>Windows setup exe</strong>
+                  <span>Recommended installer for most testers.</span>
+                </span>
+                <span>Download</span>
+              </a>
+              <a
+                class="pages-download"
+                href="https://github.com/arahe-dev/paper-recall/releases/download/v0.1.0/Recall-Board-0.1.0-x64.msi"
+              >
+                <span>
+                  <strong>Windows MSI</strong>
+                  <span>Alternative installer package.</span>
+                </span>
+                <span>Download</span>
+              </a>
+              <a
+                class="pages-download"
+                href="https://github.com/arahe-dev/paper-recall/releases/download/v0.1.0/Recall-Board-Portable-0.1.0-x64.exe"
+              >
+                <span>
+                  <strong>Portable exe</strong>
+                  <span>Run without installing.</span>
+                </span>
+                <span>Download</span>
+              </a>
+              <a
+                class="pages-download"
+                href="https://github.com/arahe-dev/paper-recall/releases/download/v0.1.0/Recall-Board-Frameless-Setup-0.1.0-x64.exe"
+              >
+                <span>
+                  <strong>Frameless test build</strong>
+                  <span>Custom traffic-light window controls.</span>
+                </span>
+                <span>Download</span>
+              </a>
+            </div>
+          </section>
+
+          <footer class="pages-footer">
+            <span>Recall Board v0.1.0. Unsigned Windows test build.</span>
+            <span>
+              <a href="https://github.com/arahe-dev/paper-recall">GitHub</a>
+              &nbsp;/&nbsp;
+              <a href="docs/index.html">Documentation</a>
+            </span>
+          </footer>
+        </div>
+      </main>
+    </div>
+    <script type="module">
+      if (!location.hostname.endsWith("github.io")) {
+        import("/src/main.tsx");
+      }
+    </script>
   </body>
 </html>
