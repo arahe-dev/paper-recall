@@ -15,13 +15,16 @@
     "@tauri-apps/api": "^2.11.0",
     "@tauri-apps/plugin-dialog": "^2.7.1",
     "@tauri-apps/plugin-fs": "^2.5.1",
+    "d3-force": "^3.0.0",
     "dagre": "^0.8.5",
+    "minisearch": "^7.1.2",
     "react": "^19.2.5",
     "react-dom": "^19.2.5"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@tauri-apps/cli": "^2.11.0",
+    "@types/d3-force": "^3.0.10",
     "@types/dagre": "^0.7.54",
     "@types/node": "^24.12.2",
     "@types/react": "^19.2.14",

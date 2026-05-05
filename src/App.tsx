@@ -4,6 +4,9 @@ import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import "@excalidraw/excalidraw/index.css";
 import "./App.css";
 import HomeScreen from "./components/HomeScreen";
+import BacklinksPanel from "./components/BacklinksPanel";
+import GraphView from "./components/GraphView";
+import QuickSearch from "./components/QuickSearch";
 import ThemeToggle from "./components/ThemeToggle";
 import TemplateGallery from "./components/TemplateGallery";
 import TranscriptPanel from "./TranscriptPanel";
@@ -24,6 +27,7 @@ import {
   saveBoardWithDialog,
   openBoardWithDialog,
   loadBoard,
+  listBoards,
   deleteBoard,
   renameBoard,
   duplicateBoard,
@@ -38,6 +42,25 @@ import {
   saveAsTemplate,
   type RecallTemplate,
 } from "./utils/templateEngine";
+import {
+  getBacklinks,
+  getAllLinks,
+  getElementLinkTarget,
+  rebuildLinksFromBoards,
+  removeLinksForBoard,
+  syncBoardLinksFromElements,
+  withBoardLink,
+  type LinkableElement,
+  type LinkEntry,
+} from "./utils/linkEngine";
+import {
+  getSearchIndexStats,
+  indexBoard,
+  rebuildIndex,
+  removeBoard as removeIndexedBoard,
+  search as searchBoards,
+  type SearchResult,
+} from "./utils/searchIndex";
 
 type RecallExcalidrawAPI = ExcalidrawImperativeAPI & {
   scrollToContent?: (elements?: unknown, options?: { fitToViewport?: boolean; animate?: boolean }) => void;
@@ -65,9 +88,19 @@ declare global {
       loadScene: (scene: { elements: unknown[] }) => void;
       getSceneSnapshot: () => { elements: unknown[]; appState: unknown };
       getTextGraph: () => unknown;
+      rebuildSearchIndex?: () => Promise<unknown>;
+      getSearchIndexStats?: () => unknown;
+      searchBoards?: (query: string) => SearchResult[];
+      createBoardLink?: (targetBoardId: string, sourceElementId?: string) => Promise<boolean>;
+      getLinks?: () => LinkEntry[];
+      getBacklinks?: (boardId: string) => LinkEntry[];
+      openBoardById?: (boardId: string, path?: string) => Promise<boolean>;
+      saveCurrentBoard?: () => Promise<BoardMeta | null>;
     };
   }
 }
+
+type SidebarTab = "graph" | "backlinks";
 
 function App() {
   const { excalidrawTheme, canvasBackgroundColor } = useTheme();
@@ -89,6 +122,9 @@ function App() {
   const [recentBoards, setRecentBoards] = useState<BoardMeta[]>(getRecentBoards);
   const [showRecent, setShowRecent] = useState(false);
   const [showExport, setShowExport] = useState(false);
+  const [quickSearchOpen, setQuickSearchOpen] = useState(false);
+  const [sidebarTab, setSidebarTab] = useState<SidebarTab>("graph");
+  const [allLinks, setAllLinks] = useState<LinkEntry[]>(() => getAllLinks());
   const [showTemplateGallery, setShowTemplateGallery] = useState(false);
   const [homeDismissed, setHomeDismissed] = useState(false);
   const [activeElementCount, setActiveElementCount] = useState(0);
@@ -157,6 +193,39 @@ function App() {
       captureUpdate: "NEVER" as never,
     });
   }, [canvasBackgroundColor, excalidrawTheme]);
+
+  const refreshLinks = useCallback(() => {
+    setAllLinks(getAllLinks());
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    Promise.all([rebuildIndex(), rebuildLinksFromBoards()])
+      .then(() => {
+        if (!cancelled) {
+          refreshLinks();
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setLastLoadErrors([`Search/link index rebuild failed: ${err}`]);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [refreshLinks]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        setQuickSearchOpen(true);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const handleLoadDiagramSpec = useCallback(async (json: RecallDiagramSpecV0) => {
     const normalization = normalizeRecallDiagramSpec(json);
@@ -311,12 +380,21 @@ function App() {
     !isDirty || window.confirm("Discard unsaved changes?")
   ), [isDirty]);
 
+  const syncIndexesForBoard = useCallback(async (board: BoardMeta, scene: SceneData) => {
+    const elements = scene.elements as LooseElement[];
+    indexBoard(board, elements);
+    const boards = await listBoards();
+    syncBoardLinksFromElements(board, elements as LinkableElement[], boards);
+    refreshLinks();
+  }, [refreshLinks]);
+
   const saveSceneToBoard = useCallback(async (board: BoardMeta, scene: SceneData) => {
     saveInFlightRef.current = true;
     setIsSaving(true);
     try {
       const thumbnail = await createCurrentThumbnail();
       const updated = await saveBoard(thumbnail ? { ...board, thumbnail } : board, scene);
+      await syncIndexesForBoard(updated, scene);
       setCurrentBoard(updated);
       setRecentBoards(getRecentBoards());
       setIsDirty(false);
@@ -327,7 +405,7 @@ function App() {
       saveInFlightRef.current = false;
       setIsSaving(false);
     }
-  }, [createCurrentThumbnail]);
+  }, [createCurrentThumbnail, syncIndexesForBoard]);
 
   const handleNewBoard = useCallback(() => {
     if (!canDiscardDirty()) return;
@@ -347,40 +425,44 @@ function App() {
     setHomeDismissed(true);
   }, [handleNewBoard]);
 
-  const handleSaveAs = useCallback(async () => {
+  const handleSaveAs = useCallback(async (): Promise<BoardMeta | null> => {
     const scene = getCurrentScene();
     if (isTauriEnv()) {
       const meta = await saveBoardWithDialog(scene, currentBoard?.name || "board.excalidraw");
       if (meta) {
         const thumbnail = await createCurrentThumbnail();
         const updated = thumbnail ? await saveBoard({ ...meta, thumbnail }, scene) : meta;
+        await syncIndexesForBoard(updated, scene);
         setCurrentBoard(updated);
         setIsDirty(false);
         setLastSavedAt(updated.lastModified);
         setRecentBoards(getRecentBoards());
         setHomeDismissed(true);
+        return updated;
       }
+      return null;
     } else {
       const name = window.prompt("Board name", currentBoard?.name || "Untitled");
-      if (!name) return;
+      if (!name) return null;
       const meta = await createBoard(name.replace(/\.excalidraw$/i, ""), scene);
       const thumbnail = await createCurrentThumbnail();
       const updated = thumbnail ? await saveBoard({ ...meta, thumbnail }, scene) : meta;
+      await syncIndexesForBoard(updated, scene);
       setCurrentBoard(updated);
       setIsDirty(false);
       setLastSavedAt(updated.lastModified);
       setRecentBoards(getRecentBoards());
       setHomeDismissed(true);
+      return updated;
     }
-  }, [createCurrentThumbnail, currentBoard, getCurrentScene]);
+  }, [createCurrentThumbnail, currentBoard, getCurrentScene, syncIndexesForBoard]);
 
-  const handleSaveBoard = useCallback(async () => {
+  const handleSaveBoard = useCallback(async (): Promise<BoardMeta | null> => {
     const scene = getCurrentScene();
     if (currentBoard) {
-      await saveSceneToBoard(currentBoard, scene);
-    } else {
-      await handleSaveAs();
+      return saveSceneToBoard(currentBoard, scene);
     }
+    return handleSaveAs();
   }, [currentBoard, getCurrentScene, handleSaveAs, saveSceneToBoard]);
 
   const handleOpenBoard = useCallback(async () => {
@@ -422,6 +504,9 @@ function App() {
     e.stopPropagation();
     if (window.confirm(`Delete "${meta.name}"?`)) {
       await deleteBoard(meta);
+      removeIndexedBoard(meta.id);
+      removeLinksForBoard(meta.id);
+      refreshLinks();
       setRecentBoards(getRecentBoards());
       if (currentBoard?.path === meta.path) {
         setCurrentBoard(null);
@@ -431,7 +516,7 @@ function App() {
         setHomeDismissed(false);
       }
     }
-  }, [currentBoard]);
+  }, [currentBoard, refreshLinks]);
 
   const handleRenameBoard = useCallback(async () => {
     if (!currentBoard) {
@@ -442,6 +527,7 @@ function App() {
     if (!name || name.trim() === currentBoard.name) return;
     try {
       const updated = await renameBoard(currentBoard, name);
+      await syncIndexesForBoard(updated, getCurrentScene());
       setCurrentBoard(updated);
       setRecentBoards(getRecentBoards());
       setLastSavedAt(updated.lastModified);
@@ -449,7 +535,7 @@ function App() {
     } catch (err) {
       setLastLoadErrors([`Failed to rename board: ${err}`]);
     }
-  }, [currentBoard]);
+  }, [currentBoard, getCurrentScene, syncIndexesForBoard]);
 
   const handleDuplicateBoard = useCallback(async () => {
     if (!currentBoard) {
@@ -486,6 +572,9 @@ function App() {
     if (!window.confirm(`Delete "${currentBoard.name}"?`)) return;
     try {
       await deleteBoard(currentBoard);
+      removeIndexedBoard(currentBoard.id);
+      removeLinksForBoard(currentBoard.id);
+      refreshLinks();
       apiRef.current?.resetScene();
       setCurrentBoard(null);
       setIsDirty(false);
@@ -497,7 +586,183 @@ function App() {
     } catch (err) {
       setLastLoadErrors([`Failed to delete board: ${err}`]);
     }
+  }, [currentBoard, refreshLinks]);
+
+  const findBoardMeta = useCallback(async (boardId: string, path?: string): Promise<BoardMeta | null> => {
+    const boards = [...recentBoards, ...(await listBoards())];
+    const seen = new Set<string>();
+    const unique = boards.filter((board) => {
+      const key = `${board.id}|${board.path}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+    const found = unique.find((board) => board.id === boardId || (path && board.path === path));
+    if (found) return found;
+    if (path) {
+      return {
+        id: boardId,
+        name: path.split(/[\\/]/).pop()?.replace(/\.excalidraw$/i, "") || boardId,
+        path,
+        lastModified: Date.now(),
+        elementCount: 0,
+      };
+    }
+    return null;
+  }, [recentBoards]);
+
+  const scrollToElement = useCallback((elementId: string | undefined, elements: unknown[]) => {
+    window.setTimeout(() => {
+      const api = apiRef.current as RecallExcalidrawAPI | null;
+      if (!api?.scrollToContent) return;
+      const activeElements = (elements as LooseElement[]).filter((element) => !element.isDeleted);
+      const target = elementId
+        ? activeElements.find((element) => element.id === elementId)
+        : null;
+      api.scrollToContent(target ? [target] : activeElements, {
+        fitToViewport: true,
+        animate: true,
+      });
+    }, 80);
+  }, []);
+
+  const handleOpenBoardById = useCallback(async (boardId: string, path?: string): Promise<boolean> => {
+    if (!canDiscardDirty()) return false;
+    const meta = await findBoardMeta(boardId, path);
+    if (!meta) {
+      setLastLoadErrors([`Board not found: ${boardId}`]);
+      return false;
+    }
+    const scene = await loadBoard(meta);
+    if (!scene) {
+      setLastLoadErrors([`Failed to load board: ${meta.name}`]);
+      return false;
+    }
+    restoreScene(scene);
+    setCurrentBoard(meta);
+    setIsDirty(false);
+    setLastSavedAt(meta.lastModified);
+    setRecentBoards(getRecentBoards());
+    setShowRecent(false);
+    setHomeDismissed(true);
+    setLastLoadErrors([]);
+    scrollToElement(undefined, scene.elements);
+    return true;
+  }, [canDiscardDirty, findBoardMeta, restoreScene, scrollToElement]);
+
+  const handleOpenSearchResult = useCallback(async (result: SearchResult) => {
+    if (!canDiscardDirty()) return;
+    const meta: BoardMeta = {
+      id: result.boardId,
+      name: result.boardName,
+      path: result.boardPath,
+      lastModified: result.boardLastModified,
+      elementCount: result.boardElementCount,
+    };
+    const scene = await loadBoard(meta);
+    if (!scene) {
+      setLastLoadErrors([`Failed to load board: ${result.boardName}`]);
+      return;
+    }
+    restoreScene(scene);
+    setCurrentBoard(meta);
+    setIsDirty(false);
+    setLastSavedAt(meta.lastModified);
+    setRecentBoards(getRecentBoards());
+    setQuickSearchOpen(false);
+    setHomeDismissed(true);
+    setLastLoadErrors([]);
+    scrollToElement(result.elementId, scene.elements);
+  }, [canDiscardDirty, restoreScene, scrollToElement]);
+
+  const selectBoardLinkTarget = useCallback(async (targetBoardId?: string): Promise<BoardMeta | null> => {
+    const boards = await listBoards();
+    const candidates = boards.filter((board) => board.id !== currentBoard?.id);
+    if (targetBoardId) {
+      return candidates.find((board) => board.id === targetBoardId || board.path === targetBoardId) || null;
+    }
+    if (candidates.length === 0) return null;
+    const options = candidates
+      .map((board, index) => `${index + 1}. ${board.name}`)
+      .join("\n");
+    const answer = window.prompt(`Link selected element to board:\n${options}`, "1");
+    if (!answer) return null;
+    const numeric = Number.parseInt(answer, 10);
+    if (Number.isFinite(numeric) && numeric >= 1 && numeric <= candidates.length) {
+      return candidates[numeric - 1];
+    }
+    return candidates.find((board) => (
+      board.name.toLowerCase() === answer.trim().toLowerCase() ||
+      board.id === answer.trim()
+    )) || null;
   }, [currentBoard]);
+
+  const firstLinkableElementId = useCallback((sourceElementId?: string): string | null => {
+    const elements = (
+      (apiRef.current as RecallExcalidrawAPI | null)?.getSceneElementsIncludingDeleted?.() ||
+      apiRef.current?.getSceneElements() ||
+      elementsRef.current
+    ) as readonly LooseElement[];
+    if (sourceElementId && elements.some((element) => element.id === sourceElementId && !element.isDeleted)) {
+      return sourceElementId;
+    }
+    const selectedElementIds = apiRef.current?.getAppState().selectedElementIds as Record<string, boolean> | undefined;
+    const selectedId = Object.entries(selectedElementIds || {})
+      .find(([id, selected]) => selected && elements.some((element) => element.id === id && !element.isDeleted))?.[0];
+    if (selectedId) return selectedId;
+    return elements.find((element) => !element.isDeleted && element.type !== "text")?.id ||
+      elements.find((element) => !element.isDeleted)?.id ||
+      null;
+  }, []);
+
+  const handleCreateBoardLink = useCallback(async (
+    targetBoardId?: string,
+    sourceElementId?: string
+  ): Promise<boolean> => {
+    if (!currentBoard) {
+      setLastLoadErrors(["Save the current board before linking it to another board."]);
+      return false;
+    }
+    const target = await selectBoardLinkTarget(targetBoardId);
+    if (!target) {
+      setLastLoadErrors(["No target board selected for link."]);
+      return false;
+    }
+    const elementId = firstLinkableElementId(sourceElementId);
+    if (!elementId) {
+      setLastLoadErrors(["Select or create an element before adding a board link."]);
+      return false;
+    }
+
+    const currentElements = (
+      (apiRef.current as RecallExcalidrawAPI | null)?.getSceneElementsIncludingDeleted?.() ||
+      apiRef.current?.getSceneElements() ||
+      elementsRef.current
+    ) as readonly LinkableElement[];
+    const updatedElements = currentElements.map((element) => (
+      element.id === elementId
+        ? withBoardLink(element, target, "board-link")
+        : element
+    ));
+    apiRef.current?.updateScene({
+      elements: updatedElements as never,
+      captureUpdate: "IMMEDIATELY" as never,
+    });
+    elementsRef.current = updatedElements as readonly LooseElement[];
+    syncBoardLinksFromElements(currentBoard, updatedElements, await listBoards());
+    refreshLinks();
+    setIsDirty(true);
+    setSidebarTab("backlinks");
+    setLastLoadErrors([]);
+    return true;
+  }, [currentBoard, firstLinkableElementId, refreshLinks, selectBoardLinkTarget]);
+
+  const handleLinkOpen = useCallback((element: unknown, event: CustomEvent) => {
+    const targetId = getElementLinkTarget(element as LinkableElement);
+    if (!targetId) return;
+    event.preventDefault();
+    void handleOpenBoardById(targetId);
+  }, [handleOpenBoardById]);
 
   const handleAutoSaveToggle = useCallback((enabled: boolean) => {
     setAutoSaveEnabled(enabled);
@@ -523,6 +788,7 @@ function App() {
         restoreScene(scene);
         const name = file.name.replace(/\.excalidraw$|\.json$/i, "") || "Imported";
         const meta = await createBoard(name, scene);
+        await syncIndexesForBoard(meta, scene);
         setCurrentBoard(meta);
         setIsDirty(false);
         setLastSavedAt(meta.lastModified);
@@ -534,7 +800,7 @@ function App() {
       }
       e.target.value = "";
     },
-    [restoreScene]
+    [restoreScene, syncIndexesForBoard]
   );
 
   useEffect(() => {
@@ -564,7 +830,9 @@ function App() {
         autoSavePromptedRef.current = true;
         const name = window.prompt("Name this board for auto-save", "Untitled");
         if (!name) return;
-        const meta = await createBoard(name, getCurrentScene());
+        const scene = getCurrentScene();
+        const meta = await createBoard(name, scene);
+        await syncIndexesForBoard(meta, scene);
         setCurrentBoard(meta);
         setIsDirty(false);
         setLastSavedAt(meta.lastModified);
@@ -577,7 +845,7 @@ function App() {
     }, 30000);
 
     return () => window.clearInterval(timer);
-  }, [autoSaveEnabled, currentBoard, getCurrentScene, isDirty, saveSceneToBoard]);
+  }, [autoSaveEnabled, currentBoard, getCurrentScene, isDirty, saveSceneToBoard, syncIndexesForBoard]);
 
   const handleFileInput = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -666,6 +934,9 @@ function App() {
   const handleDeleteRecentCard = useCallback(async (meta: BoardMeta) => {
     if (!window.confirm(`Delete "${meta.name}"?`)) return;
     await deleteBoard(meta);
+    removeIndexedBoard(meta.id);
+    removeLinksForBoard(meta.id);
+    refreshLinks();
     setRecentBoards(getRecentBoards());
     if (currentBoard?.path === meta.path) {
       apiRef.current?.resetScene();
@@ -675,7 +946,21 @@ function App() {
       setActiveElementCount(0);
       setHomeDismissed(false);
     }
-  }, [currentBoard]);
+  }, [currentBoard, refreshLinks]);
+
+  useEffect(() => {
+    window.__RECALL_API__ = {
+      ...(window.__RECALL_API__ || {}),
+      rebuildSearchIndex: rebuildIndex,
+      getSearchIndexStats,
+      searchBoards: (query: string) => searchBoards(query),
+      createBoardLink: handleCreateBoardLink,
+      getLinks: getAllLinks,
+      getBacklinks: (boardId: string) => getBacklinks(boardId),
+      openBoardById: handleOpenBoardById,
+      saveCurrentBoard: handleSaveBoard,
+    } as Window["__RECALL_API__"];
+  }, [handleCreateBoardLink, handleOpenBoardById, handleSaveBoard]);
 
   const saveStatus = isSaving
     ? "saving"
@@ -684,6 +969,10 @@ function App() {
       : lastSavedAt
         ? "saved"
         : "new";
+  const currentBacklinks = currentBoard
+    ? allLinks.filter((entry) => entry.targetBoardId === currentBoard.id)
+    : [];
+  const showSidePanel = homeDismissed || Boolean(currentBoard) || recentBoards.length > 0 || allLinks.length > 0;
 
   return (
     <div className="app-shell">
@@ -706,6 +995,8 @@ function App() {
           <button onClick={handleRenameBoard}>Rename</button>
           <button onClick={handleDuplicateBoard}>Duplicate</button>
           <button onClick={handleDeleteCurrentBoard}>Delete</button>
+          <button onClick={() => setQuickSearchOpen(true)}>Search</button>
+          <button onClick={() => void handleCreateBoardLink()}>Link Board</button>
           <button onClick={() => {
             setShowTemplateGallery(!showTemplateGallery);
             setShowRecent(false);
@@ -821,6 +1112,7 @@ function App() {
         <Excalidraw
           onChange={handleChange}
           excalidrawAPI={handleExcalidrawAPI}
+          onLinkOpen={handleLinkOpen}
           theme={excalidrawTheme}
         />
         {!homeDismissed && !currentBoard && activeElementCount === 0 && (
@@ -848,7 +1140,52 @@ function App() {
             </div>
           </div>
         )}
+        {showSidePanel && (
+          <aside className="board-side-panel glass-panel">
+            <div className="side-panel-header">
+              <button
+                type="button"
+                className={sidebarTab === "graph" ? "active" : ""}
+                onClick={() => setSidebarTab("graph")}
+              >
+                Graph
+              </button>
+              <button
+                type="button"
+                className={sidebarTab === "backlinks" ? "active" : ""}
+                onClick={() => setSidebarTab("backlinks")}
+              >
+                Backlinks
+              </button>
+            </div>
+            <div className="side-panel-body">
+              {sidebarTab === "graph" ? (
+                <GraphView
+                  boards={recentBoards}
+                  links={allLinks}
+                  currentBoardId={currentBoard?.id}
+                  onOpenBoard={(boardId, path) => void handleOpenBoardById(boardId, path)}
+                />
+              ) : currentBoard ? (
+                <BacklinksPanel
+                  backlinks={currentBacklinks}
+                  onOpenBoard={(boardId, path) => void handleOpenBoardById(boardId, path)}
+                />
+              ) : (
+                <div className="backlinks-empty">
+                  <strong>No board selected</strong>
+                  <span>Open a saved board to inspect backlinks.</span>
+                </div>
+              )}
+            </div>
+          </aside>
+        )}
       </main>
+      <QuickSearch
+        open={quickSearchOpen}
+        onClose={() => setQuickSearchOpen(false)}
+        onOpenResult={(result) => void handleOpenSearchResult(result)}
+      />
       {showTranscript && (
         <TranscriptPanel onClose={() => setShowTranscript(false)} />
       )}
