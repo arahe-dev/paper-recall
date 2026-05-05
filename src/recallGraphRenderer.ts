@@ -5,6 +5,11 @@ import { validateRecallGraphIR } from "./recallGraphIR";
 import { computeLayout } from "./layoutEngine";
 import { layoutToExcalidrawSkeleton } from "./excalidrawAdapter";
 import { getPreset, type StylePreset } from "./stylePresets";
+import {
+  normalizeRecallDiagramSpec,
+  recallDiagramSpecToGraphIR,
+  type RecallDiagramSpecV0,
+} from "./recallDiagramSpec";
 
 export interface RenderResult {
   valid: boolean;
@@ -35,8 +40,32 @@ export function renderRecallGraphIR(
   };
 }
 
+export function renderRecallDiagramSpec(
+  spec: RecallDiagramSpecV0,
+  styleName?: string
+): RenderResult & { graph?: RecallGraphIR; warnings?: string[] } {
+  const normalization = normalizeRecallDiagramSpec(spec);
+  if (!normalization.valid || !normalization.spec) {
+    return {
+      valid: false,
+      errors: normalization.errors,
+      warnings: normalization.warnings,
+      elements: [],
+      bounds: { minX: 0, minY: 0, maxX: 0, maxY: 0 },
+    };
+  }
+  const graph = recallDiagramSpecToGraphIR(normalization.spec);
+  const result = renderRecallGraphIR(graph, styleName);
+  return {
+    ...result,
+    graph,
+    warnings: normalization.warnings,
+  };
+}
+
 export { getPreset, type StylePreset };
 export { validateRecallGraphIR, computeLayout, layoutToExcalidrawSkeleton };
+export { normalizeRecallDiagramSpec, recallDiagramSpecToGraphIR, validateRecallDiagramSpec } from "./recallDiagramSpec";
 
 /**
  * Export a Recall Graph IR as Mermaid-like text for debugging/inspection.

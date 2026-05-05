@@ -370,6 +370,54 @@ PRESETS.readable_control_system = {
   siblingSpacing: 48,
 };
 
+PRESETS.readable_system_architecture = {
+  ...PRESETS.readable_spacious,
+  name: "readable_system_architecture",
+  description: "System architecture style with clear LR service boundaries and roomy edge labels.",
+  nodeMinWidth: 130,
+  nodeMaxWidth: 340,
+  verticalSpacing: 130,
+  horizontalSpacing: 95,
+  siblingSpacing: 42,
+  subtreeBackgroundColor: "#edf2f7",
+  subtreeBackgroundOpacity: 18,
+};
+
+PRESETS.readable_timeline = {
+  ...PRESETS.readable_long,
+  name: "readable_timeline",
+  description: "Horizontal timeline style with compact milestones and readable sequencing.",
+  nodeMinWidth: 150,
+  nodeMaxWidth: 320,
+  verticalSpacing: 90,
+  horizontalSpacing: 90,
+  siblingSpacing: 40,
+  subtreeBackgroundOpacity: 0,
+};
+
+PRESETS.readable_matrix = {
+  ...PRESETS.readable_spacious,
+  name: "readable_matrix",
+  description: "Comparison matrix style with stable cells and readable labels.",
+  nodeMinWidth: 150,
+  nodeMaxWidth: 320,
+  verticalSpacing: 85,
+  horizontalSpacing: 80,
+  siblingSpacing: 32,
+  subtreeBackgroundOpacity: 0,
+};
+
+PRESETS.readable_cycle = {
+  ...PRESETS.readable_radial,
+  name: "readable_cycle",
+  description: "Circular cycle style with enough radius to keep arrows and labels clear.",
+  nodeMinWidth: 130,
+  nodeMaxWidth: 300,
+  hubRadius: 260,
+  siblingSpacing: 52,
+  subtreeBackgroundOpacity: 0,
+};
+
 export function getPreset(name: string): StylePreset {
   const preset = PRESETS[name];
   if (!preset) {

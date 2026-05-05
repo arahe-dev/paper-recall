@@ -7,6 +7,11 @@ import TranscriptPanel from "./TranscriptPanel";
 import { buildBoardTextGraph } from "./boardTextGraph";
 import { renderRecallGraphIR } from "./recallGraphRenderer";
 import type { RecallGraphIR } from "./recallGraphIR";
+import {
+  normalizeRecallDiagramSpec,
+  recallDiagramSpecToGraphIR,
+  type RecallDiagramSpecV0,
+} from "./recallDiagramSpec";
 
 // Minimal local types to avoid strict import issues for this prototype
 type LooseElement = {
@@ -303,6 +308,8 @@ declare global {
   interface Window {
     __RECALL_API__?: {
       loadGraph: (json: RecallGraphIR) => Promise<{ success: boolean; errors: string[] }>;
+      loadDiagramSpec: (json: RecallDiagramSpecV0) => Promise<{ success: boolean; errors: string[]; warnings: string[]; graph?: RecallGraphIR }>;
+      normalizeDiagramSpec: (json: unknown) => ReturnType<typeof normalizeRecallDiagramSpec>;
       exportPNG: (filename?: string) => Promise<void>;
       loadScene: (scene: { elements: unknown[] }) => void;
       getSceneSnapshot: () => { elements: unknown[]; appState: unknown };
@@ -359,6 +366,21 @@ function App() {
     return { success: true, errors: [] };
   }, []);
 
+  const handleLoadDiagramSpec = useCallback(async (json: RecallDiagramSpecV0) => {
+    const normalization = normalizeRecallDiagramSpec(json);
+    if (!normalization.valid || !normalization.spec) {
+      setLastLoadErrors(normalization.errors);
+      return { success: false, errors: normalization.errors, warnings: normalization.warnings };
+    }
+    const graph = recallDiagramSpecToGraphIR(normalization.spec);
+    const loaded = await handleLoadGraph(graph);
+    return {
+      ...loaded,
+      warnings: normalization.warnings,
+      graph,
+    };
+  }, [handleLoadGraph]);
+
   const handleExportPNG = useCallback(async (filename?: string) => {
     const api = apiRef.current;
     if (!api) return;
@@ -378,6 +400,8 @@ function App() {
   useEffect(() => {
     window.__RECALL_API__ = {
       loadGraph: handleLoadGraph,
+      loadDiagramSpec: handleLoadDiagramSpec,
+      normalizeDiagramSpec: normalizeRecallDiagramSpec,
       exportPNG: handleExportPNG,
       loadScene: (scene: { elements: any[] }) => {
         const restored = restoreElements(scene.elements, null);
@@ -427,7 +451,7 @@ function App() {
     return () => {
       delete window.__RECALL_API__;
     };
-  }, [handleLoadGraph, handleExportPNG]);
+  }, [handleLoadGraph, handleLoadDiagramSpec, handleExportPNG]);
 
   const handleFileInput = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -435,14 +459,18 @@ function App() {
       if (!file) return;
       const text = await file.text();
       try {
-        const json = JSON.parse(text) as RecallGraphIR;
-        await handleLoadGraph(json);
+        const json = JSON.parse(text) as RecallGraphIR | RecallDiagramSpecV0;
+        if ((json as { schema?: string }).schema === "recall-diagram-spec-v0") {
+          await handleLoadDiagramSpec(json as RecallDiagramSpecV0);
+        } else {
+          await handleLoadGraph(json as RecallGraphIR);
+        }
       } catch (err) {
         setLastLoadErrors([`Failed to parse JSON: ${err}`]);
       }
       e.target.value = "";
     },
-    [handleLoadGraph]
+    [handleLoadGraph, handleLoadDiagramSpec]
   );
 
   const handleExportScene = useCallback(() => {

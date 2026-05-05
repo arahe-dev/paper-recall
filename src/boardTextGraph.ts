@@ -2,6 +2,7 @@ export type TextGraphNode = {
   id: string;
   label: string;
   body?: string;
+  recall_node_id?: string;
   source_shape_id?: string;
   source_text_ids: string[];
   shape_type?: string;
@@ -19,8 +20,27 @@ export type TextGraphEdge = {
   relation: "arrow";
   status: "bound_visual_relation" | "loose_inferred_relation";
   source_arrow_id: string;
+  recall_edge_id?: string;
+  semantic_relation?: string;
   confidence: number;
   plain_text: string;
+};
+
+export type TextGraphGroup = {
+  id: string;
+  label: string;
+  node_ids: string[];
+  source_element_id: string;
+  bounds: { x: number; y: number; width: number; height: number };
+};
+
+export type TextGraphAnnotation = {
+  id: string;
+  text: string;
+  kind?: string;
+  target_ids: string[];
+  source_element_id: string;
+  bounds: { x: number; y: number; width: number; height: number };
 };
 
 export type UnresolvedArrow = {
@@ -80,11 +100,15 @@ export type BoardTextGraph = {
     deleted_element_count: number;
     node_count: number;
     edge_count: number;
+    group_count: number;
+    annotation_count: number;
     unresolved_arrow_count: number;
     ungrouped_text_count: number;
   };
   nodes: TextGraphNode[];
   edges: TextGraphEdge[];
+  groups: TextGraphGroup[];
+  annotations: TextGraphAnnotation[];
   unresolved_arrows: UnresolvedArrow[];
   ungrouped_text: UngroupedText[];
   graph_insights: GraphInsights;
@@ -129,6 +153,21 @@ function textLines(text: string | undefined): string[] {
     .filter(Boolean);
 }
 
+function shouldIgnoreInTextGraph(el: LooseEl): boolean {
+  return el.customData?.recallIgnoreInTextGraph === true;
+}
+
+function customString(el: LooseEl, key: string): string | undefined {
+  const value = el.customData?.[key];
+  return typeof value === "string" && value.trim() ? value.trim() : undefined;
+}
+
+function customStringArray(el: LooseEl, key: string): string[] {
+  const value = el.customData?.[key];
+  if (!Array.isArray(value)) return [];
+  return value.filter((item): item is string => typeof item === "string" && item.trim().length > 0);
+}
+
 function pointToRectDist(
   px: number, py: number,
   rx: number, ry: number, rw: number, rh: number
@@ -143,11 +182,36 @@ function pointToRectDist(
 export function buildBoardTextGraph(elements: readonly LooseEl[]): BoardTextGraph {
   const active = elements.filter((el) => !el.isDeleted);
   const deleted = elements.filter((el) => el.isDeleted);
+  const ignoredElementIds = new Set(active.filter(shouldIgnoreInTextGraph).map((el) => el.id));
+  const semanticActive = active.filter(
+    (el) => !shouldIgnoreInTextGraph(el) && !(el.containerId && ignoredElementIds.has(el.containerId))
+  );
 
-  const arrows = active.filter((el) => el.type === "arrow");
+  const groups: TextGraphGroup[] = active
+    .filter((el) => customString(el, "recallGroupId"))
+    .map((el) => ({
+      id: customString(el, "recallGroupId") || el.id,
+      label: customString(el, "recallLabel") || customString(el, "recallGroupId") || el.id,
+      node_ids: customStringArray(el, "recallNodeIds"),
+      source_element_id: el.id,
+      bounds: { x: el.x, y: el.y, width: el.width, height: el.height },
+    }));
+
+  const annotations: TextGraphAnnotation[] = active
+    .filter((el) => customString(el, "recallAnnotationId"))
+    .map((el) => ({
+      id: customString(el, "recallAnnotationId") || el.id,
+      text: customString(el, "recallLabel") || el.text?.trim() || "",
+      ...(customString(el, "recallKind") ? { kind: customString(el, "recallKind") } : {}),
+      target_ids: customStringArray(el, "recallTargetIds"),
+      source_element_id: el.id,
+      bounds: { x: el.x, y: el.y, width: el.width, height: el.height },
+    }));
+
+  const arrows = semanticActive.filter((el) => el.type === "arrow");
   const arrowIds = new Set(arrows.map((el) => el.id));
-  const shapes = active.filter(isSemanticShape);
-  const texts = active.filter((el) => el.type === "text");
+  const shapes = semanticActive.filter(isSemanticShape);
+  const texts = semanticActive.filter((el) => el.type === "text");
   const arrowLabelTexts = texts.filter((el) => el.containerId && arrowIds.has(el.containerId));
   const nodeTexts = texts.filter((el) => !(el.containerId && arrowIds.has(el.containerId)));
 
@@ -159,7 +223,7 @@ export function buildBoardTextGraph(elements: readonly LooseEl[]): BoardTextGrap
     arrowLabels.set(text.containerId, existing ? `${existing} ${label}` : label);
   }
 
-  const activeIds = new Set(active.map((el) => el.id));
+  const activeIds = new Set(semanticActive.map((el) => el.id));
 
   // --- Group text into shapes ---
 
@@ -236,10 +300,12 @@ export function buildBoardTextGraph(elements: readonly LooseEl[]): BoardTextGrap
       }
     }
 
-    const nodeId = `node_${shape.id}`;
+    const recallNodeId = customString(shape, "recallNodeId");
+    const nodeId = recallNodeId || `node_${shape.id}`;
     const node: TextGraphNode = {
       id: nodeId,
       label: labelText || `[unlabeled ${shape.type}]`,
+      ...(recallNodeId ? { recall_node_id: recallNodeId } : {}),
       source_shape_id: shape.id,
       source_text_ids: matchedTexts.map((t) => t.id),
       shape_type: shape.type,
@@ -249,6 +315,7 @@ export function buildBoardTextGraph(elements: readonly LooseEl[]): BoardTextGrap
 
     nodes.push(node);
     idToNodeId.set(shape.id, nodeId);
+    if (recallNodeId) idToNodeId.set(recallNodeId, nodeId);
     for (const t of matchedTexts) {
       textIdToParentNodeId.set(t.id, nodeId);
       idToNodeId.set(t.id, nodeId);
@@ -344,9 +411,13 @@ export function buildBoardTextGraph(elements: readonly LooseEl[]): BoardTextGrap
     let toNode: string | null = null;
     const fromElId = sbValid ? sb!.elementId : null;
     const toElId = ebValid ? eb!.elementId : null;
+    const recallFromNodeId = customString(arrow, "recallFromNodeId");
+    const recallToNodeId = customString(arrow, "recallToNodeId");
 
     if (fromElId && idToNodeId.has(fromElId)) fromNode = idToNodeId.get(fromElId)!;
     if (toElId && idToNodeId.has(toElId)) toNode = idToNodeId.get(toElId)!;
+    if (!fromNode && recallFromNodeId && idToNodeId.has(recallFromNodeId)) fromNode = idToNodeId.get(recallFromNodeId)!;
+    if (!toNode && recallToNodeId && idToNodeId.has(recallToNodeId)) toNode = idToNodeId.get(recallToNodeId)!;
 
     if (!fromNode || !toNode) {
       const startPt = arrowEndpoint(arrow, false);
@@ -372,21 +443,29 @@ export function buildBoardTextGraph(elements: readonly LooseEl[]): BoardTextGrap
       const fromLabel = fromN?.label || "?";
       const toLabel = toN?.label || "?";
       const edgeLabel = arrowLabels.get(arrow.id)?.trim();
+      const recallEdgeId = customString(arrow, "recallEdgeId");
+      const recallLabel = customString(arrow, "recallLabel");
+      const semanticRelation = customString(arrow, "recallRelation");
+      const finalEdgeLabel = edgeLabel || recallLabel;
       const plainText = edgeLabel
         ? `${fromLabel} connects to ${toLabel} (${edgeLabel})`
+        : finalEdgeLabel
+          ? `${fromLabel} connects to ${toLabel} (${finalEdgeLabel})`
         : `${fromLabel} connects to ${toLabel}`;
 
       edges.push({
-        id: `edge_${String(edgeCounter).padStart(3, "0")}`,
+        id: recallEdgeId || `edge_${String(edgeCounter).padStart(3, "0")}`,
         from_node_id: fromNode,
         to_node_id: toNode,
         from_label: fromLabel,
         to_label: toLabel,
-        ...(edgeLabel ? { label: edgeLabel } : {}),
+        ...(finalEdgeLabel ? { label: finalEdgeLabel } : {}),
         direction: "from_to",
         relation: "arrow",
         status: bound ? "bound_visual_relation" : "loose_inferred_relation",
         source_arrow_id: arrow.id,
+        ...(recallEdgeId ? { recall_edge_id: recallEdgeId } : {}),
+        ...(semanticRelation ? { semantic_relation: semanticRelation } : {}),
         confidence: bound ? 1.0 : 0.75,
         plain_text: plainText,
       });
@@ -582,6 +661,12 @@ export function buildBoardTextGraph(elements: readonly LooseEl[]): BoardTextGrap
     : "- Lowest confidence edge: none";
   const unresolvedFlag = unresolvedArrows.length > 0 ? `- Unresolved arrows: ${unresolvedArrows.length}` : "- Unresolved arrows: none";
   const ungroupedFlag = ungroupedText.length > 0 ? `- Ungrouped text: ${ungroupedText.length} items` : "- Ungrouped text: none";
+  const groupList = groups.length > 0
+    ? "\n## Groups\n" + groups.map((group) => `- ${group.label}: ${group.node_ids.join(", ")}`).join("\n")
+    : "\n## Groups\n(none)";
+  const annotationList = annotations.length > 0
+    ? "\n## Annotations\n" + annotations.map((annotation) => `- ${annotation.text}`).join("\n")
+    : "\n## Annotations\n(none)";
 
   const plain_text_graph = `# Board Text Graph
 
@@ -600,6 +685,8 @@ ${nodeList}
 
 ## Edges
 ${edgeList}
+${groupList}
+${annotationList}
 ${unresolvedList}
 ${ungroupedList}`;
 
@@ -611,11 +698,15 @@ ${ungroupedList}`;
       deleted_element_count: deleted.length,
       node_count: nodes.length,
       edge_count: edges.length,
+      group_count: groups.length,
+      annotation_count: annotations.length,
       unresolved_arrow_count: unresolvedArrows.length,
       ungrouped_text_count: ungroupedText.length,
     },
     nodes,
     edges,
+    groups,
+    annotations,
     unresolved_arrows: unresolvedArrows,
     ungrouped_text: ungroupedText,
     graph_insights,

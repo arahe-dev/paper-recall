@@ -1,5 +1,5 @@
 import dagre from "dagre";
-import type { RecallGraphIR, RecallGraphNode } from "./recallGraphIR";
+import type { RecallGraphAnnotation, RecallGraphGroup, RecallGraphIR, RecallGraphNode } from "./recallGraphIR";
 import type { StylePreset } from "./stylePresets";
 
 export interface PositionedNode {
@@ -28,10 +28,33 @@ export interface PositionedEdge {
 export interface LayoutResult {
   nodes: PositionedNode[];
   edges: PositionedEdge[];
+  groups?: PositionedGroup[];
+  annotations?: PositionedAnnotation[];
   bounds: { minX: number; minY: number; maxX: number; maxY: number };
   strategy?: string;
   direction?: "TD" | "LR" | "BT" | "RL";
   childrenMap?: Map<string, string[]>;
+}
+
+export interface PositionedGroup {
+  id: string;
+  label?: string;
+  nodeIds: string[];
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+export interface PositionedAnnotation {
+  id: string;
+  text: string;
+  kind?: string;
+  targetIds: string[];
+  x: number;
+  y: number;
+  width: number;
+  height: number;
 }
 
 function estimateTextWidth(text: string, fontSize: number): number {
@@ -78,6 +101,18 @@ function computeNodeSize(node: RecallGraphNode, preset: StylePreset): { width: n
   }
 
   return { width, height };
+}
+
+function parseLayoutHint(hint: string | undefined): Record<string, string> {
+  const result: Record<string, string> = {};
+  if (!hint) return result;
+  for (const part of hint.split(";")) {
+    const [rawKey, ...rawValue] = part.split(":");
+    const key = rawKey?.trim();
+    const value = rawValue.join(":").trim();
+    if (key && value) result[key] = value;
+  }
+  return result;
 }
 
 function sortChildren(
@@ -348,6 +383,152 @@ function layoutHubSpoke(
 
   const direction = graph.layout.direction || "TD";
   return finalizeLayout(graph, positioned, childrenMap, preset.siblingSpacing, direction);
+}
+
+function edgeListFromGraph(graph: RecallGraphIR): PositionedEdge[] {
+  return [...graph.edges]
+    .sort((a, b) => {
+      const oa = a.order ?? Infinity;
+      const ob = b.order ?? Infinity;
+      if (oa !== ob) return oa - ob;
+      return a.id.localeCompare(b.id);
+    })
+    .map((e) => ({
+      id: e.id,
+      from: e.from,
+      to: e.to,
+      label: e.label,
+      kind: e.relation,
+    }));
+}
+
+function layoutTimeline(graph: RecallGraphIR, preset: StylePreset, childrenMap: Map<string, string[]>): LayoutResult {
+  const positioned = new Map<string, PositionedNode>();
+  const sorted = [...graph.nodes].sort((a, b) => {
+    const oa = a.order ?? Infinity;
+    const ob = b.order ?? Infinity;
+    if (oa !== ob) return oa - ob;
+    return a.id.localeCompare(b.id);
+  });
+
+  let x = 0;
+  const y = 0;
+  for (const node of sorted) {
+    const size = computeNodeSize(node, preset);
+    positioned.set(node.id, {
+      id: node.id,
+      x,
+      y,
+      width: Math.max(size.width, preset.nodeMinWidth),
+      height: size.height,
+      label: node.label,
+      body: node.body,
+      kind: node.kind,
+      level: 0,
+      children: childrenMap.get(node.id) || [],
+    });
+    x += Math.max(size.width, preset.nodeMinWidth) + preset.horizontalSpacing;
+  }
+
+  return finalizeManualLayout(graph, positioned, childrenMap, graph.layout.direction || "LR");
+}
+
+function layoutMatrix(graph: RecallGraphIR, preset: StylePreset, childrenMap: Map<string, string[]>): LayoutResult {
+  const positioned = new Map<string, PositionedNode>();
+  const sorted = [...graph.nodes].sort((a, b) => {
+    const oa = a.order ?? Infinity;
+    const ob = b.order ?? Infinity;
+    if (oa !== ob) return oa - ob;
+    return a.id.localeCompare(b.id);
+  });
+
+  const entries = sorted.map((node, index) => {
+    const hint = parseLayoutHint(node.layout_hint);
+    const fallbackColumnCount = Math.max(1, Math.ceil(Math.sqrt(sorted.length)));
+    const row = Number.isFinite(Number(hint.row)) ? Number(hint.row) : Math.floor(index / fallbackColumnCount);
+    const column = Number.isFinite(Number(hint.column)) ? Number(hint.column) : index % fallbackColumnCount;
+    const size = computeNodeSize(node, preset);
+    return { node, row, column, size };
+  });
+
+  const colWidths = new Map<number, number>();
+  const rowHeights = new Map<number, number>();
+  for (const entry of entries) {
+    colWidths.set(entry.column, Math.max(colWidths.get(entry.column) || 0, entry.size.width));
+    rowHeights.set(entry.row, Math.max(rowHeights.get(entry.row) || 0, entry.size.height));
+  }
+  const columns = [...colWidths.keys()].sort((a, b) => a - b);
+  const rows = [...rowHeights.keys()].sort((a, b) => a - b);
+  const xByColumn = new Map<number, number>();
+  const yByRow = new Map<number, number>();
+  let x = 0;
+  for (const column of columns) {
+    xByColumn.set(column, x);
+    x += (colWidths.get(column) || preset.nodeWidth) + preset.horizontalSpacing;
+  }
+  let y = 0;
+  for (const row of rows) {
+    yByRow.set(row, y);
+    y += (rowHeights.get(row) || preset.nodeHeight) + preset.verticalSpacing * 0.65;
+  }
+
+  for (const entry of entries) {
+    const cellX = xByColumn.get(entry.column) || 0;
+    const cellY = yByRow.get(entry.row) || 0;
+    const cellW = colWidths.get(entry.column) || entry.size.width;
+    const cellH = rowHeights.get(entry.row) || entry.size.height;
+    positioned.set(entry.node.id, {
+      id: entry.node.id,
+      x: cellX + (cellW - entry.size.width) / 2,
+      y: cellY + (cellH - entry.size.height) / 2,
+      width: entry.size.width,
+      height: entry.size.height,
+      label: entry.node.label,
+      body: entry.node.body,
+      kind: entry.node.kind,
+      level: entry.row,
+      children: childrenMap.get(entry.node.id) || [],
+    });
+  }
+
+  return finalizeManualLayout(graph, positioned, childrenMap, graph.layout.direction || "TD");
+}
+
+function layoutCycle(graph: RecallGraphIR, preset: StylePreset, childrenMap: Map<string, string[]>): LayoutResult {
+  const positioned = new Map<string, PositionedNode>();
+  const sorted = [...graph.nodes].sort((a, b) => {
+    const oa = a.order ?? Infinity;
+    const ob = b.order ?? Infinity;
+    if (oa !== ob) return oa - ob;
+    return a.id.localeCompare(b.id);
+  });
+  const count = sorted.length;
+  const sizes = sorted.map((node) => computeNodeSize(node, preset));
+  const avgWidth = sizes.reduce((sum, size) => sum + size.width, 0) / Math.max(1, sizes.length);
+  const radius = Math.max(preset.hubRadius, (count * (avgWidth + preset.siblingSpacing)) / (Math.PI * 2));
+  const cx = radius + preset.nodeMaxWidth;
+  const cy = radius + preset.nodeMaxWidth;
+
+  sorted.forEach((node, index) => {
+    const size = sizes[index];
+    const angle = -Math.PI / 2 + (Math.PI * 2 * index) / Math.max(1, count);
+    const nx = cx + Math.cos(angle) * radius - size.width / 2;
+    const ny = cy + Math.sin(angle) * radius - size.height / 2;
+    positioned.set(node.id, {
+      id: node.id,
+      x: nx,
+      y: ny,
+      width: size.width,
+      height: size.height,
+      label: node.label,
+      body: node.body,
+      kind: node.kind,
+      level: 0,
+      children: childrenMap.get(node.id) || [],
+    });
+  });
+
+  return finalizeManualLayout(graph, positioned, childrenMap, graph.layout.direction || "TD");
 }
 
 function rankdirFromDirection(direction: "TD" | "LR" | "BT" | "RL"): string {
@@ -633,12 +814,131 @@ function finalizeLayout(
   };
 }
 
-export function computeLayout(graph: RecallGraphIR, preset: StylePreset): LayoutResult {
-  const { roots, childrenMap, parentMap, levels } = buildTree(graph);
+function finalizeManualLayout(
+  graph: RecallGraphIR,
+  positioned: Map<string, PositionedNode>,
+  childrenMap: Map<string, string[]>,
+  direction: "TD" | "LR" | "BT" | "RL"
+): LayoutResult {
+  const nodes = Array.from(positioned.values());
+  let minX = Infinity,
+    minY = Infinity,
+    maxX = -Infinity,
+    maxY = -Infinity;
+  for (const n of nodes) {
+    minX = Math.min(minX, n.x);
+    minY = Math.min(minY, n.y);
+    maxX = Math.max(maxX, n.x + n.width);
+    maxY = Math.max(maxY, n.y + n.height);
+  }
+  if (!isFinite(minX)) {
+    minX = 0;
+    minY = 0;
+    maxX = 0;
+    maxY = 0;
+  }
+  return {
+    nodes,
+    edges: edgeListFromGraph(graph),
+    bounds: { minX, minY, maxX, maxY },
+    strategy: graph.layout.strategy,
+    direction,
+    childrenMap,
+  };
+}
 
-  if (isHubSpoke(roots, childrenMap)) {
-    return layoutHubSpoke(graph, preset, roots, childrenMap);
+function addDecorations(graph: RecallGraphIR, preset: StylePreset, result: LayoutResult): LayoutResult {
+  const nodesById = new Map(result.nodes.map((node) => [node.id, node]));
+  const padding = 24;
+  const groups = (graph.groups || [])
+    .map((group: RecallGraphGroup): PositionedGroup | null => {
+      const members = group.node_ids.map((id) => nodesById.get(id)).filter((node): node is PositionedNode => Boolean(node));
+      if (members.length === 0) return null;
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      for (const node of members) {
+        minX = Math.min(minX, node.x);
+        minY = Math.min(minY, node.y);
+        maxX = Math.max(maxX, node.x + node.width);
+        maxY = Math.max(maxY, node.y + node.height);
+      }
+      return {
+        id: group.id,
+        label: group.label,
+        nodeIds: group.node_ids,
+        x: minX - padding,
+        y: minY - padding - (group.label ? 24 : 0),
+        width: maxX - minX + padding * 2,
+        height: maxY - minY + padding * 2 + (group.label ? 24 : 0),
+      };
+    })
+    .filter((group): group is PositionedGroup => Boolean(group))
+    .sort((a, b) => a.id.localeCompare(b.id));
+
+  const annotations = (graph.annotations || [])
+    .slice()
+    .sort((a, b) => {
+      const oa = a.order ?? Infinity;
+      const ob = b.order ?? Infinity;
+      if (oa !== ob) return oa - ob;
+      return a.id.localeCompare(b.id);
+    })
+    .map((annotation: RecallGraphAnnotation, index): PositionedAnnotation => {
+      const width = Math.min(760, Math.max(260, estimateTextWidth(annotation.text, Math.max(13, preset.fontSize - 1)) + 32));
+      const lines = estimateLines(annotation.text, width - 32, Math.max(13, preset.fontSize - 1));
+      const height = Math.max(34, lines * Math.max(13, preset.fontSize - 1) * preset.lineHeight + 18);
+      return {
+        id: annotation.id,
+        text: annotation.text,
+        kind: annotation.kind,
+        targetIds: annotation.target_ids || [],
+        x: result.bounds.minX,
+        y: result.bounds.maxY + preset.verticalSpacing * 0.45 + index * (height + 10),
+        width,
+        height,
+      };
+    });
+
+  let minX = result.bounds.minX;
+  let minY = result.bounds.minY;
+  let maxX = result.bounds.maxX;
+  let maxY = result.bounds.maxY;
+  for (const group of groups) {
+    minX = Math.min(minX, group.x);
+    minY = Math.min(minY, group.y);
+    maxX = Math.max(maxX, group.x + group.width);
+    maxY = Math.max(maxY, group.y + group.height);
+  }
+  for (const annotation of annotations) {
+    minX = Math.min(minX, annotation.x);
+    minY = Math.min(minY, annotation.y);
+    maxX = Math.max(maxX, annotation.x + annotation.width);
+    maxY = Math.max(maxY, annotation.y + annotation.height);
   }
 
-  return layoutDagre(graph, preset, roots, childrenMap, parentMap, levels);
+  return {
+    ...result,
+    ...(groups.length > 0 ? { groups } : {}),
+    ...(annotations.length > 0 ? { annotations } : {}),
+    bounds: { minX, minY, maxX, maxY },
+  };
+}
+
+export function computeLayout(graph: RecallGraphIR, preset: StylePreset): LayoutResult {
+  const { roots, childrenMap, parentMap, levels } = buildTree(graph);
+  const strategy = graph.layout.strategy || "mixed";
+
+  let result: LayoutResult;
+  if (strategy === "timeline") {
+    result = layoutTimeline(graph, preset, childrenMap);
+  } else if (strategy === "matrix") {
+    result = layoutMatrix(graph, preset, childrenMap);
+  } else if (strategy === "cycle") {
+    result = layoutCycle(graph, preset, childrenMap);
+  } else if (strategy === "hub_spoke" || strategy === "radial" || isHubSpoke(roots, childrenMap)) {
+    result = layoutHubSpoke(graph, preset, roots, childrenMap);
+  } else {
+    result = layoutDagre(graph, preset, roots, childrenMap, parentMap, levels);
+  }
+
+  return addDecorations(graph, preset, result);
 }

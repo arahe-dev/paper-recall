@@ -10,6 +10,41 @@ export function layoutToExcalidrawSkeleton(
 ): Skeleton[] {
   const elements: Skeleton[] = [];
 
+  // Group backgrounds are parse-back metadata carriers, not semantic nodes.
+  for (const group of layout.groups || []) {
+    elements.push({
+      type: "rectangle",
+      id: `group-${group.id}`,
+      x: group.x,
+      y: group.y,
+      width: group.width,
+      height: group.height,
+      strokeColor: "#8a8f98",
+      backgroundColor: "#f3f5f7",
+      fillStyle: "solid",
+      strokeWidth: 1,
+      roughness: 0,
+      opacity: 35,
+      roundness: { type: 1, value: Math.max(6, preset.cornerRadius * 1.25) },
+      customData: {
+        recallEntityType: "group",
+        recallGroupId: group.id,
+        recallLabel: group.label || group.id,
+        recallNodeIds: group.nodeIds,
+        recallIgnoreInTextGraph: true,
+      },
+      ...(group.label ? {
+        label: {
+          text: group.label,
+          fontSize: Math.max(12, preset.fontSize - 2),
+          fontFamily: preset.fontFamily,
+          textAlign: "left",
+          verticalAlign: "top",
+        },
+      } : {}),
+    });
+  }
+
   // Subtree background rectangles (behind nodes/arrows)
   if (preset.subtreeBackgroundOpacity > 0 && layout.childrenMap) {
     const allChildren = new Set<string>();
@@ -54,6 +89,10 @@ export function layoutToExcalidrawSkeleton(
           roughness: 0,
           opacity: preset.subtreeBackgroundOpacity,
           roundness: { type: 1, value: preset.cornerRadius * 1.5 },
+          customData: {
+            recallEntityType: "layout_background",
+            recallIgnoreInTextGraph: true,
+          },
         };
         elements.push(bg);
       }
@@ -77,8 +116,10 @@ export function layoutToExcalidrawSkeleton(
       opacity: preset.nodeOpacity,
       roundness: { type: 1, value: preset.cornerRadius },
       customData: {
+        recallEntityType: "node",
         recallNodeId: node.id,
         recallLabel: node.label,
+        recallKind: node.kind || "node",
         ...(node.body ? { recallBody: node.body } : {}),
       },
       label: {
@@ -238,6 +279,14 @@ export function layoutToExcalidrawSkeleton(
         gap: preset.arrowEndGap,
       },
       endArrowhead: "arrow",
+      customData: {
+        recallEntityType: "edge",
+        recallEdgeId: edge.id,
+        recallFromNodeId: edge.from,
+        recallToNodeId: edge.to,
+        recallLabel: edge.label || "",
+        recallRelation: edge.kind || "related",
+      },
     };
 
     if (edge.label && edge.label.trim()) {
@@ -249,6 +298,32 @@ export function layoutToExcalidrawSkeleton(
     }
 
     elements.push(arrow);
+  }
+
+  for (const annotation of layout.annotations || []) {
+    elements.push({
+      type: "text",
+      id: `annotation-${annotation.id}`,
+      x: annotation.x,
+      y: annotation.y,
+      width: annotation.width,
+      height: annotation.height,
+      text: annotation.text,
+      fontSize: Math.max(13, preset.fontSize - 1),
+      fontFamily: preset.fontFamily,
+      textAlign: "left",
+      verticalAlign: "top",
+      strokeColor: "#2f3a45",
+      backgroundColor: "transparent",
+      customData: {
+        recallEntityType: "annotation",
+        recallAnnotationId: annotation.id,
+        recallLabel: annotation.text,
+        recallKind: annotation.kind || "note",
+        recallTargetIds: annotation.targetIds,
+        recallIgnoreInTextGraph: true,
+      },
+    });
   }
 
   return elements;

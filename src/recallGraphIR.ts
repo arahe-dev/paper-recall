@@ -7,7 +7,16 @@
  * - Renderer-agnostic: layout strategy and hints are advisory
  */
 
-export type LayoutStrategy = "tree" | "radial" | "pipeline" | "hub_spoke" | "mixed";
+export type LayoutStrategy =
+  | "tree"
+  | "radial"
+  | "pipeline"
+  | "hub_spoke"
+  | "mixed"
+  | "timeline"
+  | "matrix"
+  | "cycle"
+  | "block";
 export type LayoutDirection = "TD" | "LR" | "BT" | "RL";
 export type LayoutDensity = "compact" | "readable" | "spacious";
 export type SiblingOrderPolicy = "explicit" | "source_order" | "auto";
@@ -65,6 +74,14 @@ export interface RecallGraphGroup {
   order?: number;
 }
 
+export interface RecallGraphAnnotation {
+  id: string;
+  text: string;
+  target_ids?: string[];
+  kind?: string;
+  order?: number;
+}
+
 export interface RecallGraphIR {
   schema: "recall-graph-ir-v2";
   title: string;
@@ -75,6 +92,12 @@ export interface RecallGraphIR {
   children_order?: Record<string, string[]>;
   /** Visual clusters / subgraphs */
   groups?: RecallGraphGroup[];
+  /** Non-node visual notes that should round-trip as annotations. */
+  annotations?: RecallGraphAnnotation[];
+  /** Source diagram type when the graph was created from Recall Diagram Spec. */
+  diagram_type?: string;
+  /** Optional provenance/metadata from upstream spec generation. */
+  metadata?: Record<string, unknown>;
 }
 
 export interface ValidationResult {
@@ -109,7 +132,7 @@ export function validateRecallGraphIR(data: unknown): ValidationResult {
     if (typeof layout.style !== "string" || layout.style.trim().length === 0) {
       errors.push("layout.style is required and must be a non-empty string.");
     }
-    const validStrategies: LayoutStrategy[] = ["tree", "radial", "pipeline", "hub_spoke", "mixed"];
+    const validStrategies: LayoutStrategy[] = ["tree", "radial", "pipeline", "hub_spoke", "mixed", "timeline", "matrix", "cycle", "block"];
     if (layout.strategy !== undefined && !validStrategies.includes(layout.strategy as LayoutStrategy)) {
       errors.push(`layout.strategy must be one of ${validStrategies.join(", ")}, got: ${layout.strategy}`);
     }
@@ -316,6 +339,53 @@ export function validateRecallGraphIR(data: unknown): ValidationResult {
         }
         if (group.order !== undefined && typeof group.order !== "number") {
           errors.push(`groups[${i}].order must be a number if provided.`);
+        }
+      }
+    }
+  }
+
+  // annotations validation
+  if (obj.annotations !== undefined) {
+    if (!Array.isArray(obj.annotations)) {
+      errors.push("annotations must be an array.");
+    } else {
+      const annotationIds = new Set<string>();
+      for (let i = 0; i < obj.annotations.length; i++) {
+        const a = obj.annotations[i];
+        if (a === null || typeof a !== "object") {
+          errors.push(`annotations[${i}] must be an object.`);
+          continue;
+        }
+        const annotation = a as Record<string, unknown>;
+        if (typeof annotation.id !== "string" || annotation.id.trim().length === 0) {
+          errors.push(`annotations[${i}].id is required and must be a non-empty string.`);
+        } else {
+          if (annotationIds.has(annotation.id)) {
+            errors.push(`Duplicate annotation id: "${annotation.id}".`);
+          }
+          annotationIds.add(annotation.id);
+        }
+        if (typeof annotation.text !== "string" || annotation.text.trim().length === 0) {
+          errors.push(`annotations[${i}].text is required and must be a non-empty string.`);
+        }
+        if (annotation.target_ids !== undefined) {
+          if (!Array.isArray(annotation.target_ids)) {
+            errors.push(`annotations[${i}].target_ids must be an array if provided.`);
+          } else {
+            for (const targetId of annotation.target_ids) {
+              if (typeof targetId !== "string") {
+                errors.push(`annotations[${i}].target_ids contains non-string: ${JSON.stringify(targetId)}.`);
+              } else if (!nodeIds.has(targetId) && !edgeIds.has(targetId)) {
+                errors.push(`annotations[${i}].target_ids contains unknown node/edge id: "${targetId}".`);
+              }
+            }
+          }
+        }
+        if (annotation.kind !== undefined && typeof annotation.kind !== "string") {
+          errors.push(`annotations[${i}].kind must be a string if provided.`);
+        }
+        if (annotation.order !== undefined && typeof annotation.order !== "number") {
+          errors.push(`annotations[${i}].order must be a number if provided.`);
         }
       }
     }
