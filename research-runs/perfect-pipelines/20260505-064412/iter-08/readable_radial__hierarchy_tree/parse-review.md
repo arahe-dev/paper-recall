@@ -1,0 +1,12 @@
+# Parse Review
+
+Scenario: readable_radial__hierarchy_tree
+Parse fidelity score: 1.00
+
+Parse defects:
+- none detected by automated geometry/export checks
+
+Patch applied:
+- Fixed full-circle radial hub spacing so first and last spokes do not share an angle.
+
+Pass/fail: PASS

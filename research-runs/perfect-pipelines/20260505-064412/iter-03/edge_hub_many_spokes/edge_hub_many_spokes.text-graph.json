@@ -1,0 +1,411 @@
+{
+  "schema": "recall-board-text-graph-v1",
+  "summary": {
+    "total_element_count": 33,
+    "active_element_count": 33,
+    "deleted_element_count": 0,
+    "node_count": 11,
+    "edge_count": 10,
+    "unresolved_arrow_count": 0,
+    "ungrouped_text_count": 0
+  },
+  "nodes": [
+    {
+      "id": "node_rect-hub",
+      "label": "Central hub",
+      "source_shape_id": "rect-hub",
+      "source_text_ids": [
+        "hAeqi9xECO7ENEBMi1vyZ"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": -61.37500000000001,
+        "y": -24,
+        "width": 122.75000000000001,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-spoke_1",
+      "label": "Spoke 1",
+      "source_shape_id": "rect-spoke_1",
+      "source_text_ids": [
+        "02Q2jguVPhRXHIIcA3H-n"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": -264.875,
+        "y": -24.00000000000003,
+        "width": 89.75,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-spoke_2",
+      "label": "Spoke 2",
+      "source_shape_id": "rect-spoke_2",
+      "source_text_ids": [
+        "q-_HPe268SrSy0eMEX2ZR"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": -251.60737657289982,
+        "y": -99.24443153164715,
+        "width": 89.75,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-spoke_3",
+      "label": "Spoke 3",
+      "source_shape_id": "rect-spoke_3",
+      "source_text_ids": [
+        "4z_qhE0eXhVM057oxYgDX"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": -213.40477748617513,
+        "y": -165.4132741310387,
+        "width": 89.75,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-spoke_4",
+      "label": "Spoke 4",
+      "source_shape_id": "rect-spoke_4",
+      "source_text_ids": [
+        "MSdCDxvPvJJ8JPFAx_-yW"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": -154.87500000000006,
+        "y": -214.52558883257646,
+        "width": 89.75,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-spoke_5",
+      "label": "Spoke 5",
+      "source_shape_id": "rect-spoke_5",
+      "source_text_ids": [
+        "9ke3dGJVojnvHXSgqejZs"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": -83.07759908672466,
+        "y": -240.65770566268577,
+        "width": 89.75,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-spoke_6",
+      "label": "Spoke 6",
+      "source_shape_id": "rect-spoke_6",
+      "source_text_ids": [
+        "uEHEogRPMVmn9ybmf8OnR"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 36.67240091327534,
+        "y": -240.65770566268577,
+        "width": 89.75,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-spoke_7",
+      "label": "Spoke 7",
+      "source_shape_id": "rect-spoke_7",
+      "source_text_ids": [
+        "_ouHRgnEtYBl2iBiVCOor"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 65.12499999999997,
+        "y": -214.52558883257652,
+        "width": 89.75,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-spoke_8",
+      "label": "Spoke 8",
+      "source_shape_id": "rect-spoke_8",
+      "source_text_ids": [
+        "gvFspIa4ImRZj9l9eZQjB"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 123.65477748617516,
+        "y": -165.41327413103866,
+        "width": 89.75,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-spoke_9",
+      "label": "Spoke 9",
+      "source_shape_id": "rect-spoke_9",
+      "source_text_ids": [
+        "FTGMBMGFXGf_UBCNjDHzG"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 161.85737657289982,
+        "y": -99.24443153164712,
+        "width": 89.75,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-spoke_10",
+      "label": "Spoke 10",
+      "source_shape_id": "rect-spoke_10",
+      "source_text_ids": [
+        "4mgT5JNwWgsQB3TGZf49F"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 171,
+        "y": -24,
+        "width": 98,
+        "height": 48
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge_001",
+      "from_node_id": "node_rect-hub",
+      "to_node_id": "node_rect-spoke_1",
+      "from_label": "Central hub",
+      "to_label": "Spoke 1",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e1",
+      "confidence": 1,
+      "plain_text": "Central hub connects to Spoke 1"
+    },
+    {
+      "id": "edge_002",
+      "from_node_id": "node_rect-hub",
+      "to_node_id": "node_rect-spoke_2",
+      "from_label": "Central hub",
+      "to_label": "Spoke 2",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e2",
+      "confidence": 1,
+      "plain_text": "Central hub connects to Spoke 2"
+    },
+    {
+      "id": "edge_003",
+      "from_node_id": "node_rect-hub",
+      "to_node_id": "node_rect-spoke_3",
+      "from_label": "Central hub",
+      "to_label": "Spoke 3",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e3",
+      "confidence": 1,
+      "plain_text": "Central hub connects to Spoke 3"
+    },
+    {
+      "id": "edge_004",
+      "from_node_id": "node_rect-hub",
+      "to_node_id": "node_rect-spoke_4",
+      "from_label": "Central hub",
+      "to_label": "Spoke 4",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e4",
+      "confidence": 1,
+      "plain_text": "Central hub connects to Spoke 4"
+    },
+    {
+      "id": "edge_005",
+      "from_node_id": "node_rect-hub",
+      "to_node_id": "node_rect-spoke_5",
+      "from_label": "Central hub",
+      "to_label": "Spoke 5",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e5",
+      "confidence": 1,
+      "plain_text": "Central hub connects to Spoke 5"
+    },
+    {
+      "id": "edge_006",
+      "from_node_id": "node_rect-hub",
+      "to_node_id": "node_rect-spoke_6",
+      "from_label": "Central hub",
+      "to_label": "Spoke 6",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e6",
+      "confidence": 1,
+      "plain_text": "Central hub connects to Spoke 6"
+    },
+    {
+      "id": "edge_007",
+      "from_node_id": "node_rect-hub",
+      "to_node_id": "node_rect-spoke_7",
+      "from_label": "Central hub",
+      "to_label": "Spoke 7",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e7",
+      "confidence": 1,
+      "plain_text": "Central hub connects to Spoke 7"
+    },
+    {
+      "id": "edge_008",
+      "from_node_id": "node_rect-hub",
+      "to_node_id": "node_rect-spoke_8",
+      "from_label": "Central hub",
+      "to_label": "Spoke 8",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e8",
+      "confidence": 1,
+      "plain_text": "Central hub connects to Spoke 8"
+    },
+    {
+      "id": "edge_009",
+      "from_node_id": "node_rect-hub",
+      "to_node_id": "node_rect-spoke_9",
+      "from_label": "Central hub",
+      "to_label": "Spoke 9",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e9",
+      "confidence": 1,
+      "plain_text": "Central hub connects to Spoke 9"
+    },
+    {
+      "id": "edge_010",
+      "from_node_id": "node_rect-hub",
+      "to_node_id": "node_rect-spoke_10",
+      "from_label": "Central hub",
+      "to_label": "Spoke 10",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e10",
+      "confidence": 1,
+      "plain_text": "Central hub connects to Spoke 10"
+    }
+  ],
+  "unresolved_arrows": [],
+  "ungrouped_text": [],
+  "graph_insights": {
+    "likely_root_nodes": [
+      {
+        "node_id": "node_rect-hub",
+        "label": "Central hub",
+        "reason": "highest outgoing edge count with no incoming edges",
+        "outgoing_edge_count": 10,
+        "incoming_edge_count": 0
+      }
+    ],
+    "likely_leaf_nodes": [
+      {
+        "node_id": "node_rect-spoke_1",
+        "label": "Spoke 1",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-spoke_2",
+        "label": "Spoke 2",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-spoke_3",
+        "label": "Spoke 3",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-spoke_4",
+        "label": "Spoke 4",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-spoke_5",
+        "label": "Spoke 5",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-spoke_6",
+        "label": "Spoke 6",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-spoke_7",
+        "label": "Spoke 7",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-spoke_8",
+        "label": "Spoke 8",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-spoke_9",
+        "label": "Spoke 9",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-spoke_10",
+        "label": "Spoke 10",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      }
+    ],
+    "direct_branch_count": 10,
+    "max_depth_estimate": 1,
+    "has_unresolved_arrows": false,
+    "has_ungrouped_text": false,
+    "lowest_confidence_edge": {
+      "id": "edge_001",
+      "plain_text": "Central hub connects to Spoke 1",
+      "confidence": 1,
+      "status": "bound_visual_relation"
+    },
+    "relation_status_counts": {
+      "bound_visual_relation": 10,
+      "loose_inferred_relation": 0
+    }
+  },
+  "plain_text_graph": "# Board Text Graph\n\n## Graph Insights\n- Likely root: Central hub (10 outgoing, 0 incoming)\n- Likely leaves:\n    - Spoke 1\n    - Spoke 2\n    - Spoke 3\n    - Spoke 4\n    - Spoke 5\n    - Spoke 6\n    - Spoke 7\n    - Spoke 8\n    - Spoke 9\n    - Spoke 10\n- Direct branches from root: 10\n- Max depth estimate: 1\n- Relation statuses: 10 bound, 0 loose inferred\n- Lowest confidence edge: Central hub connects to Spoke 1 (1, bound_visual_relation)\n- Unresolved arrows: none\n- Ungrouped text: none\n\n## Nodes\n- Central hub\n- Spoke 1\n- Spoke 2\n- Spoke 3\n- Spoke 4\n- Spoke 5\n- Spoke 6\n- Spoke 7\n- Spoke 8\n- Spoke 9\n- Spoke 10\n\n## Edges\n- Central hub connects to Spoke 1\n- Central hub connects to Spoke 2\n- Central hub connects to Spoke 3\n- Central hub connects to Spoke 4\n- Central hub connects to Spoke 5\n- Central hub connects to Spoke 6\n- Central hub connects to Spoke 7\n- Central hub connects to Spoke 8\n- Central hub connects to Spoke 9\n- Central hub connects to Spoke 10\n\n## Unresolved Arrows\n(none)\n\n## Ungrouped Text\n(none)"
+}

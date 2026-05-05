@@ -1,0 +1,127 @@
+{
+  "schema": "recall-graph-ir-v2",
+  "title": "edge_parallel_branches_annotations",
+  "layout": {
+    "style": "readable_compact",
+    "density": "readable",
+    "sibling_order_policy": "explicit",
+    "rank_policy": "from_root_depth",
+    "strategy": "mixed",
+    "direction": "TD",
+    "root_ids": [
+      "request",
+      "annotation"
+    ]
+  },
+  "nodes": [
+    {
+      "order": 0,
+      "id": "request",
+      "label": "Incoming request"
+    },
+    {
+      "order": 1,
+      "id": "fast_path",
+      "label": "Fast path"
+    },
+    {
+      "order": 2,
+      "id": "manual_path",
+      "label": "Manual review"
+    },
+    {
+      "order": 3,
+      "id": "automated_path",
+      "label": "Automated review"
+    },
+    {
+      "order": 4,
+      "id": "merge",
+      "label": "Merge decision"
+    },
+    {
+      "order": 5,
+      "id": "ship",
+      "label": "Ship response"
+    },
+    {
+      "order": 6,
+      "id": "annotation",
+      "label": "Annotation",
+      "body": "Escalate if confidence is low."
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "order": 0,
+      "from": "request",
+      "to": "fast_path"
+    },
+    {
+      "id": "e2",
+      "order": 1,
+      "from": "request",
+      "to": "manual_path"
+    },
+    {
+      "id": "e3",
+      "order": 2,
+      "from": "request",
+      "to": "automated_path"
+    },
+    {
+      "id": "e4",
+      "order": 3,
+      "from": "fast_path",
+      "to": "merge"
+    },
+    {
+      "id": "e5",
+      "order": 4,
+      "from": "manual_path",
+      "to": "merge"
+    },
+    {
+      "id": "e6",
+      "order": 5,
+      "from": "automated_path",
+      "to": "merge"
+    },
+    {
+      "id": "e7",
+      "order": 6,
+      "from": "merge",
+      "to": "ship"
+    },
+    {
+      "id": "e8",
+      "order": 7,
+      "from": "annotation",
+      "to": "manual_path",
+      "label": "note"
+    }
+  ],
+  "children_order": {
+    "request": [
+      "fast_path",
+      "manual_path",
+      "automated_path"
+    ],
+    "fast_path": [
+      "merge"
+    ],
+    "manual_path": [
+      "merge"
+    ],
+    "automated_path": [
+      "merge"
+    ],
+    "merge": [
+      "ship"
+    ],
+    "annotation": [
+      "manual_path"
+    ]
+  }
+}

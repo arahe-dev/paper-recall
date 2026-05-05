@@ -1,0 +1,217 @@
+{
+  "schema": "recall-board-text-graph-v1",
+  "summary": {
+    "total_element_count": 22,
+    "active_element_count": 22,
+    "deleted_element_count": 0,
+    "node_count": 6,
+    "edge_count": 6,
+    "unresolved_arrow_count": 0,
+    "ungrouped_text_count": 0
+  },
+  "nodes": [
+    {
+      "id": "node_rect-reference",
+      "label": "Reference R",
+      "source_shape_id": "rect-reference",
+      "source_text_ids": [
+        "JP6vRlAFKN91vXXrgmNxo"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 39.99999999999999,
+        "y": 57.75,
+        "width": 122.75000000000001,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-sum",
+      "label": "Summing junction",
+      "source_shape_id": "rect-sum",
+      "source_text_ids": [
+        "2_qIGIuuK0rQ8wpS8IGs7"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 302.75,
+        "y": 53,
+        "width": 172.25,
+        "height": 57.5
+      },
+      "body": "+R minus feedback"
+    },
+    {
+      "id": "node_rect-controller",
+      "label": "Controller Gc",
+      "source_shape_id": "rect-controller",
+      "source_text_ids": [
+        "oW0UBvN3y-s4zsQEucjQG"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 615,
+        "y": 40,
+        "width": 139.25,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-plant",
+      "label": "Plant Gp",
+      "source_shape_id": "rect-plant",
+      "source_text_ids": [
+        "p1lGAmWo23QS091QO8nw3"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 894.25,
+        "y": 40,
+        "width": 98,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-output",
+      "label": "Output C",
+      "source_shape_id": "rect-output",
+      "source_text_ids": [
+        "NdHmYNGaW4NYSmwxGJf1e"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 1132.25,
+        "y": 40,
+        "width": 98,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-sensor",
+      "label": "Sensor H",
+      "source_shape_id": "rect-sensor",
+      "source_text_ids": [
+        "OrE6oCLj8adyvBm-Odbru"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 1370.25,
+        "y": 57.75,
+        "width": 98,
+        "height": 48
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge_001",
+      "from_node_id": "node_rect-reference",
+      "to_node_id": "node_rect-sum",
+      "from_label": "Reference R",
+      "to_label": "Summing junction",
+      "label": "+",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e1",
+      "confidence": 1,
+      "plain_text": "Reference R connects to Summing junction (+)"
+    },
+    {
+      "id": "edge_002",
+      "from_node_id": "node_rect-sum",
+      "to_node_id": "node_rect-controller",
+      "from_label": "Summing junction",
+      "to_label": "Controller Gc",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e2",
+      "confidence": 1,
+      "plain_text": "Summing junction connects to Controller Gc"
+    },
+    {
+      "id": "edge_003",
+      "from_node_id": "node_rect-controller",
+      "to_node_id": "node_rect-plant",
+      "from_label": "Controller Gc",
+      "to_label": "Plant Gp",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e3",
+      "confidence": 1,
+      "plain_text": "Controller Gc connects to Plant Gp"
+    },
+    {
+      "id": "edge_004",
+      "from_node_id": "node_rect-plant",
+      "to_node_id": "node_rect-output",
+      "from_label": "Plant Gp",
+      "to_label": "Output C",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e4",
+      "confidence": 1,
+      "plain_text": "Plant Gp connects to Output C"
+    },
+    {
+      "id": "edge_005",
+      "from_node_id": "node_rect-output",
+      "to_node_id": "node_rect-sensor",
+      "from_label": "Output C",
+      "to_label": "Sensor H",
+      "label": "feedback",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e5",
+      "confidence": 1,
+      "plain_text": "Output C connects to Sensor H (feedback)"
+    },
+    {
+      "id": "edge_006",
+      "from_node_id": "node_rect-sensor",
+      "to_node_id": "node_rect-sum",
+      "from_label": "Sensor H",
+      "to_label": "Summing junction",
+      "label": "-",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e6",
+      "confidence": 1,
+      "plain_text": "Sensor H connects to Summing junction (-)"
+    }
+  ],
+  "unresolved_arrows": [],
+  "ungrouped_text": [],
+  "graph_insights": {
+    "likely_root_nodes": [
+      {
+        "node_id": "node_rect-reference",
+        "label": "Reference R",
+        "reason": "highest outgoing edge count with no incoming edges",
+        "outgoing_edge_count": 1,
+        "incoming_edge_count": 0
+      }
+    ],
+    "likely_leaf_nodes": [],
+    "direct_branch_count": 1,
+    "max_depth_estimate": 5,
+    "has_unresolved_arrows": false,
+    "has_ungrouped_text": false,
+    "lowest_confidence_edge": {
+      "id": "edge_001",
+      "plain_text": "Reference R connects to Summing junction (+)",
+      "confidence": 1,
+      "status": "bound_visual_relation"
+    },
+    "relation_status_counts": {
+      "bound_visual_relation": 6,
+      "loose_inferred_relation": 0
+    }
+  },
+  "plain_text_graph": "# Board Text Graph\n\n## Graph Insights\n- Likely root: Reference R (1 outgoing, 0 incoming)\n- Likely leaves: none identified\n- Direct branches from root: 1\n- Max depth estimate: 5\n- Relation statuses: 6 bound, 0 loose inferred\n- Lowest confidence edge: Reference R connects to Summing junction (+) (1, bound_visual_relation)\n- Unresolved arrows: none\n- Ungrouped text: none\n\n## Nodes\n- Reference R\n- Summing junction\n- Controller Gc\n- Plant Gp\n- Output C\n- Sensor H\n\n## Edges\n- Reference R connects to Summing junction (+)\n- Summing junction connects to Controller Gc\n- Controller Gc connects to Plant Gp\n- Plant Gp connects to Output C\n- Output C connects to Sensor H (feedback)\n- Sensor H connects to Summing junction (-)\n\n## Unresolved Arrows\n(none)\n\n## Ungrouped Text\n(none)"
+}

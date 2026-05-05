@@ -1,0 +1,49 @@
+{
+  "scenario": "readable_radial__branching_workflow",
+  "thresholds": {
+    "readability": 0.95,
+    "parseFidelity": 0.99
+  },
+  "readability": {
+    "score": 1,
+    "pass": true,
+    "defects": [],
+    "metrics": {
+      "activeElementCount": 47,
+      "nodeCount": 16,
+      "textCount": 16,
+      "arrowCount": 15,
+      "nodeOverlaps": [],
+      "degenerateArrows": [],
+      "unboundArrows": [],
+      "missingArrowheads": [],
+      "arrowNodeHits": [],
+      "arrowTextHits": [],
+      "pngDimensions": {
+        "width": 1353,
+        "height": 424
+      }
+    }
+  },
+  "parse": {
+    "score": 1,
+    "pass": true,
+    "defects": [],
+    "metrics": {
+      "expectedNodeCount": 16,
+      "actualNodeCount": 16,
+      "expectedEdgeCount": 15,
+      "actualEdgeCount": 15,
+      "missingNodes": [],
+      "extraNodes": [],
+      "missingBodies": [],
+      "missingEdges": [],
+      "missingEdgeLabels": [],
+      "unresolvedArrowCount": 0,
+      "ungroupedTextCount": 0,
+      "looseInferredEdgeCount": 0,
+      "deletedElementCount": 0
+    }
+  },
+  "pass": true
+}

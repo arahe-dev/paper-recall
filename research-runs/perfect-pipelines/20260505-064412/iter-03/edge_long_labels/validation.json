@@ -1,0 +1,65 @@
+{
+  "scenario": "edge_long_labels",
+  "thresholds": {
+    "readability": 0.95,
+    "parseFidelity": 0.99
+  },
+  "readability": {
+    "score": 1,
+    "pass": true,
+    "defects": [],
+    "metrics": {
+      "activeElementCount": 12,
+      "nodeCount": 4,
+      "textCount": 4,
+      "arrowCount": 3,
+      "nodeOverlaps": [],
+      "degenerateArrows": [],
+      "unboundArrows": [],
+      "missingArrowheads": [],
+      "arrowNodeHits": [],
+      "arrowTextHits": [],
+      "pngDimensions": {
+        "width": 784,
+        "height": 364
+      }
+    }
+  },
+  "parse": {
+    "score": 0,
+    "pass": false,
+    "defects": [
+      "3 expected node(s) missing",
+      "3 unexpected node(s) exported",
+      "3 expected edge(s) missing"
+    ],
+    "metrics": {
+      "expectedNodeCount": 4,
+      "actualNodeCount": 4,
+      "expectedEdgeCount": 3,
+      "actualEdgeCount": 3,
+      "missingNodes": [
+        "extremely long root label that must wrap cleanly without spilling outside its rectangle",
+        "long branch label with multiple operational qualifiers and a deadline",
+        "another long branch label that should remain readable after wrapping"
+      ],
+      "extraNodes": [
+        "extremely long root label that must wrap",
+        "long branch label with multiple",
+        "another long branch label that should"
+      ],
+      "missingBodies": [],
+      "missingEdges": [
+        "extremely long root label that must wrap cleanly without spilling outside its rectangle->long branch label with multiple operational qualifiers and a deadline",
+        "extremely long root label that must wrap cleanly without spilling outside its rectangle->another long branch label that should remain readable after wrapping",
+        "extremely long root label that must wrap cleanly without spilling outside its rectangle->short label"
+      ],
+      "missingEdgeLabels": [],
+      "unresolvedArrowCount": 0,
+      "ungroupedTextCount": 0,
+      "looseInferredEdgeCount": 0,
+      "deletedElementCount": 0
+    }
+  },
+  "pass": false
+}

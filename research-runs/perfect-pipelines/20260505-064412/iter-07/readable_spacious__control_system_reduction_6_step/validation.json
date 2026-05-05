@@ -1,0 +1,49 @@
+{
+  "scenario": "readable_spacious__control_system_reduction_6_step",
+  "thresholds": {
+    "readability": 0.95,
+    "parseFidelity": 0.99
+  },
+  "readability": {
+    "score": 1,
+    "pass": true,
+    "defects": [],
+    "metrics": {
+      "activeElementCount": 22,
+      "nodeCount": 6,
+      "textCount": 11,
+      "arrowCount": 5,
+      "nodeOverlaps": [],
+      "degenerateArrows": [],
+      "unboundArrows": [],
+      "missingArrowheads": [],
+      "arrowNodeHits": [],
+      "arrowTextHits": [],
+      "pngDimensions": {
+        "width": 360,
+        "height": 1368
+      }
+    }
+  },
+  "parse": {
+    "score": 1,
+    "pass": true,
+    "defects": [],
+    "metrics": {
+      "expectedNodeCount": 6,
+      "actualNodeCount": 6,
+      "expectedEdgeCount": 5,
+      "actualEdgeCount": 5,
+      "missingNodes": [],
+      "extraNodes": [],
+      "missingBodies": [],
+      "missingEdges": [],
+      "missingEdgeLabels": [],
+      "unresolvedArrowCount": 0,
+      "ungroupedTextCount": 0,
+      "looseInferredEdgeCount": 0,
+      "deletedElementCount": 0
+    }
+  },
+  "pass": true
+}

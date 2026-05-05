@@ -1,0 +1,54 @@
+{
+  "schema": "recall-graph-ir-v2",
+  "title": "edge_deleted_elements",
+  "layout": {
+    "style": "readable_compact",
+    "density": "readable",
+    "sibling_order_policy": "explicit",
+    "rank_policy": "from_root_depth",
+    "strategy": "pipeline",
+    "direction": "TD",
+    "root_ids": [
+      "input"
+    ]
+  },
+  "nodes": [
+    {
+      "order": 0,
+      "id": "input",
+      "label": "Input"
+    },
+    {
+      "order": 1,
+      "id": "active_step",
+      "label": "Active step"
+    },
+    {
+      "order": 2,
+      "id": "result",
+      "label": "Result"
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "order": 0,
+      "from": "input",
+      "to": "active_step"
+    },
+    {
+      "id": "e2",
+      "order": 1,
+      "from": "active_step",
+      "to": "result"
+    }
+  ],
+  "children_order": {
+    "input": [
+      "active_step"
+    ],
+    "active_step": [
+      "result"
+    ]
+  }
+}

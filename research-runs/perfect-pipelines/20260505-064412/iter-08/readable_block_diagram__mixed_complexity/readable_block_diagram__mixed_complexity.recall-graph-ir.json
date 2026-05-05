@@ -1,0 +1,400 @@
+{
+  "schema": "recall-graph-ir-v2",
+  "title": "readable_block_diagram__mixed_complexity",
+  "layout": {
+    "style": "readable_block_diagram",
+    "strategy": "mixed",
+    "direction": "TD",
+    "density": "readable",
+    "root_ids": [
+      "product",
+      "note1"
+    ],
+    "sibling_order_policy": "explicit",
+    "rank_policy": "from_root_depth"
+  },
+  "nodes": [
+    {
+      "id": "product",
+      "label": "Product Launch",
+      "order": 0
+    },
+    {
+      "id": "strategy",
+      "label": "Strategy",
+      "order": 1
+    },
+    {
+      "id": "engineering",
+      "label": "Engineering",
+      "order": 2
+    },
+    {
+      "id": "marketing",
+      "label": "Marketing",
+      "order": 3
+    },
+    {
+      "id": "support",
+      "label": "Support",
+      "order": 4
+    },
+    {
+      "id": "timeline",
+      "label": "Timeline",
+      "order": 5
+    },
+    {
+      "id": "goals",
+      "label": "Define goals",
+      "order": 6
+    },
+    {
+      "id": "audience",
+      "label": "Target audience",
+      "order": 7
+    },
+    {
+      "id": "positioning",
+      "label": "Positioning",
+      "order": 8
+    },
+    {
+      "id": "backend",
+      "label": "Backend",
+      "order": 9
+    },
+    {
+      "id": "frontend",
+      "label": "Frontend",
+      "order": 10
+    },
+    {
+      "id": "infra",
+      "label": "Infrastructure",
+      "order": 11
+    },
+    {
+      "id": "api",
+      "label": "API design",
+      "order": 12
+    },
+    {
+      "id": "db",
+      "label": "Database schema",
+      "order": 13
+    },
+    {
+      "id": "auth",
+      "label": "Auth service",
+      "order": 14
+    },
+    {
+      "id": "ui",
+      "label": "UI components",
+      "order": 15
+    },
+    {
+      "id": "state",
+      "label": "State management",
+      "order": 16
+    },
+    {
+      "id": "assets",
+      "label": "Asset pipeline",
+      "order": 17
+    },
+    {
+      "id": "deploy",
+      "label": "Deployment",
+      "order": 18
+    },
+    {
+      "id": "monitor",
+      "label": "Monitoring",
+      "order": 19
+    },
+    {
+      "id": "campaign",
+      "label": "Campaign plan",
+      "order": 20
+    },
+    {
+      "id": "content",
+      "label": "Content calendar",
+      "order": 21
+    },
+    {
+      "id": "channels",
+      "label": "Channels",
+      "order": 22
+    },
+    {
+      "id": "docs",
+      "label": "Documentation",
+      "order": 23
+    },
+    {
+      "id": "training",
+      "label": "Training",
+      "order": 24
+    },
+    {
+      "id": "feedback",
+      "label": "Feedback loop",
+      "order": 25
+    },
+    {
+      "id": "m1",
+      "label": "Month 1: Alpha",
+      "order": 26
+    },
+    {
+      "id": "m2",
+      "label": "Month 2: Beta",
+      "order": 27
+    },
+    {
+      "id": "m3",
+      "label": "Month 3: GA",
+      "order": 28
+    },
+    {
+      "id": "note1",
+      "label": "Note: keep scope tight",
+      "order": 29
+    },
+    {
+      "id": "note2",
+      "label": "Note: prioritize reliability",
+      "order": 30
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "product",
+      "to": "strategy",
+      "order": 0
+    },
+    {
+      "id": "e2",
+      "from": "product",
+      "to": "engineering",
+      "order": 1
+    },
+    {
+      "id": "e3",
+      "from": "product",
+      "to": "marketing",
+      "order": 2
+    },
+    {
+      "id": "e4",
+      "from": "product",
+      "to": "support",
+      "order": 3
+    },
+    {
+      "id": "e5",
+      "from": "product",
+      "to": "timeline",
+      "order": 4
+    },
+    {
+      "id": "e6",
+      "from": "strategy",
+      "to": "goals",
+      "order": 5
+    },
+    {
+      "id": "e7",
+      "from": "strategy",
+      "to": "audience",
+      "order": 6
+    },
+    {
+      "id": "e8",
+      "from": "strategy",
+      "to": "positioning",
+      "order": 7
+    },
+    {
+      "id": "e9",
+      "from": "engineering",
+      "to": "backend",
+      "order": 8
+    },
+    {
+      "id": "e10",
+      "from": "engineering",
+      "to": "frontend",
+      "order": 9
+    },
+    {
+      "id": "e11",
+      "from": "engineering",
+      "to": "infra",
+      "order": 10
+    },
+    {
+      "id": "e12",
+      "from": "backend",
+      "to": "api",
+      "order": 11
+    },
+    {
+      "id": "e13",
+      "from": "backend",
+      "to": "db",
+      "order": 12
+    },
+    {
+      "id": "e14",
+      "from": "backend",
+      "to": "auth",
+      "order": 13
+    },
+    {
+      "id": "e15",
+      "from": "frontend",
+      "to": "ui",
+      "order": 14
+    },
+    {
+      "id": "e16",
+      "from": "frontend",
+      "to": "state",
+      "order": 15
+    },
+    {
+      "id": "e17",
+      "from": "frontend",
+      "to": "assets",
+      "order": 16
+    },
+    {
+      "id": "e18",
+      "from": "infra",
+      "to": "deploy",
+      "order": 17
+    },
+    {
+      "id": "e19",
+      "from": "infra",
+      "to": "monitor",
+      "order": 18
+    },
+    {
+      "id": "e20",
+      "from": "marketing",
+      "to": "campaign",
+      "order": 19
+    },
+    {
+      "id": "e21",
+      "from": "marketing",
+      "to": "content",
+      "order": 20
+    },
+    {
+      "id": "e22",
+      "from": "marketing",
+      "to": "channels",
+      "order": 21
+    },
+    {
+      "id": "e23",
+      "from": "support",
+      "to": "docs",
+      "order": 22
+    },
+    {
+      "id": "e24",
+      "from": "support",
+      "to": "training",
+      "order": 23
+    },
+    {
+      "id": "e25",
+      "from": "support",
+      "to": "feedback",
+      "order": 24
+    },
+    {
+      "id": "e26",
+      "from": "timeline",
+      "to": "m1",
+      "order": 25
+    },
+    {
+      "id": "e27",
+      "from": "timeline",
+      "to": "m2",
+      "order": 26
+    },
+    {
+      "id": "e28",
+      "from": "timeline",
+      "to": "m3",
+      "order": 27
+    },
+    {
+      "id": "e29",
+      "from": "note1",
+      "to": "note2",
+      "order": 28
+    }
+  ],
+  "children_order": {
+    "product": [
+      "strategy",
+      "engineering",
+      "marketing",
+      "support",
+      "timeline"
+    ],
+    "strategy": [
+      "goals",
+      "audience",
+      "positioning"
+    ],
+    "engineering": [
+      "backend",
+      "frontend",
+      "infra"
+    ],
+    "backend": [
+      "api",
+      "db",
+      "auth"
+    ],
+    "frontend": [
+      "ui",
+      "state",
+      "assets"
+    ],
+    "infra": [
+      "deploy",
+      "monitor"
+    ],
+    "marketing": [
+      "campaign",
+      "content",
+      "channels"
+    ],
+    "support": [
+      "docs",
+      "training",
+      "feedback"
+    ],
+    "timeline": [
+      "m1",
+      "m2",
+      "m3"
+    ],
+    "note1": [
+      "note2"
+    ]
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "schema": "recall-graph-ir-v2",
+  "title": "readable_flowchart__control_system_reduction_6_step",
+  "layout": {
+    "style": "readable_flowchart",
+    "strategy": "pipeline",
+    "direction": "TD",
+    "density": "readable",
+    "root_ids": [
+      "original"
+    ],
+    "sibling_order_policy": "explicit",
+    "rank_policy": "from_root_depth"
+  },
+  "nodes": [
+    {
+      "id": "original",
+      "label": "1. Original system",
+      "body": "Find C/R from cascaded G1, G2, G3 with H1, H2, and outer feedback.",
+      "order": 0
+    },
+    {
+      "id": "shift_h1",
+      "label": "2. Shift H1 pickoff",
+      "body": "Move H1 pickoff past G3, so H1 becomes H1/G3.",
+      "order": 1
+    },
+    {
+      "id": "shift_h2",
+      "label": "3. Shift H2 junction",
+      "body": "Move the H2 junction left past G2, so H2 becomes H2/G2.",
+      "order": 2
+    },
+    {
+      "id": "combine_junctions",
+      "label": "4. Combine summing junctions",
+      "body": "Merge adjacent summing junctions while preserving signs.",
+      "order": 3
+    },
+    {
+      "id": "combine_cascade",
+      "label": "5. Combine cascade blocks",
+      "body": "Forward path becomes G1G2G3.",
+      "order": 4
+    },
+    {
+      "id": "final_form",
+      "label": "6. Final closed loop",
+      "body": "C/R = G1G2G3 / (1 + G1G2G3 - G1G2H1 + G2G3H2)",
+      "order": 5
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "original",
+      "to": "shift_h1",
+      "label": "transform",
+      "order": 0
+    },
+    {
+      "id": "e2",
+      "from": "shift_h1",
+      "to": "shift_h2",
+      "label": "transform",
+      "order": 1
+    },
+    {
+      "id": "e3",
+      "from": "shift_h2",
+      "to": "combine_junctions",
+      "label": "transform",
+      "order": 2
+    },
+    {
+      "id": "e4",
+      "from": "combine_junctions",
+      "to": "combine_cascade",
+      "label": "simplify",
+      "order": 3
+    },
+    {
+      "id": "e5",
+      "from": "combine_cascade",
+      "to": "final_form",
+      "label": "reduce",
+      "order": 4
+    }
+  ],
+  "children_order": {
+    "original": [
+      "shift_h1"
+    ],
+    "shift_h1": [
+      "shift_h2"
+    ],
+    "shift_h2": [
+      "combine_junctions"
+    ],
+    "combine_junctions": [
+      "combine_cascade"
+    ],
+    "combine_cascade": [
+      "final_form"
+    ]
+  }
+}

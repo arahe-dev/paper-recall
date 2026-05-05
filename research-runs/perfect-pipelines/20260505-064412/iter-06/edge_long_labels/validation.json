@@ -1,0 +1,49 @@
+{
+  "scenario": "edge_long_labels",
+  "thresholds": {
+    "readability": 0.95,
+    "parseFidelity": 0.99
+  },
+  "readability": {
+    "score": 1,
+    "pass": true,
+    "defects": [],
+    "metrics": {
+      "activeElementCount": 12,
+      "nodeCount": 4,
+      "textCount": 4,
+      "arrowCount": 3,
+      "nodeOverlaps": [],
+      "degenerateArrows": [],
+      "unboundArrows": [],
+      "missingArrowheads": [],
+      "arrowNodeHits": [],
+      "arrowTextHits": [],
+      "pngDimensions": {
+        "width": 784,
+        "height": 364
+      }
+    }
+  },
+  "parse": {
+    "score": 1,
+    "pass": true,
+    "defects": [],
+    "metrics": {
+      "expectedNodeCount": 4,
+      "actualNodeCount": 4,
+      "expectedEdgeCount": 3,
+      "actualEdgeCount": 3,
+      "missingNodes": [],
+      "extraNodes": [],
+      "missingBodies": [],
+      "missingEdges": [],
+      "missingEdgeLabels": [],
+      "unresolvedArrowCount": 0,
+      "ungroupedTextCount": 0,
+      "looseInferredEdgeCount": 0,
+      "deletedElementCount": 0
+    }
+  },
+  "pass": true
+}

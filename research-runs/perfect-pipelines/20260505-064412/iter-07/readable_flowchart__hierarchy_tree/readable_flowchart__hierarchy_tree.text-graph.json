@@ -1,0 +1,369 @@
+{
+  "schema": "recall-board-text-graph-v1",
+  "summary": {
+    "total_element_count": 29,
+    "active_element_count": 29,
+    "deleted_element_count": 0,
+    "node_count": 10,
+    "edge_count": 9,
+    "unresolved_arrow_count": 0,
+    "ungrouped_text_count": 0
+  },
+  "nodes": [
+    {
+      "id": "node_rect-root",
+      "label": "Deadlock",
+      "source_shape_id": "rect-root",
+      "source_text_ids": [
+        "url139q8NTvbcKIvig97-"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 705.5999999999999,
+        "y": 60,
+        "width": 110.4,
+        "height": 56
+      }
+    },
+    {
+      "id": "node_rect-necessary",
+      "label": "Necessary conditions",
+      "source_shape_id": "rect-necessary",
+      "source_text_ids": [
+        "4hG1FdQ9v1_QqcfSFFy-N"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 223.39999999999998,
+        "y": 266,
+        "width": 216,
+        "height": 56
+      }
+    },
+    {
+      "id": "node_rect-prevention",
+      "label": "Prevention",
+      "source_shape_id": "rect-prevention",
+      "source_text_ids": [
+        "S7oBGDIV9DwextNFNHdgG"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 459.4,
+        "y": 266,
+        "width": 128,
+        "height": 56
+      }
+    },
+    {
+      "id": "node_rect-avoidance",
+      "label": "Avoidance",
+      "source_shape_id": "rect-avoidance",
+      "source_text_ids": [
+        "1xrXPv6h9_e2dWcbIhFJ_"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 607.4,
+        "y": 266,
+        "width": 119.2,
+        "height": 56
+      }
+    },
+    {
+      "id": "node_rect-detection",
+      "label": "Detection",
+      "source_shape_id": "rect-detection",
+      "source_text_ids": [
+        "ynggGya66RIy7EM8h-Zww"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 746.6,
+        "y": 266,
+        "width": 119.2,
+        "height": 56
+      }
+    },
+    {
+      "id": "node_rect-recovery",
+      "label": "Recovery",
+      "source_shape_id": "rect-recovery",
+      "source_text_ids": [
+        "YmXIP4DW5kkRKYNns9wI1"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 885.8,
+        "y": 266,
+        "width": 110.4,
+        "height": 56
+      }
+    },
+    {
+      "id": "node_rect-mutual",
+      "label": "Mutual exclusion",
+      "source_shape_id": "rect-mutual",
+      "source_text_ids": [
+        "1rhKHo2Y1CKFFQnZtdZ10"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 59.99999999999997,
+        "y": 472,
+        "width": 180.8,
+        "height": 56
+      }
+    },
+    {
+      "id": "node_rect-hold",
+      "label": "Hold and wait",
+      "source_shape_id": "rect-hold",
+      "source_text_ids": [
+        "DN04tAZrc-URP48YYy8Uq"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 260.8,
+        "y": 472,
+        "width": 154.4,
+        "height": 56
+      }
+    },
+    {
+      "id": "node_rect-nopreempt",
+      "label": "No preemption",
+      "source_shape_id": "rect-nopreempt",
+      "source_text_ids": [
+        "SaOgdF0ep8mjqOboCAMrz"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 435.2,
+        "y": 472,
+        "width": 154.4,
+        "height": 56
+      }
+    },
+    {
+      "id": "node_rect-circular",
+      "label": "Circular wait",
+      "source_shape_id": "rect-circular",
+      "source_text_ids": [
+        "HCOxd9NH1y7AsAnfkY-oM"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 609.5999999999999,
+        "y": 472,
+        "width": 154.4,
+        "height": 56
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge_001",
+      "from_node_id": "node_rect-root",
+      "to_node_id": "node_rect-necessary",
+      "from_label": "Deadlock",
+      "to_label": "Necessary conditions",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e1",
+      "confidence": 1,
+      "plain_text": "Deadlock connects to Necessary conditions"
+    },
+    {
+      "id": "edge_002",
+      "from_node_id": "node_rect-root",
+      "to_node_id": "node_rect-prevention",
+      "from_label": "Deadlock",
+      "to_label": "Prevention",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e2",
+      "confidence": 1,
+      "plain_text": "Deadlock connects to Prevention"
+    },
+    {
+      "id": "edge_003",
+      "from_node_id": "node_rect-root",
+      "to_node_id": "node_rect-avoidance",
+      "from_label": "Deadlock",
+      "to_label": "Avoidance",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e3",
+      "confidence": 1,
+      "plain_text": "Deadlock connects to Avoidance"
+    },
+    {
+      "id": "edge_004",
+      "from_node_id": "node_rect-root",
+      "to_node_id": "node_rect-detection",
+      "from_label": "Deadlock",
+      "to_label": "Detection",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e4",
+      "confidence": 1,
+      "plain_text": "Deadlock connects to Detection"
+    },
+    {
+      "id": "edge_005",
+      "from_node_id": "node_rect-root",
+      "to_node_id": "node_rect-recovery",
+      "from_label": "Deadlock",
+      "to_label": "Recovery",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e5",
+      "confidence": 1,
+      "plain_text": "Deadlock connects to Recovery"
+    },
+    {
+      "id": "edge_006",
+      "from_node_id": "node_rect-necessary",
+      "to_node_id": "node_rect-mutual",
+      "from_label": "Necessary conditions",
+      "to_label": "Mutual exclusion",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e6",
+      "confidence": 1,
+      "plain_text": "Necessary conditions connects to Mutual exclusion"
+    },
+    {
+      "id": "edge_007",
+      "from_node_id": "node_rect-necessary",
+      "to_node_id": "node_rect-hold",
+      "from_label": "Necessary conditions",
+      "to_label": "Hold and wait",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e7",
+      "confidence": 1,
+      "plain_text": "Necessary conditions connects to Hold and wait"
+    },
+    {
+      "id": "edge_008",
+      "from_node_id": "node_rect-necessary",
+      "to_node_id": "node_rect-nopreempt",
+      "from_label": "Necessary conditions",
+      "to_label": "No preemption",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e8",
+      "confidence": 1,
+      "plain_text": "Necessary conditions connects to No preemption"
+    },
+    {
+      "id": "edge_009",
+      "from_node_id": "node_rect-necessary",
+      "to_node_id": "node_rect-circular",
+      "from_label": "Necessary conditions",
+      "to_label": "Circular wait",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e9",
+      "confidence": 1,
+      "plain_text": "Necessary conditions connects to Circular wait"
+    }
+  ],
+  "unresolved_arrows": [],
+  "ungrouped_text": [],
+  "graph_insights": {
+    "likely_root_nodes": [
+      {
+        "node_id": "node_rect-root",
+        "label": "Deadlock",
+        "reason": "highest outgoing edge count with no incoming edges",
+        "outgoing_edge_count": 5,
+        "incoming_edge_count": 0
+      }
+    ],
+    "likely_leaf_nodes": [
+      {
+        "node_id": "node_rect-prevention",
+        "label": "Prevention",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-avoidance",
+        "label": "Avoidance",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-detection",
+        "label": "Detection",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-recovery",
+        "label": "Recovery",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-mutual",
+        "label": "Mutual exclusion",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-hold",
+        "label": "Hold and wait",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-nopreempt",
+        "label": "No preemption",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-circular",
+        "label": "Circular wait",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      }
+    ],
+    "direct_branch_count": 5,
+    "max_depth_estimate": 2,
+    "has_unresolved_arrows": false,
+    "has_ungrouped_text": false,
+    "lowest_confidence_edge": {
+      "id": "edge_001",
+      "plain_text": "Deadlock connects to Necessary conditions",
+      "confidence": 1,
+      "status": "bound_visual_relation"
+    },
+    "relation_status_counts": {
+      "bound_visual_relation": 9,
+      "loose_inferred_relation": 0
+    }
+  },
+  "plain_text_graph": "# Board Text Graph\n\n## Graph Insights\n- Likely root: Deadlock (5 outgoing, 0 incoming)\n- Likely leaves:\n    - Prevention\n    - Avoidance\n    - Detection\n    - Recovery\n    - Mutual exclusion\n    - Hold and wait\n    - No preemption\n    - Circular wait\n- Direct branches from root: 5\n- Max depth estimate: 2\n- Relation statuses: 9 bound, 0 loose inferred\n- Lowest confidence edge: Deadlock connects to Necessary conditions (1, bound_visual_relation)\n- Unresolved arrows: none\n- Ungrouped text: none\n\n## Nodes\n- Deadlock\n- Necessary conditions\n- Prevention\n- Avoidance\n- Detection\n- Recovery\n- Mutual exclusion\n- Hold and wait\n- No preemption\n- Circular wait\n\n## Edges\n- Deadlock connects to Necessary conditions\n- Deadlock connects to Prevention\n- Deadlock connects to Avoidance\n- Deadlock connects to Detection\n- Deadlock connects to Recovery\n- Necessary conditions connects to Mutual exclusion\n- Necessary conditions connects to Hold and wait\n- Necessary conditions connects to No preemption\n- Necessary conditions connects to Circular wait\n\n## Unresolved Arrows\n(none)\n\n## Ungrouped Text\n(none)"
+}

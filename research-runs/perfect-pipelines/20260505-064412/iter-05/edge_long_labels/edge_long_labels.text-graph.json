@@ -1,0 +1,166 @@
+{
+  "schema": "recall-board-text-graph-v1",
+  "summary": {
+    "total_element_count": 12,
+    "active_element_count": 12,
+    "deleted_element_count": 0,
+    "node_count": 4,
+    "edge_count": 3,
+    "unresolved_arrow_count": 0,
+    "ungrouped_text_count": 0
+  },
+  "nodes": [
+    {
+      "id": "node_rect-root",
+      "label": "Extremely long root label that must wrap cleanly without spilling outside its rectangle",
+      "source_shape_id": "rect-root",
+      "source_text_ids": [
+        "9bLpk6IhcN0xo61TFJ3nR"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 335,
+        "y": 40,
+        "width": 280,
+        "height": 76.25
+      }
+    },
+    {
+      "id": "node_rect-a",
+      "label": "Long branch label with multiple operational qualifiers and a deadline",
+      "source_shape_id": "rect-a",
+      "source_text_ids": [
+        "94hG4D0Hmb8T0nNFi_LJv"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 40,
+        "y": 256.25,
+        "width": 280,
+        "height": 76.25
+      }
+    },
+    {
+      "id": "node_rect-b",
+      "label": "Another long branch label that should remain readable after wrapping",
+      "source_shape_id": "rect-b",
+      "source_text_ids": [
+        "_WWGQGhfPjZQzfaORQwJf"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 335,
+        "y": 256.25,
+        "width": 280,
+        "height": 76.25
+      }
+    },
+    {
+      "id": "node_rect-c",
+      "label": "Short label",
+      "source_shape_id": "rect-c",
+      "source_text_ids": [
+        "3g85GXNUdSKxbm0wu7ZI7"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 630,
+        "y": 270.375,
+        "width": 122.75000000000001,
+        "height": 48
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge_001",
+      "from_node_id": "node_rect-root",
+      "to_node_id": "node_rect-a",
+      "from_label": "Extremely long root label that must wrap cleanly without spilling outside its rectangle",
+      "to_label": "Long branch label with multiple operational qualifiers and a deadline",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e1",
+      "confidence": 1,
+      "plain_text": "Extremely long root label that must wrap cleanly without spilling outside its rectangle connects to Long branch label with multiple operational qualifiers and a deadline"
+    },
+    {
+      "id": "edge_002",
+      "from_node_id": "node_rect-root",
+      "to_node_id": "node_rect-b",
+      "from_label": "Extremely long root label that must wrap cleanly without spilling outside its rectangle",
+      "to_label": "Another long branch label that should remain readable after wrapping",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e2",
+      "confidence": 1,
+      "plain_text": "Extremely long root label that must wrap cleanly without spilling outside its rectangle connects to Another long branch label that should remain readable after wrapping"
+    },
+    {
+      "id": "edge_003",
+      "from_node_id": "node_rect-root",
+      "to_node_id": "node_rect-c",
+      "from_label": "Extremely long root label that must wrap cleanly without spilling outside its rectangle",
+      "to_label": "Short label",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e3",
+      "confidence": 1,
+      "plain_text": "Extremely long root label that must wrap cleanly without spilling outside its rectangle connects to Short label"
+    }
+  ],
+  "unresolved_arrows": [],
+  "ungrouped_text": [],
+  "graph_insights": {
+    "likely_root_nodes": [
+      {
+        "node_id": "node_rect-root",
+        "label": "Extremely long root label that must wrap cleanly without spilling outside its rectangle",
+        "reason": "highest outgoing edge count with no incoming edges",
+        "outgoing_edge_count": 3,
+        "incoming_edge_count": 0
+      }
+    ],
+    "likely_leaf_nodes": [
+      {
+        "node_id": "node_rect-a",
+        "label": "Long branch label with multiple operational qualifiers and a deadline",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-b",
+        "label": "Another long branch label that should remain readable after wrapping",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-c",
+        "label": "Short label",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      }
+    ],
+    "direct_branch_count": 3,
+    "max_depth_estimate": 1,
+    "has_unresolved_arrows": false,
+    "has_ungrouped_text": false,
+    "lowest_confidence_edge": {
+      "id": "edge_001",
+      "plain_text": "Extremely long root label that must wrap cleanly without spilling outside its rectangle connects to Long branch label with multiple operational qualifiers and a deadline",
+      "confidence": 1,
+      "status": "bound_visual_relation"
+    },
+    "relation_status_counts": {
+      "bound_visual_relation": 3,
+      "loose_inferred_relation": 0
+    }
+  },
+  "plain_text_graph": "# Board Text Graph\n\n## Graph Insights\n- Likely root: Extremely long root label that must wrap cleanly without spilling outside its rectangle (3 outgoing, 0 incoming)\n- Likely leaves:\n    - Long branch label with multiple operational qualifiers and a deadline\n    - Another long branch label that should remain readable after wrapping\n    - Short label\n- Direct branches from root: 3\n- Max depth estimate: 1\n- Relation statuses: 3 bound, 0 loose inferred\n- Lowest confidence edge: Extremely long root label that must wrap cleanly without spilling outside its rectangle connects to Long branch label with multiple operational qualifiers and a deadline (1, bound_visual_relation)\n- Unresolved arrows: none\n- Ungrouped text: none\n\n## Nodes\n- Extremely long root label that must wrap cleanly without spilling outside its rectangle\n- Long branch label with multiple operational qualifiers and a deadline\n- Another long branch label that should remain readable after wrapping\n- Short label\n\n## Edges\n- Extremely long root label that must wrap cleanly without spilling outside its rectangle connects to Long branch label with multiple operational qualifiers and a deadline\n- Extremely long root label that must wrap cleanly without spilling outside its rectangle connects to Another long branch label that should remain readable after wrapping\n- Extremely long root label that must wrap cleanly without spilling outside its rectangle connects to Short label\n\n## Unresolved Arrows\n(none)\n\n## Ungrouped Text\n(none)"
+}

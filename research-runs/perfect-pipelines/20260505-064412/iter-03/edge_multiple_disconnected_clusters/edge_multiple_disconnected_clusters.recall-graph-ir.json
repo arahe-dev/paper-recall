@@ -1,0 +1,79 @@
+{
+  "schema": "recall-graph-ir-v2",
+  "title": "edge_multiple_disconnected_clusters",
+  "layout": {
+    "style": "readable_compact",
+    "density": "readable",
+    "sibling_order_policy": "explicit",
+    "rank_policy": "from_root_depth",
+    "strategy": "mixed",
+    "direction": "TD",
+    "root_ids": [
+      "alpha",
+      "beta",
+      "note"
+    ]
+  },
+  "nodes": [
+    {
+      "order": 0,
+      "id": "alpha",
+      "label": "Alpha cluster"
+    },
+    {
+      "order": 1,
+      "id": "alpha_a",
+      "label": "Alpha A"
+    },
+    {
+      "order": 2,
+      "id": "alpha_b",
+      "label": "Alpha B"
+    },
+    {
+      "order": 3,
+      "id": "beta",
+      "label": "Beta cluster"
+    },
+    {
+      "order": 4,
+      "id": "beta_a",
+      "label": "Beta A"
+    },
+    {
+      "order": 5,
+      "id": "note",
+      "label": "Standalone annotation",
+      "body": "No incoming or outgoing edge."
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "order": 0,
+      "from": "alpha",
+      "to": "alpha_a"
+    },
+    {
+      "id": "e2",
+      "order": 1,
+      "from": "alpha",
+      "to": "alpha_b"
+    },
+    {
+      "id": "e3",
+      "order": 2,
+      "from": "beta",
+      "to": "beta_a"
+    }
+  ],
+  "children_order": {
+    "alpha": [
+      "alpha_a",
+      "alpha_b"
+    ],
+    "beta": [
+      "beta_a"
+    ]
+  }
+}

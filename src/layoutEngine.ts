@@ -281,15 +281,30 @@ function layoutHubSpoke(
   const count = children.length;
   const startAngle = preset.hubSpokeAngleStart;
   const endAngle = preset.hubSpokeAngleStart + preset.hubSpokeAngleSpan;
-  const angleStep = count > 1 ? (endAngle - startAngle) / (count - 1) : 0;
+  const angleSpan = Math.max(0.1, Math.abs(endAngle - startAngle));
+  const isFullCircle = angleSpan >= Math.PI * 2 - 0.001;
+  const childSizes = new Map<string, { width: number; height: number }>();
+  let averageChildWidth = 0;
+  for (const cid of children) {
+    const cnode = graph.nodes.find((n) => n.id === cid)!;
+    const csize = computeNodeSize(cnode, preset);
+    childSizes.set(cid, csize);
+    averageChildWidth += csize.width;
+  }
+  averageChildWidth = count > 0 ? averageChildWidth / count : preset.nodeWidth;
+  const requiredArcRadius = count > 1
+    ? ((averageChildWidth + preset.siblingSpacing * 1.5) * (isFullCircle ? count : count - 1)) / angleSpan
+    : preset.hubRadius;
+  const hubRadius = Math.max(preset.hubRadius, requiredArcRadius);
+  const angleStep = count > 1 ? (endAngle - startAngle) / (isFullCircle ? count : count - 1) : 0;
 
   for (let i = 0; i < count; i++) {
     const cid = children[i];
     const cnode = graph.nodes.find((n) => n.id === cid)!;
-    const csize = computeNodeSize(cnode, preset);
+    const csize = childSizes.get(cid)!;
     const angle = count === 1 ? (startAngle + endAngle) / 2 : startAngle + i * angleStep;
-    const cx = rootX + Math.cos(angle) * preset.hubRadius;
-    const cy = rootY - Math.sin(angle) * preset.hubRadius;
+    const cx = rootX + Math.cos(angle) * hubRadius;
+    const cy = rootY - Math.sin(angle) * hubRadius;
     positioned.set(cid, {
       id: cid,
       x: cx - csize.width / 2,

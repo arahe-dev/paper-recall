@@ -1,0 +1,96 @@
+{
+  "schema": "recall-graph-ir-v2",
+  "title": "readable_block_diagram__linear_pipeline",
+  "layout": {
+    "style": "readable_block_diagram",
+    "strategy": "pipeline",
+    "direction": "TD",
+    "density": "readable",
+    "root_ids": [
+      "prompt"
+    ],
+    "sibling_order_policy": "explicit",
+    "rank_policy": "from_root_depth"
+  },
+  "nodes": [
+    {
+      "id": "prompt",
+      "label": "Prompt",
+      "order": 0
+    },
+    {
+      "id": "ir",
+      "label": "Recall Graph IR",
+      "order": 1
+    },
+    {
+      "id": "layout",
+      "label": "Layout engine",
+      "order": 2
+    },
+    {
+      "id": "scene",
+      "label": "Excalidraw scene",
+      "order": 3
+    },
+    {
+      "id": "board",
+      "label": "Board Text Graph",
+      "order": 4
+    },
+    {
+      "id": "review",
+      "label": "AI review",
+      "order": 5
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "prompt",
+      "to": "ir",
+      "order": 0
+    },
+    {
+      "id": "e2",
+      "from": "ir",
+      "to": "layout",
+      "order": 1
+    },
+    {
+      "id": "e3",
+      "from": "layout",
+      "to": "scene",
+      "order": 2
+    },
+    {
+      "id": "e4",
+      "from": "scene",
+      "to": "board",
+      "order": 3
+    },
+    {
+      "id": "e5",
+      "from": "board",
+      "to": "review",
+      "order": 4
+    }
+  ],
+  "children_order": {
+    "prompt": [
+      "ir"
+    ],
+    "ir": [
+      "layout"
+    ],
+    "layout": [
+      "scene"
+    ],
+    "scene": [
+      "board"
+    ],
+    "board": [
+      "review"
+    ]
+  }
+}

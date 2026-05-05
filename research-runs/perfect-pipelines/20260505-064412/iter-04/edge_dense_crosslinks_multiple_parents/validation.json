@@ -1,0 +1,49 @@
+{
+  "scenario": "edge_dense_crosslinks_multiple_parents",
+  "thresholds": {
+    "readability": 0.95,
+    "parseFidelity": 0.99
+  },
+  "readability": {
+    "score": 1,
+    "pass": true,
+    "defects": [],
+    "metrics": {
+      "activeElementCount": 35,
+      "nodeCount": 9,
+      "textCount": 13,
+      "arrowCount": 12,
+      "nodeOverlaps": [],
+      "degenerateArrows": [],
+      "unboundArrows": [],
+      "missingArrowheads": [],
+      "arrowNodeHits": [],
+      "arrowTextHits": [],
+      "pngDimensions": {
+        "width": 450,
+        "height": 872
+      }
+    }
+  },
+  "parse": {
+    "score": 1,
+    "pass": true,
+    "defects": [],
+    "metrics": {
+      "expectedNodeCount": 9,
+      "actualNodeCount": 9,
+      "expectedEdgeCount": 12,
+      "actualEdgeCount": 12,
+      "missingNodes": [],
+      "extraNodes": [],
+      "missingBodies": [],
+      "missingEdges": [],
+      "missingEdgeLabels": [],
+      "unresolvedArrowCount": 0,
+      "ungroupedTextCount": 0,
+      "looseInferredEdgeCount": 0,
+      "deletedElementCount": 0
+    }
+  },
+  "pass": true
+}

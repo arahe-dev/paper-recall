@@ -1,0 +1,109 @@
+{
+  "schema": "recall-graph-ir-v2",
+  "title": "edge_feedback_loop_control",
+  "layout": {
+    "style": "readable_compact",
+    "density": "readable",
+    "sibling_order_policy": "explicit",
+    "rank_policy": "from_root_depth",
+    "strategy": "mixed",
+    "direction": "LR",
+    "root_ids": [
+      "reference"
+    ]
+  },
+  "nodes": [
+    {
+      "order": 0,
+      "id": "reference",
+      "label": "Reference R"
+    },
+    {
+      "order": 1,
+      "id": "sum",
+      "label": "Summing junction",
+      "body": "+R minus feedback"
+    },
+    {
+      "order": 2,
+      "id": "controller",
+      "label": "Controller Gc"
+    },
+    {
+      "order": 3,
+      "id": "plant",
+      "label": "Plant Gp"
+    },
+    {
+      "order": 4,
+      "id": "output",
+      "label": "Output C"
+    },
+    {
+      "order": 5,
+      "id": "sensor",
+      "label": "Sensor H"
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "order": 0,
+      "from": "reference",
+      "to": "sum",
+      "label": "+"
+    },
+    {
+      "id": "e2",
+      "order": 1,
+      "from": "sum",
+      "to": "controller"
+    },
+    {
+      "id": "e3",
+      "order": 2,
+      "from": "controller",
+      "to": "plant"
+    },
+    {
+      "id": "e4",
+      "order": 3,
+      "from": "plant",
+      "to": "output"
+    },
+    {
+      "id": "e5",
+      "order": 4,
+      "from": "output",
+      "to": "sensor",
+      "label": "feedback"
+    },
+    {
+      "id": "e6",
+      "order": 5,
+      "from": "sensor",
+      "to": "sum",
+      "label": "-"
+    }
+  ],
+  "children_order": {
+    "reference": [
+      "sum"
+    ],
+    "sum": [
+      "controller"
+    ],
+    "controller": [
+      "plant"
+    ],
+    "plant": [
+      "output"
+    ],
+    "output": [
+      "sensor"
+    ],
+    "sensor": [
+      "sum"
+    ]
+  }
+}

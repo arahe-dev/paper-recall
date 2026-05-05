@@ -1,0 +1,1042 @@
+{
+  "schema": "recall-board-text-graph-v1",
+  "summary": {
+    "total_element_count": 91,
+    "active_element_count": 91,
+    "deleted_element_count": 0,
+    "node_count": 31,
+    "edge_count": 29,
+    "unresolved_arrow_count": 0,
+    "ungrouped_text_count": 0
+  },
+  "nodes": [
+    {
+      "id": "node_rect-product",
+      "label": "Product Launch",
+      "source_shape_id": "rect-product",
+      "source_text_ids": [
+        "lB9BC9g13J4pb6WJpeVDE"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 2192,
+        "y": 50,
+        "width": 180,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-strategy",
+      "label": "Strategy",
+      "source_shape_id": "rect-strategy",
+      "source_text_ids": [
+        "ONzNPX0BqKUebJUSdT1Z_"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 254,
+        "y": 248,
+        "width": 180,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-engineering",
+      "label": "Engineering",
+      "source_shape_id": "rect-engineering",
+      "source_text_ids": [
+        "U1HeQqhBMz_iEWhxql80G"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 1274,
+        "y": 248,
+        "width": 180,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-marketing",
+      "label": "Marketing",
+      "source_shape_id": "rect-marketing",
+      "source_text_ids": [
+        "T5_mBTQzI9EIqv-DDjXW1"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 2192,
+        "y": 248,
+        "width": 180,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-support",
+      "label": "Support",
+      "source_shape_id": "rect-support",
+      "source_text_ids": [
+        "J7lUKOT9dq6KLhC9Fuq0I"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 2804,
+        "y": 248,
+        "width": 180,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-timeline",
+      "label": "Timeline",
+      "source_shape_id": "rect-timeline",
+      "source_text_ids": [
+        "LL83Awd_PpnR_b3oV3gY4"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 3416,
+        "y": 248,
+        "width": 180,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-goals",
+      "label": "Define goals",
+      "source_shape_id": "rect-goals",
+      "source_text_ids": [
+        "XFwym6SKSpr7UqUTpqF38"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 50,
+        "y": 446,
+        "width": 180,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-audience",
+      "label": "Target audience",
+      "source_shape_id": "rect-audience",
+      "source_text_ids": [
+        "PZcCo2Yr3MQUwVmWuO9qF"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 254,
+        "y": 446,
+        "width": 180,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-positioning",
+      "label": "Positioning",
+      "source_shape_id": "rect-positioning",
+      "source_text_ids": [
+        "ykuxr7hH3zdFN3Hrk1PKf"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 458,
+        "y": 446,
+        "width": 180,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-backend",
+      "label": "Backend",
+      "source_shape_id": "rect-backend",
+      "source_text_ids": [
+        "WkpMYHlYc6uFDKlgcOFZm"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 662,
+        "y": 446,
+        "width": 180,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-frontend",
+      "label": "Frontend",
+      "source_shape_id": "rect-frontend",
+      "source_text_ids": [
+        "gaNBuCBI5xvuNxzSl0sDw"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 1274,
+        "y": 446,
+        "width": 180,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-infra",
+      "label": "Infrastructure",
+      "source_shape_id": "rect-infra",
+      "source_text_ids": [
+        "B24t18j-9Z8Zn1-s902oz"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 1784,
+        "y": 446,
+        "width": 180,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-api",
+      "label": "API design",
+      "source_shape_id": "rect-api",
+      "source_text_ids": [
+        "rxS_uMeoefl5VNXNS0aek"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 458,
+        "y": 644,
+        "width": 180,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-db",
+      "label": "Database schema",
+      "source_shape_id": "rect-db",
+      "source_text_ids": [
+        "QwN41R2v7UMYWSNWNhyV9"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 662,
+        "y": 644,
+        "width": 180,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-auth",
+      "label": "Auth service",
+      "source_shape_id": "rect-auth",
+      "source_text_ids": [
+        "p1H8F-KLUnIImB9fezwRO"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 866,
+        "y": 644,
+        "width": 180,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-ui",
+      "label": "UI components",
+      "source_shape_id": "rect-ui",
+      "source_text_ids": [
+        "pMXmGh7c4fsF9xn0c6x0m"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 1070,
+        "y": 644,
+        "width": 180,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-state",
+      "label": "State management",
+      "source_shape_id": "rect-state",
+      "source_text_ids": [
+        "eYKCl1FykNc0kPuVKRxgZ"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 1274,
+        "y": 644,
+        "width": 180,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-assets",
+      "label": "Asset pipeline",
+      "source_shape_id": "rect-assets",
+      "source_text_ids": [
+        "X9hOsxAZKIzy43dSqarhl"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 1478,
+        "y": 644,
+        "width": 180,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-deploy",
+      "label": "Deployment",
+      "source_shape_id": "rect-deploy",
+      "source_text_ids": [
+        "KVOspAspFaBmi-KU2fLrc"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 1682,
+        "y": 644,
+        "width": 180,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-monitor",
+      "label": "Monitoring",
+      "source_shape_id": "rect-monitor",
+      "source_text_ids": [
+        "AqNCFEpxt-dknq5XZJ-5Y"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 1886,
+        "y": 644,
+        "width": 180,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-campaign",
+      "label": "Campaign plan",
+      "source_shape_id": "rect-campaign",
+      "source_text_ids": [
+        "REEUPtHVcxStjftciF4De"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 1988,
+        "y": 446,
+        "width": 180,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-content",
+      "label": "Content calendar",
+      "source_shape_id": "rect-content",
+      "source_text_ids": [
+        "c-HTlM3IWhZbV7Zhbvoew"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 2192,
+        "y": 446,
+        "width": 180,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-channels",
+      "label": "Channels",
+      "source_shape_id": "rect-channels",
+      "source_text_ids": [
+        "id2wK5qMkHXleBDz_zzyn"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 2396,
+        "y": 446,
+        "width": 180,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-docs",
+      "label": "Documentation",
+      "source_shape_id": "rect-docs",
+      "source_text_ids": [
+        "T38K0A4qAke5n_dMdqPYA"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 2600,
+        "y": 446,
+        "width": 180,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-training",
+      "label": "Training",
+      "source_shape_id": "rect-training",
+      "source_text_ids": [
+        "MeVhd_HE-5Sw_Mc_LLsGx"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 2804,
+        "y": 446,
+        "width": 180,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-feedback",
+      "label": "Feedback loop",
+      "source_shape_id": "rect-feedback",
+      "source_text_ids": [
+        "BruY6BksijvoqfYIykJ6r"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 3008,
+        "y": 446,
+        "width": 180,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-m1",
+      "label": "Month 1: Alpha",
+      "source_shape_id": "rect-m1",
+      "source_text_ids": [
+        "6OdmFDjZrmMAcz5PwNz5w"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 3212,
+        "y": 446,
+        "width": 180,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-m2",
+      "label": "Month 2: Beta",
+      "source_shape_id": "rect-m2",
+      "source_text_ids": [
+        "GTJcmI_mKIxA8sFDkT67T"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 3416,
+        "y": 446,
+        "width": 180,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-m3",
+      "label": "Month 3: GA",
+      "source_shape_id": "rect-m3",
+      "source_text_ids": [
+        "zPnLWKSNZDiS-5ROkaS1F"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 3620,
+        "y": 446,
+        "width": 180,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-note1",
+      "label": "Note: keep scope tight",
+      "source_shape_id": "rect-note1",
+      "source_text_ids": [
+        "DxROqDyMljVcpK5dwMYVN"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 3644.75,
+        "y": 50,
+        "width": 221.50000000000003,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-note2",
+      "label": "Note: prioritize reliability",
+      "source_shape_id": "rect-note2",
+      "source_text_ids": [
+        "g1b6raLiuO8Gg4Erv1e45"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 3620,
+        "y": 248,
+        "width": 271,
+        "height": 48
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge_001",
+      "from_node_id": "node_rect-product",
+      "to_node_id": "node_rect-strategy",
+      "from_label": "Product Launch",
+      "to_label": "Strategy",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e1",
+      "confidence": 1,
+      "plain_text": "Product Launch connects to Strategy"
+    },
+    {
+      "id": "edge_002",
+      "from_node_id": "node_rect-product",
+      "to_node_id": "node_rect-engineering",
+      "from_label": "Product Launch",
+      "to_label": "Engineering",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e2",
+      "confidence": 1,
+      "plain_text": "Product Launch connects to Engineering"
+    },
+    {
+      "id": "edge_003",
+      "from_node_id": "node_rect-product",
+      "to_node_id": "node_rect-marketing",
+      "from_label": "Product Launch",
+      "to_label": "Marketing",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e3",
+      "confidence": 1,
+      "plain_text": "Product Launch connects to Marketing"
+    },
+    {
+      "id": "edge_004",
+      "from_node_id": "node_rect-product",
+      "to_node_id": "node_rect-support",
+      "from_label": "Product Launch",
+      "to_label": "Support",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e4",
+      "confidence": 1,
+      "plain_text": "Product Launch connects to Support"
+    },
+    {
+      "id": "edge_005",
+      "from_node_id": "node_rect-product",
+      "to_node_id": "node_rect-timeline",
+      "from_label": "Product Launch",
+      "to_label": "Timeline",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e5",
+      "confidence": 1,
+      "plain_text": "Product Launch connects to Timeline"
+    },
+    {
+      "id": "edge_006",
+      "from_node_id": "node_rect-strategy",
+      "to_node_id": "node_rect-goals",
+      "from_label": "Strategy",
+      "to_label": "Define goals",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e6",
+      "confidence": 1,
+      "plain_text": "Strategy connects to Define goals"
+    },
+    {
+      "id": "edge_007",
+      "from_node_id": "node_rect-strategy",
+      "to_node_id": "node_rect-audience",
+      "from_label": "Strategy",
+      "to_label": "Target audience",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e7",
+      "confidence": 1,
+      "plain_text": "Strategy connects to Target audience"
+    },
+    {
+      "id": "edge_008",
+      "from_node_id": "node_rect-strategy",
+      "to_node_id": "node_rect-positioning",
+      "from_label": "Strategy",
+      "to_label": "Positioning",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e8",
+      "confidence": 1,
+      "plain_text": "Strategy connects to Positioning"
+    },
+    {
+      "id": "edge_009",
+      "from_node_id": "node_rect-engineering",
+      "to_node_id": "node_rect-backend",
+      "from_label": "Engineering",
+      "to_label": "Backend",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e9",
+      "confidence": 1,
+      "plain_text": "Engineering connects to Backend"
+    },
+    {
+      "id": "edge_010",
+      "from_node_id": "node_rect-engineering",
+      "to_node_id": "node_rect-frontend",
+      "from_label": "Engineering",
+      "to_label": "Frontend",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e10",
+      "confidence": 1,
+      "plain_text": "Engineering connects to Frontend"
+    },
+    {
+      "id": "edge_011",
+      "from_node_id": "node_rect-engineering",
+      "to_node_id": "node_rect-infra",
+      "from_label": "Engineering",
+      "to_label": "Infrastructure",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e11",
+      "confidence": 1,
+      "plain_text": "Engineering connects to Infrastructure"
+    },
+    {
+      "id": "edge_012",
+      "from_node_id": "node_rect-backend",
+      "to_node_id": "node_rect-api",
+      "from_label": "Backend",
+      "to_label": "API design",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e12",
+      "confidence": 1,
+      "plain_text": "Backend connects to API design"
+    },
+    {
+      "id": "edge_013",
+      "from_node_id": "node_rect-backend",
+      "to_node_id": "node_rect-db",
+      "from_label": "Backend",
+      "to_label": "Database schema",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e13",
+      "confidence": 1,
+      "plain_text": "Backend connects to Database schema"
+    },
+    {
+      "id": "edge_014",
+      "from_node_id": "node_rect-backend",
+      "to_node_id": "node_rect-auth",
+      "from_label": "Backend",
+      "to_label": "Auth service",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e14",
+      "confidence": 1,
+      "plain_text": "Backend connects to Auth service"
+    },
+    {
+      "id": "edge_015",
+      "from_node_id": "node_rect-frontend",
+      "to_node_id": "node_rect-ui",
+      "from_label": "Frontend",
+      "to_label": "UI components",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e15",
+      "confidence": 1,
+      "plain_text": "Frontend connects to UI components"
+    },
+    {
+      "id": "edge_016",
+      "from_node_id": "node_rect-frontend",
+      "to_node_id": "node_rect-state",
+      "from_label": "Frontend",
+      "to_label": "State management",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e16",
+      "confidence": 1,
+      "plain_text": "Frontend connects to State management"
+    },
+    {
+      "id": "edge_017",
+      "from_node_id": "node_rect-frontend",
+      "to_node_id": "node_rect-assets",
+      "from_label": "Frontend",
+      "to_label": "Asset pipeline",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e17",
+      "confidence": 1,
+      "plain_text": "Frontend connects to Asset pipeline"
+    },
+    {
+      "id": "edge_018",
+      "from_node_id": "node_rect-infra",
+      "to_node_id": "node_rect-deploy",
+      "from_label": "Infrastructure",
+      "to_label": "Deployment",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e18",
+      "confidence": 1,
+      "plain_text": "Infrastructure connects to Deployment"
+    },
+    {
+      "id": "edge_019",
+      "from_node_id": "node_rect-infra",
+      "to_node_id": "node_rect-monitor",
+      "from_label": "Infrastructure",
+      "to_label": "Monitoring",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e19",
+      "confidence": 1,
+      "plain_text": "Infrastructure connects to Monitoring"
+    },
+    {
+      "id": "edge_020",
+      "from_node_id": "node_rect-marketing",
+      "to_node_id": "node_rect-campaign",
+      "from_label": "Marketing",
+      "to_label": "Campaign plan",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e20",
+      "confidence": 1,
+      "plain_text": "Marketing connects to Campaign plan"
+    },
+    {
+      "id": "edge_021",
+      "from_node_id": "node_rect-marketing",
+      "to_node_id": "node_rect-content",
+      "from_label": "Marketing",
+      "to_label": "Content calendar",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e21",
+      "confidence": 1,
+      "plain_text": "Marketing connects to Content calendar"
+    },
+    {
+      "id": "edge_022",
+      "from_node_id": "node_rect-marketing",
+      "to_node_id": "node_rect-channels",
+      "from_label": "Marketing",
+      "to_label": "Channels",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e22",
+      "confidence": 1,
+      "plain_text": "Marketing connects to Channels"
+    },
+    {
+      "id": "edge_023",
+      "from_node_id": "node_rect-support",
+      "to_node_id": "node_rect-docs",
+      "from_label": "Support",
+      "to_label": "Documentation",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e23",
+      "confidence": 1,
+      "plain_text": "Support connects to Documentation"
+    },
+    {
+      "id": "edge_024",
+      "from_node_id": "node_rect-support",
+      "to_node_id": "node_rect-training",
+      "from_label": "Support",
+      "to_label": "Training",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e24",
+      "confidence": 1,
+      "plain_text": "Support connects to Training"
+    },
+    {
+      "id": "edge_025",
+      "from_node_id": "node_rect-support",
+      "to_node_id": "node_rect-feedback",
+      "from_label": "Support",
+      "to_label": "Feedback loop",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e25",
+      "confidence": 1,
+      "plain_text": "Support connects to Feedback loop"
+    },
+    {
+      "id": "edge_026",
+      "from_node_id": "node_rect-timeline",
+      "to_node_id": "node_rect-m1",
+      "from_label": "Timeline",
+      "to_label": "Month 1: Alpha",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e26",
+      "confidence": 1,
+      "plain_text": "Timeline connects to Month 1: Alpha"
+    },
+    {
+      "id": "edge_027",
+      "from_node_id": "node_rect-timeline",
+      "to_node_id": "node_rect-m2",
+      "from_label": "Timeline",
+      "to_label": "Month 2: Beta",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e27",
+      "confidence": 1,
+      "plain_text": "Timeline connects to Month 2: Beta"
+    },
+    {
+      "id": "edge_028",
+      "from_node_id": "node_rect-timeline",
+      "to_node_id": "node_rect-m3",
+      "from_label": "Timeline",
+      "to_label": "Month 3: GA",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e28",
+      "confidence": 1,
+      "plain_text": "Timeline connects to Month 3: GA"
+    },
+    {
+      "id": "edge_029",
+      "from_node_id": "node_rect-note1",
+      "to_node_id": "node_rect-note2",
+      "from_label": "Note: keep scope tight",
+      "to_label": "Note: prioritize reliability",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e29",
+      "confidence": 1,
+      "plain_text": "Note: keep scope tight connects to Note: prioritize reliability"
+    }
+  ],
+  "unresolved_arrows": [],
+  "ungrouped_text": [],
+  "graph_insights": {
+    "likely_root_nodes": [
+      {
+        "node_id": "node_rect-product",
+        "label": "Product Launch",
+        "reason": "highest outgoing edge count with no incoming edges",
+        "outgoing_edge_count": 5,
+        "incoming_edge_count": 0
+      },
+      {
+        "node_id": "node_rect-note1",
+        "label": "Note: keep scope tight",
+        "reason": "highest outgoing edge count with no incoming edges",
+        "outgoing_edge_count": 1,
+        "incoming_edge_count": 0
+      }
+    ],
+    "likely_leaf_nodes": [
+      {
+        "node_id": "node_rect-goals",
+        "label": "Define goals",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-audience",
+        "label": "Target audience",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-positioning",
+        "label": "Positioning",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-api",
+        "label": "API design",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-db",
+        "label": "Database schema",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-auth",
+        "label": "Auth service",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-ui",
+        "label": "UI components",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-state",
+        "label": "State management",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-assets",
+        "label": "Asset pipeline",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-deploy",
+        "label": "Deployment",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-monitor",
+        "label": "Monitoring",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-campaign",
+        "label": "Campaign plan",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-content",
+        "label": "Content calendar",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-channels",
+        "label": "Channels",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-docs",
+        "label": "Documentation",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-training",
+        "label": "Training",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-feedback",
+        "label": "Feedback loop",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-m1",
+        "label": "Month 1: Alpha",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-m2",
+        "label": "Month 2: Beta",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-m3",
+        "label": "Month 3: GA",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-note2",
+        "label": "Note: prioritize reliability",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      }
+    ],
+    "direct_branch_count": 5,
+    "max_depth_estimate": 3,
+    "has_unresolved_arrows": false,
+    "has_ungrouped_text": false,
+    "lowest_confidence_edge": {
+      "id": "edge_001",
+      "plain_text": "Product Launch connects to Strategy",
+      "confidence": 1,
+      "status": "bound_visual_relation"
+    },
+    "relation_status_counts": {
+      "bound_visual_relation": 29,
+      "loose_inferred_relation": 0
+    }
+  },
+  "plain_text_graph": "# Board Text Graph\n\n## Graph Insights\n- Likely root: Product Launch (5 outgoing, 0 incoming)\n- Likely leaves:\n    - Define goals\n    - Target audience\n    - Positioning\n    - API design\n    - Database schema\n    - Auth service\n    - UI components\n    - State management\n    - Asset pipeline\n    - Deployment\n    - Monitoring\n    - Campaign plan\n    - Content calendar\n    - Channels\n    - Documentation\n    - Training\n    - Feedback loop\n    - Month 1: Alpha\n    - Month 2: Beta\n    - Month 3: GA\n    - Note: prioritize reliability\n- Direct branches from root: 5\n- Max depth estimate: 3\n- Relation statuses: 29 bound, 0 loose inferred\n- Lowest confidence edge: Product Launch connects to Strategy (1, bound_visual_relation)\n- Unresolved arrows: none\n- Ungrouped text: none\n\n## Nodes\n- Product Launch\n- Strategy\n- Engineering\n- Marketing\n- Support\n- Timeline\n- Define goals\n- Target audience\n- Positioning\n- Backend\n- Frontend\n- Infrastructure\n- API design\n- Database schema\n- Auth service\n- UI components\n- State management\n- Asset pipeline\n- Deployment\n- Monitoring\n- Campaign plan\n- Content calendar\n- Channels\n- Documentation\n- Training\n- Feedback loop\n- Month 1: Alpha\n- Month 2: Beta\n- Month 3: GA\n- Note: keep scope tight\n- Note: prioritize reliability\n\n## Edges\n- Product Launch connects to Strategy\n- Product Launch connects to Engineering\n- Product Launch connects to Marketing\n- Product Launch connects to Support\n- Product Launch connects to Timeline\n- Strategy connects to Define goals\n- Strategy connects to Target audience\n- Strategy connects to Positioning\n- Engineering connects to Backend\n- Engineering connects to Frontend\n- Engineering connects to Infrastructure\n- Backend connects to API design\n- Backend connects to Database schema\n- Backend connects to Auth service\n- Frontend connects to UI components\n- Frontend connects to State management\n- Frontend connects to Asset pipeline\n- Infrastructure connects to Deployment\n- Infrastructure connects to Monitoring\n- Marketing connects to Campaign plan\n- Marketing connects to Content calendar\n- Marketing connects to Channels\n- Support connects to Documentation\n- Support connects to Training\n- Support connects to Feedback loop\n- Timeline connects to Month 1: Alpha\n- Timeline connects to Month 2: Beta\n- Timeline connects to Month 3: GA\n- Note: keep scope tight connects to Note: prioritize reliability\n\n## Unresolved Arrows\n(none)\n\n## Ungrouped Text\n(none)"
+}

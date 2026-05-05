@@ -1,0 +1,148 @@
+{
+  "schema": "recall-graph-ir-v2",
+  "title": "edge_hub_many_spokes",
+  "layout": {
+    "style": "readable_compact",
+    "density": "readable",
+    "sibling_order_policy": "explicit",
+    "rank_policy": "from_root_depth",
+    "strategy": "hub_spoke",
+    "direction": "TD",
+    "root_ids": [
+      "hub"
+    ]
+  },
+  "nodes": [
+    {
+      "order": 0,
+      "id": "hub",
+      "label": "Central hub"
+    },
+    {
+      "order": 1,
+      "id": "spoke_1",
+      "label": "Spoke 1"
+    },
+    {
+      "order": 2,
+      "id": "spoke_2",
+      "label": "Spoke 2"
+    },
+    {
+      "order": 3,
+      "id": "spoke_3",
+      "label": "Spoke 3"
+    },
+    {
+      "order": 4,
+      "id": "spoke_4",
+      "label": "Spoke 4"
+    },
+    {
+      "order": 5,
+      "id": "spoke_5",
+      "label": "Spoke 5"
+    },
+    {
+      "order": 6,
+      "id": "spoke_6",
+      "label": "Spoke 6"
+    },
+    {
+      "order": 7,
+      "id": "spoke_7",
+      "label": "Spoke 7"
+    },
+    {
+      "order": 8,
+      "id": "spoke_8",
+      "label": "Spoke 8"
+    },
+    {
+      "order": 9,
+      "id": "spoke_9",
+      "label": "Spoke 9"
+    },
+    {
+      "order": 10,
+      "id": "spoke_10",
+      "label": "Spoke 10"
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "order": 0,
+      "from": "hub",
+      "to": "spoke_1"
+    },
+    {
+      "id": "e2",
+      "order": 1,
+      "from": "hub",
+      "to": "spoke_2"
+    },
+    {
+      "id": "e3",
+      "order": 2,
+      "from": "hub",
+      "to": "spoke_3"
+    },
+    {
+      "id": "e4",
+      "order": 3,
+      "from": "hub",
+      "to": "spoke_4"
+    },
+    {
+      "id": "e5",
+      "order": 4,
+      "from": "hub",
+      "to": "spoke_5"
+    },
+    {
+      "id": "e6",
+      "order": 5,
+      "from": "hub",
+      "to": "spoke_6"
+    },
+    {
+      "id": "e7",
+      "order": 6,
+      "from": "hub",
+      "to": "spoke_7"
+    },
+    {
+      "id": "e8",
+      "order": 7,
+      "from": "hub",
+      "to": "spoke_8"
+    },
+    {
+      "id": "e9",
+      "order": 8,
+      "from": "hub",
+      "to": "spoke_9"
+    },
+    {
+      "id": "e10",
+      "order": 9,
+      "from": "hub",
+      "to": "spoke_10"
+    }
+  ],
+  "children_order": {
+    "hub": [
+      "spoke_1",
+      "spoke_2",
+      "spoke_3",
+      "spoke_4",
+      "spoke_5",
+      "spoke_6",
+      "spoke_7",
+      "spoke_8",
+      "spoke_9",
+      "spoke_10"
+    ]
+  }
+}

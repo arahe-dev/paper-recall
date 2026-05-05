@@ -1,0 +1,208 @@
+{
+  "schema": "recall-board-text-graph-v1",
+  "summary": {
+    "total_element_count": 17,
+    "active_element_count": 17,
+    "deleted_element_count": 0,
+    "node_count": 6,
+    "edge_count": 5,
+    "unresolved_arrow_count": 0,
+    "ungrouped_text_count": 0
+  },
+  "nodes": [
+    {
+      "id": "node_rect-prompt",
+      "label": "Prompt",
+      "source_shape_id": "rect-prompt",
+      "source_text_ids": [
+        "IS18REUOSOAt7nhXhqeNh"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 50,
+        "y": 50,
+        "width": 180,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-ir",
+      "label": "Recall Graph IR",
+      "source_shape_id": "rect-ir",
+      "source_text_ids": [
+        "iwcEjyZeDr0P0U664LEx6"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 50,
+        "y": 248,
+        "width": 180,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-layout",
+      "label": "Layout engine",
+      "source_shape_id": "rect-layout",
+      "source_text_ids": [
+        "egmiLDIycrVY7AinKgzlc"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 50,
+        "y": 446,
+        "width": 180,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-scene",
+      "label": "Excalidraw scene",
+      "source_shape_id": "rect-scene",
+      "source_text_ids": [
+        "-FaXKI1aYtGoVk8OYf28B"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 50,
+        "y": 644,
+        "width": 180,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-board",
+      "label": "Board Text Graph",
+      "source_shape_id": "rect-board",
+      "source_text_ids": [
+        "xv_hWYAWfFmJgkmM07iWD"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 50,
+        "y": 842,
+        "width": 180,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-review",
+      "label": "AI review",
+      "source_shape_id": "rect-review",
+      "source_text_ids": [
+        "NJv2g5WOWIsK8Rm3KsLx3"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 50,
+        "y": 1040,
+        "width": 180,
+        "height": 48
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge_001",
+      "from_node_id": "node_rect-prompt",
+      "to_node_id": "node_rect-ir",
+      "from_label": "Prompt",
+      "to_label": "Recall Graph IR",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e1",
+      "confidence": 1,
+      "plain_text": "Prompt connects to Recall Graph IR"
+    },
+    {
+      "id": "edge_002",
+      "from_node_id": "node_rect-ir",
+      "to_node_id": "node_rect-layout",
+      "from_label": "Recall Graph IR",
+      "to_label": "Layout engine",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e2",
+      "confidence": 1,
+      "plain_text": "Recall Graph IR connects to Layout engine"
+    },
+    {
+      "id": "edge_003",
+      "from_node_id": "node_rect-layout",
+      "to_node_id": "node_rect-scene",
+      "from_label": "Layout engine",
+      "to_label": "Excalidraw scene",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e3",
+      "confidence": 1,
+      "plain_text": "Layout engine connects to Excalidraw scene"
+    },
+    {
+      "id": "edge_004",
+      "from_node_id": "node_rect-scene",
+      "to_node_id": "node_rect-board",
+      "from_label": "Excalidraw scene",
+      "to_label": "Board Text Graph",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e4",
+      "confidence": 1,
+      "plain_text": "Excalidraw scene connects to Board Text Graph"
+    },
+    {
+      "id": "edge_005",
+      "from_node_id": "node_rect-board",
+      "to_node_id": "node_rect-review",
+      "from_label": "Board Text Graph",
+      "to_label": "AI review",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e5",
+      "confidence": 1,
+      "plain_text": "Board Text Graph connects to AI review"
+    }
+  ],
+  "unresolved_arrows": [],
+  "ungrouped_text": [],
+  "graph_insights": {
+    "likely_root_nodes": [
+      {
+        "node_id": "node_rect-prompt",
+        "label": "Prompt",
+        "reason": "highest outgoing edge count with no incoming edges",
+        "outgoing_edge_count": 1,
+        "incoming_edge_count": 0
+      }
+    ],
+    "likely_leaf_nodes": [
+      {
+        "node_id": "node_rect-review",
+        "label": "AI review",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      }
+    ],
+    "direct_branch_count": 1,
+    "max_depth_estimate": 5,
+    "has_unresolved_arrows": false,
+    "has_ungrouped_text": false,
+    "lowest_confidence_edge": {
+      "id": "edge_001",
+      "plain_text": "Prompt connects to Recall Graph IR",
+      "confidence": 1,
+      "status": "bound_visual_relation"
+    },
+    "relation_status_counts": {
+      "bound_visual_relation": 5,
+      "loose_inferred_relation": 0
+    }
+  },
+  "plain_text_graph": "# Board Text Graph\n\n## Graph Insights\n- Likely root: Prompt (1 outgoing, 0 incoming)\n- Likely leaves:\n    - AI review\n- Direct branches from root: 1\n- Max depth estimate: 5\n- Relation statuses: 5 bound, 0 loose inferred\n- Lowest confidence edge: Prompt connects to Recall Graph IR (1, bound_visual_relation)\n- Unresolved arrows: none\n- Ungrouped text: none\n\n## Nodes\n- Prompt\n- Recall Graph IR\n- Layout engine\n- Excalidraw scene\n- Board Text Graph\n- AI review\n\n## Edges\n- Prompt connects to Recall Graph IR\n- Recall Graph IR connects to Layout engine\n- Layout engine connects to Excalidraw scene\n- Excalidraw scene connects to Board Text Graph\n- Board Text Graph connects to AI review\n\n## Unresolved Arrows\n(none)\n\n## Ungrouped Text\n(none)"
+}

@@ -1,0 +1,348 @@
+{
+  "schema": "recall-board-text-graph-v1",
+  "summary": {
+    "total_element_count": 35,
+    "active_element_count": 35,
+    "deleted_element_count": 0,
+    "node_count": 9,
+    "edge_count": 12,
+    "unresolved_arrow_count": 0,
+    "ungrouped_text_count": 0
+  },
+  "nodes": [
+    {
+      "id": "node_rect-start",
+      "label": "Start",
+      "source_shape_id": "rect-start",
+      "source_text_ids": [
+        "OvUCtKyTunCjGMfI9g834"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 105.5,
+        "y": 40,
+        "width": 80,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-a",
+      "label": "Branch A",
+      "source_shape_id": "rect-a",
+      "source_text_ids": [
+        "A2W_vNs0q-IQYNlcwe5ta"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 320.4375,
+        "y": 228,
+        "width": 98,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-b",
+      "label": "Branch B",
+      "source_shape_id": "rect-b",
+      "source_text_ids": [
+        "JeO8vyhH2RroK3Qt27l3i"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 96.5,
+        "y": 416,
+        "width": 98,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-c",
+      "label": "Branch C",
+      "source_shape_id": "rect-c",
+      "source_text_ids": [
+        "b3XyoB3nW34KmJLiSx_c-"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 209.5,
+        "y": 416,
+        "width": 98,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-d",
+      "label": "Shared D",
+      "source_shape_id": "rect-d",
+      "source_text_ids": [
+        "rY9P4ZyU-_dhebsNBTTFn"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 40,
+        "y": 604,
+        "width": 98,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-e",
+      "label": "Shared E",
+      "source_shape_id": "rect-e",
+      "source_text_ids": [
+        "8wN3IbioaKQZipxjtIXM4"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 205.5,
+        "y": 604,
+        "width": 98,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-f",
+      "label": "Finish F",
+      "source_shape_id": "rect-f",
+      "source_text_ids": [
+        "uUkbnux4mQWFHfSy5GcmS"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 205.5,
+        "y": 792,
+        "width": 98,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-g",
+      "label": "Audit G",
+      "source_shape_id": "rect-g",
+      "source_text_ids": [
+        "unNbjXMggt_l4P29QnAsG"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 324.5625,
+        "y": 416,
+        "width": 89.75,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-h",
+      "label": "Review H",
+      "source_shape_id": "rect-h",
+      "source_text_ids": [
+        "R5cK2fZ3nlF4JIUkc4hVc"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 320.4375,
+        "y": 604,
+        "width": 98,
+        "height": 48
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge_001",
+      "from_node_id": "node_rect-start",
+      "to_node_id": "node_rect-a",
+      "from_label": "Start",
+      "to_label": "Branch A",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e1",
+      "confidence": 1,
+      "plain_text": "Start connects to Branch A"
+    },
+    {
+      "id": "edge_002",
+      "from_node_id": "node_rect-start",
+      "to_node_id": "node_rect-b",
+      "from_label": "Start",
+      "to_label": "Branch B",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e2",
+      "confidence": 1,
+      "plain_text": "Start connects to Branch B"
+    },
+    {
+      "id": "edge_003",
+      "from_node_id": "node_rect-start",
+      "to_node_id": "node_rect-c",
+      "from_label": "Start",
+      "to_label": "Branch C",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e3",
+      "confidence": 1,
+      "plain_text": "Start connects to Branch C"
+    },
+    {
+      "id": "edge_004",
+      "from_node_id": "node_rect-a",
+      "to_node_id": "node_rect-d",
+      "from_label": "Branch A",
+      "to_label": "Shared D",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e4",
+      "confidence": 1,
+      "plain_text": "Branch A connects to Shared D"
+    },
+    {
+      "id": "edge_005",
+      "from_node_id": "node_rect-b",
+      "to_node_id": "node_rect-d",
+      "from_label": "Branch B",
+      "to_label": "Shared D",
+      "label": "shared",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e5",
+      "confidence": 1,
+      "plain_text": "Branch B connects to Shared D (shared)"
+    },
+    {
+      "id": "edge_006",
+      "from_node_id": "node_rect-b",
+      "to_node_id": "node_rect-e",
+      "from_label": "Branch B",
+      "to_label": "Shared E",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e6",
+      "confidence": 1,
+      "plain_text": "Branch B connects to Shared E"
+    },
+    {
+      "id": "edge_007",
+      "from_node_id": "node_rect-c",
+      "to_node_id": "node_rect-e",
+      "from_label": "Branch C",
+      "to_label": "Shared E",
+      "label": "shared",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e7",
+      "confidence": 1,
+      "plain_text": "Branch C connects to Shared E (shared)"
+    },
+    {
+      "id": "edge_008",
+      "from_node_id": "node_rect-d",
+      "to_node_id": "node_rect-f",
+      "from_label": "Shared D",
+      "to_label": "Finish F",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e8",
+      "confidence": 1,
+      "plain_text": "Shared D connects to Finish F"
+    },
+    {
+      "id": "edge_009",
+      "from_node_id": "node_rect-e",
+      "to_node_id": "node_rect-f",
+      "from_label": "Shared E",
+      "to_label": "Finish F",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e9",
+      "confidence": 1,
+      "plain_text": "Shared E connects to Finish F"
+    },
+    {
+      "id": "edge_010",
+      "from_node_id": "node_rect-a",
+      "to_node_id": "node_rect-g",
+      "from_label": "Branch A",
+      "to_label": "Audit G",
+      "label": "cross-check",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e10",
+      "confidence": 1,
+      "plain_text": "Branch A connects to Audit G (cross-check)"
+    },
+    {
+      "id": "edge_011",
+      "from_node_id": "node_rect-g",
+      "to_node_id": "node_rect-h",
+      "from_label": "Audit G",
+      "to_label": "Review H",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e11",
+      "confidence": 1,
+      "plain_text": "Audit G connects to Review H"
+    },
+    {
+      "id": "edge_012",
+      "from_node_id": "node_rect-h",
+      "to_node_id": "node_rect-f",
+      "from_label": "Review H",
+      "to_label": "Finish F",
+      "label": "approve",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e12",
+      "confidence": 1,
+      "plain_text": "Review H connects to Finish F (approve)"
+    }
+  ],
+  "unresolved_arrows": [],
+  "ungrouped_text": [],
+  "graph_insights": {
+    "likely_root_nodes": [
+      {
+        "node_id": "node_rect-start",
+        "label": "Start",
+        "reason": "highest outgoing edge count with no incoming edges",
+        "outgoing_edge_count": 3,
+        "incoming_edge_count": 0
+      }
+    ],
+    "likely_leaf_nodes": [
+      {
+        "node_id": "node_rect-f",
+        "label": "Finish F",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 3
+      }
+    ],
+    "direct_branch_count": 3,
+    "max_depth_estimate": 3,
+    "has_unresolved_arrows": false,
+    "has_ungrouped_text": false,
+    "lowest_confidence_edge": {
+      "id": "edge_001",
+      "plain_text": "Start connects to Branch A",
+      "confidence": 1,
+      "status": "bound_visual_relation"
+    },
+    "relation_status_counts": {
+      "bound_visual_relation": 12,
+      "loose_inferred_relation": 0
+    }
+  },
+  "plain_text_graph": "# Board Text Graph\n\n## Graph Insights\n- Likely root: Start (3 outgoing, 0 incoming)\n- Likely leaves:\n    - Finish F\n- Direct branches from root: 3\n- Max depth estimate: 3\n- Relation statuses: 12 bound, 0 loose inferred\n- Lowest confidence edge: Start connects to Branch A (1, bound_visual_relation)\n- Unresolved arrows: none\n- Ungrouped text: none\n\n## Nodes\n- Start\n- Branch A\n- Branch B\n- Branch C\n- Shared D\n- Shared E\n- Finish F\n- Audit G\n- Review H\n\n## Edges\n- Start connects to Branch A\n- Start connects to Branch B\n- Start connects to Branch C\n- Branch A connects to Shared D\n- Branch B connects to Shared D (shared)\n- Branch B connects to Shared E\n- Branch C connects to Shared E (shared)\n- Shared D connects to Finish F\n- Shared E connects to Finish F\n- Branch A connects to Audit G (cross-check)\n- Audit G connects to Review H\n- Review H connects to Finish F (approve)\n\n## Unresolved Arrows\n(none)\n\n## Ungrouped Text\n(none)"
+}

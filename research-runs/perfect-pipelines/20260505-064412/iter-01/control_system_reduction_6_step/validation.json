@@ -1,0 +1,68 @@
+{
+  "scenario": "control_system_reduction_6_step",
+  "thresholds": {
+    "readability": 0.95,
+    "parseFidelity": 0.99
+  },
+  "readability": {
+    "score": 1,
+    "pass": true,
+    "defects": [],
+    "metrics": {
+      "activeElementCount": 23,
+      "nodeCount": 6,
+      "textCount": 11,
+      "arrowCount": 5,
+      "nodeOverlaps": [],
+      "degenerateArrows": [],
+      "unboundArrows": [],
+      "missingArrowheads": [],
+      "arrowNodeHits": [],
+      "arrowTextHits": [],
+      "pngDimensions": {
+        "width": 352,
+        "height": 1248
+      }
+    }
+  },
+  "parse": {
+    "score": 0.52,
+    "pass": false,
+    "defects": [
+      "1 unexpected node(s) exported",
+      "6 node body field(s) missing",
+      "5 edge label(s) missing"
+    ],
+    "metrics": {
+      "expectedNodeCount": 6,
+      "actualNodeCount": 7,
+      "expectedEdgeCount": 5,
+      "actualEdgeCount": 5,
+      "missingNodes": [],
+      "extraNodes": [
+        "transform"
+      ],
+      "missingBodies": [
+        "1. original system",
+        "2. shift h1 pickoff",
+        "3. shift h2 junction",
+        "4. combine summing junctions",
+        "5. combine cascade blocks",
+        "6. final closed loop"
+      ],
+      "missingEdges": [],
+      "missingEdgeLabels": [
+        "1. original system->2. shift h1 pickoff:transform",
+        "2. shift h1 pickoff->3. shift h2 junction:transform",
+        "3. shift h2 junction->4. combine summing junctions:transform",
+        "4. combine summing junctions->5. combine cascade blocks:simplify",
+        "5. combine cascade blocks->6. final closed loop:reduce"
+      ],
+      "unresolvedArrowCount": 0,
+      "ungroupedTextCount": 0,
+      "looseInferredEdgeCount": 0,
+      "deletedElementCount": 0
+    }
+  },
+  "pass": false
+}

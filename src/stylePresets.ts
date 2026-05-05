@@ -334,6 +334,42 @@ export const PRESETS: Record<string, StylePreset> = {
   },
 };
 
+PRESETS.readable_default = {
+  ...PRESETS.readable_compact,
+  name: "readable_default",
+  description: "Alias of the default readable style for high-fidelity generation and parsing.",
+};
+
+PRESETS.readable_flowchart = {
+  ...PRESETS.readable_spacious,
+  name: "readable_flowchart",
+  description: "Flowchart-oriented style with moderate spacing and no dense subtree emphasis.",
+  nodeBackgroundColor: "#ffffff",
+  subtreeBackgroundOpacity: 0,
+};
+
+PRESETS.readable_block_diagram = {
+  ...PRESETS.readable_long,
+  name: "readable_block_diagram",
+  description: "Wide block-diagram style for labels, formulas, and control/process blocks.",
+  nodeMinWidth: 160,
+  nodeMaxWidth: 440,
+  fontSize: 15,
+  arrowStrokeWidth: 1.5,
+  subtreeBackgroundOpacity: 0,
+};
+
+PRESETS.readable_control_system = {
+  ...PRESETS.readable_block_diagram,
+  name: "readable_control_system",
+  description: "Control-system style tuned for readable formula bodies and feedback-loop labels.",
+  nodeMinWidth: 180,
+  nodeMaxWidth: 480,
+  verticalSpacing: 130,
+  horizontalSpacing: 80,
+  siblingSpacing: 48,
+};
+
 export function getPreset(name: string): StylePreset {
   const preset = PRESETS[name];
   if (!preset) {

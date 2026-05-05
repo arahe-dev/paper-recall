@@ -1,0 +1,218 @@
+{
+  "schema": "recall-graph-ir-v2",
+  "title": "readable_radial__branching_workflow",
+  "layout": {
+    "style": "readable_radial",
+    "strategy": "tree",
+    "direction": "TD",
+    "density": "readable",
+    "root_ids": [
+      "goal"
+    ],
+    "sibling_order_policy": "explicit",
+    "rank_policy": "from_root_depth"
+  },
+  "nodes": [
+    {
+      "id": "goal",
+      "label": "Project Goal",
+      "order": 0
+    },
+    {
+      "id": "research",
+      "label": "Research",
+      "order": 1
+    },
+    {
+      "id": "design",
+      "label": "Design",
+      "order": 2
+    },
+    {
+      "id": "prototype",
+      "label": "Prototype",
+      "order": 3
+    },
+    {
+      "id": "validate",
+      "label": "Validate",
+      "order": 4
+    },
+    {
+      "id": "iterate",
+      "label": "Iterate",
+      "order": 5
+    },
+    {
+      "id": "r1",
+      "label": "Market analysis",
+      "order": 6
+    },
+    {
+      "id": "r2",
+      "label": "Tech survey",
+      "order": 7
+    },
+    {
+      "id": "d1",
+      "label": "Wireframes",
+      "order": 8
+    },
+    {
+      "id": "d2",
+      "label": "System architecture",
+      "order": 9
+    },
+    {
+      "id": "p1",
+      "label": "MVP build",
+      "order": 10
+    },
+    {
+      "id": "p2",
+      "label": "Integration test",
+      "order": 11
+    },
+    {
+      "id": "v1",
+      "label": "User testing",
+      "order": 12
+    },
+    {
+      "id": "v2",
+      "label": "Performance audit",
+      "order": 13
+    },
+    {
+      "id": "i1",
+      "label": "Refine",
+      "order": 14
+    },
+    {
+      "id": "i2",
+      "label": "Retest",
+      "order": 15
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "goal",
+      "to": "research",
+      "order": 0
+    },
+    {
+      "id": "e2",
+      "from": "goal",
+      "to": "design",
+      "order": 1
+    },
+    {
+      "id": "e3",
+      "from": "goal",
+      "to": "prototype",
+      "order": 2
+    },
+    {
+      "id": "e4",
+      "from": "goal",
+      "to": "validate",
+      "order": 3
+    },
+    {
+      "id": "e5",
+      "from": "goal",
+      "to": "iterate",
+      "order": 4
+    },
+    {
+      "id": "e6",
+      "from": "research",
+      "to": "r1",
+      "order": 5
+    },
+    {
+      "id": "e7",
+      "from": "research",
+      "to": "r2",
+      "order": 6
+    },
+    {
+      "id": "e8",
+      "from": "design",
+      "to": "d1",
+      "order": 7
+    },
+    {
+      "id": "e9",
+      "from": "design",
+      "to": "d2",
+      "order": 8
+    },
+    {
+      "id": "e10",
+      "from": "prototype",
+      "to": "p1",
+      "order": 9
+    },
+    {
+      "id": "e11",
+      "from": "prototype",
+      "to": "p2",
+      "order": 10
+    },
+    {
+      "id": "e12",
+      "from": "validate",
+      "to": "v1",
+      "order": 11
+    },
+    {
+      "id": "e13",
+      "from": "validate",
+      "to": "v2",
+      "order": 12
+    },
+    {
+      "id": "e14",
+      "from": "iterate",
+      "to": "i1",
+      "order": 13
+    },
+    {
+      "id": "e15",
+      "from": "iterate",
+      "to": "i2",
+      "order": 14
+    }
+  ],
+  "children_order": {
+    "goal": [
+      "research",
+      "design",
+      "prototype",
+      "validate",
+      "iterate"
+    ],
+    "research": [
+      "r1",
+      "r2"
+    ],
+    "design": [
+      "d1",
+      "d2"
+    ],
+    "prototype": [
+      "p1",
+      "p2"
+    ],
+    "validate": [
+      "v1",
+      "v2"
+    ],
+    "iterate": [
+      "i1",
+      "i2"
+    ]
+  }
+}

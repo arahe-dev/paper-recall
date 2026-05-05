@@ -1,0 +1,320 @@
+{
+  "schema": "recall-board-text-graph-v1",
+  "summary": {
+    "total_element_count": 30,
+    "active_element_count": 30,
+    "deleted_element_count": 0,
+    "node_count": 10,
+    "edge_count": 9,
+    "unresolved_arrow_count": 0,
+    "ungrouped_text_count": 0
+  },
+  "nodes": [
+    {
+      "id": "node_rect-level_1",
+      "label": "Level 1",
+      "source_shape_id": "rect-level_1",
+      "source_text_ids": [
+        "s7zh7lsTgA3Idh13ZJJna"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 44.125,
+        "y": 40,
+        "width": 89.75,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-level_2",
+      "label": "Level 2",
+      "source_shape_id": "rect-level_2",
+      "source_text_ids": [
+        "JdBU--Q7KTMLOL4Hhh0qY"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 44.125,
+        "y": 228,
+        "width": 89.75,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-level_3",
+      "label": "Level 3",
+      "source_shape_id": "rect-level_3",
+      "source_text_ids": [
+        "T3WsKuXVGdpZ2TMeJkeR9"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 44.125,
+        "y": 416,
+        "width": 89.75,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-level_4",
+      "label": "Level 4",
+      "source_shape_id": "rect-level_4",
+      "source_text_ids": [
+        "bJGVxhRALt0bblQ1CZAVG"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 44.125,
+        "y": 604,
+        "width": 89.75,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-level_5",
+      "label": "Level 5",
+      "source_shape_id": "rect-level_5",
+      "source_text_ids": [
+        "PIIFPNJ92XrkMa_LC2-Cx"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 44.125,
+        "y": 792,
+        "width": 89.75,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-level_6",
+      "label": "Level 6",
+      "source_shape_id": "rect-level_6",
+      "source_text_ids": [
+        "Zw_2UmnYQk50oyyaXRgkw"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 44.125,
+        "y": 980,
+        "width": 89.75,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-level_7",
+      "label": "Level 7",
+      "source_shape_id": "rect-level_7",
+      "source_text_ids": [
+        "D2EsnBD5UEzoBTIhKuqWv"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 44.125,
+        "y": 1168,
+        "width": 89.75,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-level_8",
+      "label": "Level 8",
+      "source_shape_id": "rect-level_8",
+      "source_text_ids": [
+        "YlKKlcWo_QQ1w0t4lupIH"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 44.125,
+        "y": 1356,
+        "width": 89.75,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-level_9",
+      "label": "Level 9",
+      "source_shape_id": "rect-level_9",
+      "source_text_ids": [
+        "HD852nbZE5gvAKFVDwXnj"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 44.125,
+        "y": 1544,
+        "width": 89.75,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-level_10",
+      "label": "Level 10",
+      "source_shape_id": "rect-level_10",
+      "source_text_ids": [
+        "VL7mX2AZoaxrQXr4rIrdb"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 40,
+        "y": 1732,
+        "width": 98,
+        "height": 48
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge_001",
+      "from_node_id": "node_rect-level_1",
+      "to_node_id": "node_rect-level_2",
+      "from_label": "Level 1",
+      "to_label": "Level 2",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e1",
+      "confidence": 1,
+      "plain_text": "Level 1 connects to Level 2"
+    },
+    {
+      "id": "edge_002",
+      "from_node_id": "node_rect-level_2",
+      "to_node_id": "node_rect-level_3",
+      "from_label": "Level 2",
+      "to_label": "Level 3",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e2",
+      "confidence": 1,
+      "plain_text": "Level 2 connects to Level 3"
+    },
+    {
+      "id": "edge_003",
+      "from_node_id": "node_rect-level_3",
+      "to_node_id": "node_rect-level_4",
+      "from_label": "Level 3",
+      "to_label": "Level 4",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e3",
+      "confidence": 1,
+      "plain_text": "Level 3 connects to Level 4"
+    },
+    {
+      "id": "edge_004",
+      "from_node_id": "node_rect-level_4",
+      "to_node_id": "node_rect-level_5",
+      "from_label": "Level 4",
+      "to_label": "Level 5",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e4",
+      "confidence": 1,
+      "plain_text": "Level 4 connects to Level 5"
+    },
+    {
+      "id": "edge_005",
+      "from_node_id": "node_rect-level_5",
+      "to_node_id": "node_rect-level_6",
+      "from_label": "Level 5",
+      "to_label": "Level 6",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e5",
+      "confidence": 1,
+      "plain_text": "Level 5 connects to Level 6"
+    },
+    {
+      "id": "edge_006",
+      "from_node_id": "node_rect-level_6",
+      "to_node_id": "node_rect-level_7",
+      "from_label": "Level 6",
+      "to_label": "Level 7",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e6",
+      "confidence": 1,
+      "plain_text": "Level 6 connects to Level 7"
+    },
+    {
+      "id": "edge_007",
+      "from_node_id": "node_rect-level_7",
+      "to_node_id": "node_rect-level_8",
+      "from_label": "Level 7",
+      "to_label": "Level 8",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e7",
+      "confidence": 1,
+      "plain_text": "Level 7 connects to Level 8"
+    },
+    {
+      "id": "edge_008",
+      "from_node_id": "node_rect-level_8",
+      "to_node_id": "node_rect-level_9",
+      "from_label": "Level 8",
+      "to_label": "Level 9",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e8",
+      "confidence": 1,
+      "plain_text": "Level 8 connects to Level 9"
+    },
+    {
+      "id": "edge_009",
+      "from_node_id": "node_rect-level_9",
+      "to_node_id": "node_rect-level_10",
+      "from_label": "Level 9",
+      "to_label": "Level 10",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e9",
+      "confidence": 1,
+      "plain_text": "Level 9 connects to Level 10"
+    }
+  ],
+  "unresolved_arrows": [],
+  "ungrouped_text": [],
+  "graph_insights": {
+    "likely_root_nodes": [
+      {
+        "node_id": "node_rect-level_1",
+        "label": "Level 1",
+        "reason": "highest outgoing edge count with no incoming edges",
+        "outgoing_edge_count": 1,
+        "incoming_edge_count": 0
+      }
+    ],
+    "likely_leaf_nodes": [
+      {
+        "node_id": "node_rect-level_10",
+        "label": "Level 10",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      }
+    ],
+    "direct_branch_count": 1,
+    "max_depth_estimate": 9,
+    "has_unresolved_arrows": false,
+    "has_ungrouped_text": false,
+    "lowest_confidence_edge": {
+      "id": "edge_001",
+      "plain_text": "Level 1 connects to Level 2",
+      "confidence": 1,
+      "status": "bound_visual_relation"
+    },
+    "relation_status_counts": {
+      "bound_visual_relation": 9,
+      "loose_inferred_relation": 0
+    }
+  },
+  "plain_text_graph": "# Board Text Graph\n\n## Graph Insights\n- Likely root: Level 1 (1 outgoing, 0 incoming)\n- Likely leaves:\n    - Level 10\n- Direct branches from root: 1\n- Max depth estimate: 9\n- Relation statuses: 9 bound, 0 loose inferred\n- Lowest confidence edge: Level 1 connects to Level 2 (1, bound_visual_relation)\n- Unresolved arrows: none\n- Ungrouped text: none\n\n## Nodes\n- Level 1\n- Level 2\n- Level 3\n- Level 4\n- Level 5\n- Level 6\n- Level 7\n- Level 8\n- Level 9\n- Level 10\n\n## Edges\n- Level 1 connects to Level 2\n- Level 2 connects to Level 3\n- Level 3 connects to Level 4\n- Level 4 connects to Level 5\n- Level 5 connects to Level 6\n- Level 6 connects to Level 7\n- Level 7 connects to Level 8\n- Level 8 connects to Level 9\n- Level 9 connects to Level 10\n\n## Unresolved Arrows\n(none)\n\n## Ungrouped Text\n(none)"
+}

@@ -1,0 +1,181 @@
+{
+  "schema": "recall-board-text-graph-v1",
+  "summary": {
+    "total_element_count": 15,
+    "active_element_count": 15,
+    "deleted_element_count": 0,
+    "node_count": 5,
+    "edge_count": 3,
+    "unresolved_arrow_count": 0,
+    "ungrouped_text_count": 0
+  },
+  "nodes": [
+    {
+      "id": "node_rect-a",
+      "label": "A",
+      "source_shape_id": "rect-a",
+      "source_text_ids": [
+        "VXm0R3Hk2ymmLSKhMqnUm"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 40,
+        "y": 40,
+        "width": 80,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-b",
+      "label": "B",
+      "source_shape_id": "rect-b",
+      "source_text_ids": [
+        "7gF5TOol_urXzuaBVDg9w"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 40,
+        "y": 228,
+        "width": 80,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-c",
+      "label": "C",
+      "source_shape_id": "rect-c",
+      "source_text_ids": [
+        "kuL_wVnfbUnSp3dvVVVqq"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 40,
+        "y": 416,
+        "width": 80,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-x",
+      "label": "X",
+      "source_shape_id": "rect-x",
+      "source_text_ids": [
+        "hfqQnRlS4UnUoOn516XDT"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 135,
+        "y": 40,
+        "width": 80,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-y",
+      "label": "Y",
+      "source_shape_id": "rect-y",
+      "source_text_ids": [
+        "1OH35nsxvAejYkd5ZNjmu"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 135,
+        "y": 228,
+        "width": 80,
+        "height": 48
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge_001",
+      "from_node_id": "node_rect-a",
+      "to_node_id": "node_rect-b",
+      "from_label": "A",
+      "to_label": "B",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e1",
+      "confidence": 1,
+      "plain_text": "A connects to B"
+    },
+    {
+      "id": "edge_002",
+      "from_node_id": "node_rect-b",
+      "to_node_id": "node_rect-c",
+      "from_label": "B",
+      "to_label": "C",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e2",
+      "confidence": 1,
+      "plain_text": "B connects to C"
+    },
+    {
+      "id": "edge_003",
+      "from_node_id": "node_rect-x",
+      "to_node_id": "node_rect-y",
+      "from_label": "X",
+      "to_label": "Y",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e3",
+      "confidence": 1,
+      "plain_text": "X connects to Y"
+    }
+  ],
+  "unresolved_arrows": [],
+  "ungrouped_text": [],
+  "graph_insights": {
+    "likely_root_nodes": [
+      {
+        "node_id": "node_rect-a",
+        "label": "A",
+        "reason": "highest outgoing edge count with no incoming edges",
+        "outgoing_edge_count": 1,
+        "incoming_edge_count": 0
+      },
+      {
+        "node_id": "node_rect-x",
+        "label": "X",
+        "reason": "highest outgoing edge count with no incoming edges",
+        "outgoing_edge_count": 1,
+        "incoming_edge_count": 0
+      }
+    ],
+    "likely_leaf_nodes": [
+      {
+        "node_id": "node_rect-c",
+        "label": "C",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-y",
+        "label": "Y",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      }
+    ],
+    "direct_branch_count": 1,
+    "max_depth_estimate": 2,
+    "has_unresolved_arrows": false,
+    "has_ungrouped_text": false,
+    "lowest_confidence_edge": {
+      "id": "edge_001",
+      "plain_text": "A connects to B",
+      "confidence": 1,
+      "status": "bound_visual_relation"
+    },
+    "relation_status_counts": {
+      "bound_visual_relation": 3,
+      "loose_inferred_relation": 0
+    }
+  },
+  "plain_text_graph": "# Board Text Graph\n\n## Graph Insights\n- Likely root: A (1 outgoing, 0 incoming)\n- Likely leaves:\n    - C\n    - Y\n- Direct branches from root: 1\n- Max depth estimate: 2\n- Relation statuses: 3 bound, 0 loose inferred\n- Lowest confidence edge: A connects to B (1, bound_visual_relation)\n- Unresolved arrows: none\n- Ungrouped text: none\n\n## Nodes\n- A\n- B\n- C\n- X\n- Y\n\n## Edges\n- A connects to B\n- B connects to C\n- X connects to Y\n\n## Unresolved Arrows\n(none)\n\n## Ungrouped Text\n(none)"
+}

@@ -1,0 +1,271 @@
+{
+  "schema": "recall-board-text-graph-v1",
+  "summary": {
+    "total_element_count": 25,
+    "active_element_count": 25,
+    "deleted_element_count": 0,
+    "node_count": 7,
+    "edge_count": 8,
+    "unresolved_arrow_count": 0,
+    "ungrouped_text_count": 0
+  },
+  "nodes": [
+    {
+      "id": "node_rect-request",
+      "label": "Incoming request",
+      "source_shape_id": "rect-request",
+      "source_text_ids": [
+        "XZ1Icspq7cbhxG2ca-3Z8"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 364.3125,
+        "y": 44.75,
+        "width": 164,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-fast_path",
+      "label": "Fast path",
+      "source_shape_id": "rect-fast_path",
+      "source_text_ids": [
+        "tDtsvYAM7747e7wB3HW6V"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 122.625,
+        "y": 237.5,
+        "width": 106.25,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-manual_path",
+      "label": "Manual review",
+      "source_shape_id": "rect-manual_path",
+      "source_text_ids": [
+        "1Zao26DPDQxHeMaTTlAam"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 243.875,
+        "y": 237.5,
+        "width": 139.25,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-automated_path",
+      "label": "Automated review",
+      "source_shape_id": "rect-automated_path",
+      "source_text_ids": [
+        "BrqBSj0X8mUN4xPNbrpmH"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 437.1875,
+        "y": 237.5,
+        "width": 164,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-merge",
+      "label": "Merge decision",
+      "source_shape_id": "rect-merge",
+      "source_text_ids": [
+        "knhstoP_CcvPwfW9zb6Hn"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 323.0625,
+        "y": 425.5,
+        "width": 147.5,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-ship",
+      "label": "Ship response",
+      "source_shape_id": "rect-ship",
+      "source_text_ids": [
+        "xjFUljnXHi4LEZ8AdilcK"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 327.1875,
+        "y": 613.5,
+        "width": 139.25,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-annotation",
+      "label": "Annotation",
+      "source_shape_id": "rect-annotation",
+      "source_text_ids": [
+        "-8Kn3mVoTa3wEzWSXaBBH"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 40,
+        "y": 40,
+        "width": 279.5,
+        "height": 57.5
+      },
+      "body": "Escalate if confidence is low."
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge_001",
+      "from_node_id": "node_rect-request",
+      "to_node_id": "node_rect-fast_path",
+      "from_label": "Incoming request",
+      "to_label": "Fast path",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e1",
+      "confidence": 1,
+      "plain_text": "Incoming request connects to Fast path"
+    },
+    {
+      "id": "edge_002",
+      "from_node_id": "node_rect-request",
+      "to_node_id": "node_rect-manual_path",
+      "from_label": "Incoming request",
+      "to_label": "Manual review",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e2",
+      "confidence": 1,
+      "plain_text": "Incoming request connects to Manual review"
+    },
+    {
+      "id": "edge_003",
+      "from_node_id": "node_rect-request",
+      "to_node_id": "node_rect-automated_path",
+      "from_label": "Incoming request",
+      "to_label": "Automated review",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e3",
+      "confidence": 1,
+      "plain_text": "Incoming request connects to Automated review"
+    },
+    {
+      "id": "edge_004",
+      "from_node_id": "node_rect-fast_path",
+      "to_node_id": "node_rect-merge",
+      "from_label": "Fast path",
+      "to_label": "Merge decision",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e4",
+      "confidence": 1,
+      "plain_text": "Fast path connects to Merge decision"
+    },
+    {
+      "id": "edge_005",
+      "from_node_id": "node_rect-manual_path",
+      "to_node_id": "node_rect-merge",
+      "from_label": "Manual review",
+      "to_label": "Merge decision",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e5",
+      "confidence": 1,
+      "plain_text": "Manual review connects to Merge decision"
+    },
+    {
+      "id": "edge_006",
+      "from_node_id": "node_rect-automated_path",
+      "to_node_id": "node_rect-merge",
+      "from_label": "Automated review",
+      "to_label": "Merge decision",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e6",
+      "confidence": 1,
+      "plain_text": "Automated review connects to Merge decision"
+    },
+    {
+      "id": "edge_007",
+      "from_node_id": "node_rect-merge",
+      "to_node_id": "node_rect-ship",
+      "from_label": "Merge decision",
+      "to_label": "Ship response",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e7",
+      "confidence": 1,
+      "plain_text": "Merge decision connects to Ship response"
+    },
+    {
+      "id": "edge_008",
+      "from_node_id": "node_rect-annotation",
+      "to_node_id": "node_rect-manual_path",
+      "from_label": "Annotation",
+      "to_label": "Manual review",
+      "label": "note",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e8",
+      "confidence": 1,
+      "plain_text": "Annotation connects to Manual review (note)"
+    }
+  ],
+  "unresolved_arrows": [],
+  "ungrouped_text": [],
+  "graph_insights": {
+    "likely_root_nodes": [
+      {
+        "node_id": "node_rect-request",
+        "label": "Incoming request",
+        "reason": "highest outgoing edge count with no incoming edges",
+        "outgoing_edge_count": 3,
+        "incoming_edge_count": 0
+      },
+      {
+        "node_id": "node_rect-annotation",
+        "label": "Annotation",
+        "reason": "highest outgoing edge count with no incoming edges",
+        "outgoing_edge_count": 1,
+        "incoming_edge_count": 0
+      }
+    ],
+    "likely_leaf_nodes": [
+      {
+        "node_id": "node_rect-ship",
+        "label": "Ship response",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      }
+    ],
+    "direct_branch_count": 3,
+    "max_depth_estimate": 3,
+    "has_unresolved_arrows": false,
+    "has_ungrouped_text": false,
+    "lowest_confidence_edge": {
+      "id": "edge_001",
+      "plain_text": "Incoming request connects to Fast path",
+      "confidence": 1,
+      "status": "bound_visual_relation"
+    },
+    "relation_status_counts": {
+      "bound_visual_relation": 8,
+      "loose_inferred_relation": 0
+    }
+  },
+  "plain_text_graph": "# Board Text Graph\n\n## Graph Insights\n- Likely root: Incoming request (3 outgoing, 0 incoming)\n- Likely leaves:\n    - Ship response\n- Direct branches from root: 3\n- Max depth estimate: 3\n- Relation statuses: 8 bound, 0 loose inferred\n- Lowest confidence edge: Incoming request connects to Fast path (1, bound_visual_relation)\n- Unresolved arrows: none\n- Ungrouped text: none\n\n## Nodes\n- Incoming request\n- Fast path\n- Manual review\n- Automated review\n- Merge decision\n- Ship response\n- Annotation\n\n## Edges\n- Incoming request connects to Fast path\n- Incoming request connects to Manual review\n- Incoming request connects to Automated review\n- Fast path connects to Merge decision\n- Manual review connects to Merge decision\n- Automated review connects to Merge decision\n- Merge decision connects to Ship response\n- Annotation connects to Manual review (note)\n\n## Unresolved Arrows\n(none)\n\n## Ungrouped Text\n(none)"
+}

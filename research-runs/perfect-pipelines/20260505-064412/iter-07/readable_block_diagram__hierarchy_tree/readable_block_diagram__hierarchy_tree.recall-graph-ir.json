@@ -1,0 +1,138 @@
+{
+  "schema": "recall-graph-ir-v2",
+  "title": "readable_block_diagram__hierarchy_tree",
+  "layout": {
+    "style": "readable_block_diagram",
+    "strategy": "tree",
+    "direction": "TD",
+    "density": "readable",
+    "root_ids": [
+      "root"
+    ],
+    "sibling_order_policy": "explicit",
+    "rank_policy": "from_root_depth"
+  },
+  "nodes": [
+    {
+      "id": "root",
+      "label": "Deadlock",
+      "order": 0
+    },
+    {
+      "id": "necessary",
+      "label": "Necessary conditions",
+      "order": 1
+    },
+    {
+      "id": "prevention",
+      "label": "Prevention",
+      "order": 2
+    },
+    {
+      "id": "avoidance",
+      "label": "Avoidance",
+      "order": 3
+    },
+    {
+      "id": "detection",
+      "label": "Detection",
+      "order": 4
+    },
+    {
+      "id": "recovery",
+      "label": "Recovery",
+      "order": 5
+    },
+    {
+      "id": "mutual",
+      "label": "Mutual exclusion",
+      "order": 6
+    },
+    {
+      "id": "hold",
+      "label": "Hold and wait",
+      "order": 7
+    },
+    {
+      "id": "nopreempt",
+      "label": "No preemption",
+      "order": 8
+    },
+    {
+      "id": "circular",
+      "label": "Circular wait",
+      "order": 9
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "root",
+      "to": "necessary",
+      "order": 0
+    },
+    {
+      "id": "e2",
+      "from": "root",
+      "to": "prevention",
+      "order": 1
+    },
+    {
+      "id": "e3",
+      "from": "root",
+      "to": "avoidance",
+      "order": 2
+    },
+    {
+      "id": "e4",
+      "from": "root",
+      "to": "detection",
+      "order": 3
+    },
+    {
+      "id": "e5",
+      "from": "root",
+      "to": "recovery",
+      "order": 4
+    },
+    {
+      "id": "e6",
+      "from": "necessary",
+      "to": "mutual",
+      "order": 5
+    },
+    {
+      "id": "e7",
+      "from": "necessary",
+      "to": "hold",
+      "order": 6
+    },
+    {
+      "id": "e8",
+      "from": "necessary",
+      "to": "nopreempt",
+      "order": 7
+    },
+    {
+      "id": "e9",
+      "from": "necessary",
+      "to": "circular",
+      "order": 8
+    }
+  ],
+  "children_order": {
+    "root": [
+      "necessary",
+      "prevention",
+      "avoidance",
+      "detection",
+      "recovery"
+    ],
+    "necessary": [
+      "mutual",
+      "hold",
+      "nopreempt",
+      "circular"
+    ]
+  }
+}

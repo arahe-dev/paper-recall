@@ -14,6 +14,7 @@ export type TextGraphEdge = {
   to_node_id: string;
   from_label: string;
   to_label: string;
+  label?: string;
   direction: "from_to" | "to_from" | "undirected_or_unclear";
   relation: "arrow";
   status: "bound_visual_relation" | "loose_inferred_relation";
@@ -97,6 +98,8 @@ type LooseEl = {
   y: number;
   width: number;
   height: number;
+  strokeColor?: string;
+  customData?: Record<string, unknown>;
   isDeleted?: boolean;
   text?: string;
   containerId?: string | null;
@@ -105,6 +108,26 @@ type LooseEl = {
   endBinding?: { elementId: string; focus: number; gap: number } | null;
   boundElements?: readonly { id: string; type: string }[] | null;
 };
+
+function isSemanticShape(el: LooseEl): boolean {
+  if (!(el.type === "rectangle" || el.type === "ellipse" || el.type === "diamond")) {
+    return false;
+  }
+  if (el.id.startsWith("bg-") || el.id.startsWith("bg-subtree-")) {
+    return false;
+  }
+  if (el.strokeColor === "transparent" && !el.boundElements?.length) {
+    return false;
+  }
+  return true;
+}
+
+function textLines(text: string | undefined): string[] {
+  return (text || "")
+    .split(/\n+/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+}
 
 function pointToRectDist(
   px: number, py: number,
@@ -121,11 +144,20 @@ export function buildBoardTextGraph(elements: readonly LooseEl[]): BoardTextGrap
   const active = elements.filter((el) => !el.isDeleted);
   const deleted = elements.filter((el) => el.isDeleted);
 
-  const shapes = active.filter(
-    (el) => el.type === "rectangle" || el.type === "ellipse" || el.type === "diamond"
-  );
-  const texts = active.filter((el) => el.type === "text");
   const arrows = active.filter((el) => el.type === "arrow");
+  const arrowIds = new Set(arrows.map((el) => el.id));
+  const shapes = active.filter(isSemanticShape);
+  const texts = active.filter((el) => el.type === "text");
+  const arrowLabelTexts = texts.filter((el) => el.containerId && arrowIds.has(el.containerId));
+  const nodeTexts = texts.filter((el) => !(el.containerId && arrowIds.has(el.containerId)));
+
+  const arrowLabels = new Map<string, string>();
+  for (const text of arrowLabelTexts) {
+    const label = textLines(text.text).join(" ");
+    if (!label || !text.containerId) continue;
+    const existing = arrowLabels.get(text.containerId);
+    arrowLabels.set(text.containerId, existing ? `${existing} ${label}` : label);
+  }
 
   const activeIds = new Set(active.map((el) => el.id));
 
@@ -137,7 +169,7 @@ export function buildBoardTextGraph(elements: readonly LooseEl[]): BoardTextGrap
 
   for (const shape of shapes) {
     const matched: LooseEl[] = [];
-    for (const t of texts) {
+    for (const t of nodeTexts) {
       if (textIdsMatched.has(t.id)) continue;
       if (t.containerId && t.containerId === shape.id) {
         matched.push(t);
@@ -155,7 +187,7 @@ export function buildBoardTextGraph(elements: readonly LooseEl[]): BoardTextGrap
     }
   }
 
-  for (const t of texts) {
+  for (const t of nodeTexts) {
     if (textIdsMatched.has(t.id)) continue;
     const cx = t.x + t.width / 2;
     const cy = t.y + t.height / 2;
@@ -185,13 +217,23 @@ export function buildBoardTextGraph(elements: readonly LooseEl[]): BoardTextGrap
     const matchedTexts = shapeToTexts.get(shape.id) || [];
     matchedTexts.sort((a, b) => { const d = a.y - b.y; return d !== 0 ? d : a.x - b.x; });
 
-    const labelText = matchedTexts.length > 0
-      ? (matchedTexts[0].text?.trim().replace(/\s+/g, " ") || "")
-      : "";
+    const recallLabel = shape.customData?.recallLabel;
+    const recallBody = shape.customData?.recallBody;
+    const firstTextLines = matchedTexts.length > 0 ? textLines(matchedTexts[0].text) : [];
+    const labelText = typeof recallLabel === "string"
+      ? recallLabel.trim().replace(/\s+/g, " ")
+      : firstTextLines.length > 0
+        ? (firstTextLines.join(" ").trim().replace(/\s+/g, " ") || "")
+        : "";
     const bodyLines: string[] = [];
-    for (let i = 1; i < matchedTexts.length; i++) {
-      const bt = matchedTexts[i].text?.trim() || "";
-      if (bt) bodyLines.push(bt);
+    if (typeof recallBody === "string" && recallBody.trim()) {
+      bodyLines.push(recallBody.trim());
+    } else if (typeof recallLabel !== "string" && matchedTexts.length > 1) {
+      for (let i = 1; i < matchedTexts.length; i++) {
+        for (const bt of textLines(matchedTexts[i].text)) {
+          if (bt) bodyLines.push(bt);
+        }
+      }
     }
 
     const nodeId = `node_${shape.id}`;
@@ -329,7 +371,10 @@ export function buildBoardTextGraph(elements: readonly LooseEl[]): BoardTextGrap
 
       const fromLabel = fromN?.label || "?";
       const toLabel = toN?.label || "?";
-      const plainText = `${fromLabel} connects to ${toLabel}`;
+      const edgeLabel = arrowLabels.get(arrow.id)?.trim();
+      const plainText = edgeLabel
+        ? `${fromLabel} connects to ${toLabel} (${edgeLabel})`
+        : `${fromLabel} connects to ${toLabel}`;
 
       edges.push({
         id: `edge_${String(edgeCounter).padStart(3, "0")}`,
@@ -337,6 +382,7 @@ export function buildBoardTextGraph(elements: readonly LooseEl[]): BoardTextGrap
         to_node_id: toNode,
         from_label: fromLabel,
         to_label: toLabel,
+        ...(edgeLabel ? { label: edgeLabel } : {}),
         direction: "from_to",
         relation: "arrow",
         status: bound ? "bound_visual_relation" : "loose_inferred_relation",

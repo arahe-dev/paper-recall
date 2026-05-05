@@ -1,0 +1,204 @@
+{
+  "schema": "recall-board-text-graph-v1",
+  "summary": {
+    "total_element_count": 18,
+    "active_element_count": 18,
+    "deleted_element_count": 0,
+    "node_count": 6,
+    "edge_count": 3,
+    "unresolved_arrow_count": 0,
+    "ungrouped_text_count": 0
+  },
+  "nodes": [
+    {
+      "id": "node_rect-alpha",
+      "label": "Alpha cluster",
+      "source_shape_id": "rect-alpha",
+      "source_text_ids": [
+        "fkBfNyRpOJSlQDq7_bFz-"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 67.625,
+        "y": 44.75,
+        "width": 139.25,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-alpha_a",
+      "label": "Alpha A",
+      "source_shape_id": "rect-alpha_a",
+      "source_text_ids": [
+        "F8GOwrGf8_LpqDjBhocXs"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 40,
+        "y": 237.5,
+        "width": 89.75,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-alpha_b",
+      "label": "Alpha B",
+      "source_shape_id": "rect-alpha_b",
+      "source_text_ids": [
+        "IkXwg9PmDvE36fls2ETU-"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 144.75,
+        "y": 237.5,
+        "width": 89.75,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-beta",
+      "label": "Beta cluster",
+      "source_shape_id": "rect-beta",
+      "source_text_ids": [
+        "h_DvuJ5fC_hQWixwPbnSo"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 249.5,
+        "y": 44.75,
+        "width": 131,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-beta_a",
+      "label": "Beta A",
+      "source_shape_id": "rect-beta_a",
+      "source_text_ids": [
+        "jbR4U3mZ9JPQ2SkY4SCzl"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 274.25,
+        "y": 237.5,
+        "width": 81.5,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-note",
+      "label": "Standalone annotation",
+      "source_shape_id": "rect-note",
+      "source_text_ids": [
+        "pAQzGS9R_QMREmTHik_Qx"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 395.5,
+        "y": 40,
+        "width": 271.25,
+        "height": 57.5
+      },
+      "body": "No incoming or outgoing edge."
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge_001",
+      "from_node_id": "node_rect-alpha",
+      "to_node_id": "node_rect-alpha_a",
+      "from_label": "Alpha cluster",
+      "to_label": "Alpha A",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e1",
+      "confidence": 1,
+      "plain_text": "Alpha cluster connects to Alpha A"
+    },
+    {
+      "id": "edge_002",
+      "from_node_id": "node_rect-alpha",
+      "to_node_id": "node_rect-alpha_b",
+      "from_label": "Alpha cluster",
+      "to_label": "Alpha B",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e2",
+      "confidence": 1,
+      "plain_text": "Alpha cluster connects to Alpha B"
+    },
+    {
+      "id": "edge_003",
+      "from_node_id": "node_rect-beta",
+      "to_node_id": "node_rect-beta_a",
+      "from_label": "Beta cluster",
+      "to_label": "Beta A",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e3",
+      "confidence": 1,
+      "plain_text": "Beta cluster connects to Beta A"
+    }
+  ],
+  "unresolved_arrows": [],
+  "ungrouped_text": [],
+  "graph_insights": {
+    "likely_root_nodes": [
+      {
+        "node_id": "node_rect-alpha",
+        "label": "Alpha cluster",
+        "reason": "highest outgoing edge count with no incoming edges",
+        "outgoing_edge_count": 2,
+        "incoming_edge_count": 0
+      },
+      {
+        "node_id": "node_rect-beta",
+        "label": "Beta cluster",
+        "reason": "highest outgoing edge count with no incoming edges",
+        "outgoing_edge_count": 1,
+        "incoming_edge_count": 0
+      }
+    ],
+    "likely_leaf_nodes": [
+      {
+        "node_id": "node_rect-alpha_a",
+        "label": "Alpha A",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-alpha_b",
+        "label": "Alpha B",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-beta_a",
+        "label": "Beta A",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      }
+    ],
+    "direct_branch_count": 2,
+    "max_depth_estimate": 1,
+    "has_unresolved_arrows": false,
+    "has_ungrouped_text": false,
+    "lowest_confidence_edge": {
+      "id": "edge_001",
+      "plain_text": "Alpha cluster connects to Alpha A",
+      "confidence": 1,
+      "status": "bound_visual_relation"
+    },
+    "relation_status_counts": {
+      "bound_visual_relation": 3,
+      "loose_inferred_relation": 0
+    }
+  },
+  "plain_text_graph": "# Board Text Graph\n\n## Graph Insights\n- Likely root: Alpha cluster (2 outgoing, 0 incoming)\n- Likely leaves:\n    - Alpha A\n    - Alpha B\n    - Beta A\n- Direct branches from root: 2\n- Max depth estimate: 1\n- Relation statuses: 3 bound, 0 loose inferred\n- Lowest confidence edge: Alpha cluster connects to Alpha A (1, bound_visual_relation)\n- Unresolved arrows: none\n- Ungrouped text: none\n\n## Nodes\n- Alpha cluster\n- Alpha A\n- Alpha B\n- Beta cluster\n- Beta A\n- Standalone annotation\n\n## Edges\n- Alpha cluster connects to Alpha A\n- Alpha cluster connects to Alpha B\n- Beta cluster connects to Beta A\n\n## Unresolved Arrows\n(none)\n\n## Ungrouped Text\n(none)"
+}

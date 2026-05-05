@@ -1,0 +1,55 @@
+{
+  "scenario": "linear_pipeline",
+  "thresholds": {
+    "readability": 0.95,
+    "parseFidelity": 0.99
+  },
+  "readability": {
+    "score": 0.92,
+    "pass": false,
+    "defects": [
+      "exported PNG is small (236x1060)"
+    ],
+    "metrics": {
+      "activeElementCount": 18,
+      "nodeCount": 6,
+      "textCount": 6,
+      "arrowCount": 5,
+      "nodeOverlaps": [],
+      "degenerateArrows": [],
+      "unboundArrows": [],
+      "missingArrowheads": [],
+      "arrowNodeHits": [],
+      "arrowTextHits": [],
+      "pngDimensions": {
+        "width": 236,
+        "height": 1060
+      }
+    }
+  },
+  "parse": {
+    "score": 0.97,
+    "pass": false,
+    "defects": [
+      "1 unexpected node(s) exported"
+    ],
+    "metrics": {
+      "expectedNodeCount": 6,
+      "actualNodeCount": 7,
+      "expectedEdgeCount": 5,
+      "actualEdgeCount": 5,
+      "missingNodes": [],
+      "extraNodes": [
+        "[unlabeled rectangle]"
+      ],
+      "missingBodies": [],
+      "missingEdges": [],
+      "missingEdgeLabels": [],
+      "unresolvedArrowCount": 0,
+      "ungroupedTextCount": 0,
+      "looseInferredEdgeCount": 0,
+      "deletedElementCount": 0
+    }
+  },
+  "pass": false
+}

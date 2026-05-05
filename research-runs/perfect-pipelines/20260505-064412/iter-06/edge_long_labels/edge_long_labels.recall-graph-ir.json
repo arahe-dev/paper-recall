@@ -1,0 +1,64 @@
+{
+  "schema": "recall-graph-ir-v2",
+  "title": "edge_long_labels",
+  "layout": {
+    "style": "readable_compact",
+    "density": "readable",
+    "sibling_order_policy": "explicit",
+    "rank_policy": "from_root_depth",
+    "strategy": "tree",
+    "direction": "TD",
+    "root_ids": [
+      "root"
+    ]
+  },
+  "nodes": [
+    {
+      "order": 0,
+      "id": "root",
+      "label": "Extremely long root label that must wrap cleanly without spilling outside its rectangle"
+    },
+    {
+      "order": 1,
+      "id": "a",
+      "label": "Long branch label with multiple operational qualifiers and a deadline"
+    },
+    {
+      "order": 2,
+      "id": "b",
+      "label": "Another long branch label that should remain readable after wrapping"
+    },
+    {
+      "order": 3,
+      "id": "c",
+      "label": "Short label"
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "order": 0,
+      "from": "root",
+      "to": "a"
+    },
+    {
+      "id": "e2",
+      "order": 1,
+      "from": "root",
+      "to": "b"
+    },
+    {
+      "id": "e3",
+      "order": 2,
+      "from": "root",
+      "to": "c"
+    }
+  ],
+  "children_order": {
+    "root": [
+      "a",
+      "b",
+      "c"
+    ]
+  }
+}

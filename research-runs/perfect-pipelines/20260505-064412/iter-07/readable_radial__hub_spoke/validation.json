@@ -1,0 +1,62 @@
+{
+  "scenario": "readable_radial__hub_spoke",
+  "thresholds": {
+    "readability": 0.95,
+    "parseFidelity": 0.99
+  },
+  "readability": {
+    "score": 0.91,
+    "pass": false,
+    "defects": [
+      "1 arrow/node crossing(s)",
+      "1 arrow/text crossing(s)"
+    ],
+    "metrics": {
+      "activeElementCount": 17,
+      "nodeCount": 6,
+      "textCount": 6,
+      "arrowCount": 5,
+      "nodeOverlaps": [],
+      "degenerateArrows": [],
+      "unboundArrows": [],
+      "missingArrowheads": [],
+      "arrowNodeHits": [
+        {
+          "arrow": "arrow-e1",
+          "shape": "rect-imu4"
+        }
+      ],
+      "arrowTextHits": [
+        {
+          "arrow": "arrow-e1",
+          "text": "HT7_SgpayqROvdPzFoQoU"
+        }
+      ],
+      "pngDimensions": {
+        "width": 750,
+        "height": 488
+      }
+    }
+  },
+  "parse": {
+    "score": 1,
+    "pass": true,
+    "defects": [],
+    "metrics": {
+      "expectedNodeCount": 6,
+      "actualNodeCount": 6,
+      "expectedEdgeCount": 5,
+      "actualEdgeCount": 5,
+      "missingNodes": [],
+      "extraNodes": [],
+      "missingBodies": [],
+      "missingEdges": [],
+      "missingEdgeLabels": [],
+      "unresolvedArrowCount": 0,
+      "ungroupedTextCount": 0,
+      "looseInferredEdgeCount": 0,
+      "deletedElementCount": 0
+    }
+  },
+  "pass": false
+}

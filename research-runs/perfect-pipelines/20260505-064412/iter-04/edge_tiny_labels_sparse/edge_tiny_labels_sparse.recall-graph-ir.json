@@ -1,0 +1,74 @@
+{
+  "schema": "recall-graph-ir-v2",
+  "title": "edge_tiny_labels_sparse",
+  "layout": {
+    "style": "readable_compact",
+    "density": "readable",
+    "sibling_order_policy": "explicit",
+    "rank_policy": "from_root_depth",
+    "strategy": "mixed",
+    "direction": "TD",
+    "root_ids": [
+      "a",
+      "x"
+    ]
+  },
+  "nodes": [
+    {
+      "order": 0,
+      "id": "a",
+      "label": "A"
+    },
+    {
+      "order": 1,
+      "id": "b",
+      "label": "B"
+    },
+    {
+      "order": 2,
+      "id": "c",
+      "label": "C"
+    },
+    {
+      "order": 3,
+      "id": "x",
+      "label": "X"
+    },
+    {
+      "order": 4,
+      "id": "y",
+      "label": "Y"
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "order": 0,
+      "from": "a",
+      "to": "b"
+    },
+    {
+      "id": "e2",
+      "order": 1,
+      "from": "b",
+      "to": "c"
+    },
+    {
+      "id": "e3",
+      "order": 2,
+      "from": "x",
+      "to": "y"
+    }
+  ],
+  "children_order": {
+    "a": [
+      "b"
+    ],
+    "b": [
+      "c"
+    ],
+    "x": [
+      "y"
+    ]
+  }
+}

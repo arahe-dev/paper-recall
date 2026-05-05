@@ -306,6 +306,7 @@ declare global {
       exportPNG: (filename?: string) => Promise<void>;
       loadScene: (scene: { elements: unknown[] }) => void;
       getSceneSnapshot: () => { elements: unknown[]; appState: unknown };
+      getTextGraph: () => unknown;
     };
   }
 }
@@ -408,9 +409,20 @@ function App() {
         });
       },
       getSceneSnapshot: () => ({
-        elements: elementsRef.current as unknown[],
-        appState: appStateRef.current as unknown,
+        elements: (
+          (apiRef.current as any)?.getSceneElementsIncludingDeleted?.() ||
+          apiRef.current?.getSceneElements() ||
+          elementsRef.current
+        ) as unknown[],
+        appState: (apiRef.current?.getAppState() || appStateRef.current) as unknown,
       }),
+      getTextGraph: () => buildBoardTextGraph(
+        (
+          (apiRef.current as any)?.getSceneElementsIncludingDeleted?.() ||
+          apiRef.current?.getSceneElements() ||
+          elementsRef.current
+        ) as readonly LooseElement[]
+      ),
     };
     return () => {
       delete window.__RECALL_API__;

@@ -20,6 +20,7 @@ export function layoutToExcalidrawSkeleton(
     const padding = 16;
 
     function collectSubtree(nodeId: string, set: Set<string>) {
+      if (set.has(nodeId)) return;
       set.add(nodeId);
       for (const child of layout.childrenMap!.get(nodeId) || []) {
         collectSubtree(child, set);
@@ -75,8 +76,13 @@ export function layoutToExcalidrawSkeleton(
       roughness: preset.nodeRoughness,
       opacity: preset.nodeOpacity,
       roundness: { type: 1, value: preset.cornerRadius },
+      customData: {
+        recallNodeId: node.id,
+        recallLabel: node.label,
+        ...(node.body ? { recallBody: node.body } : {}),
+      },
       label: {
-        text: node.label,
+        text: node.body ? `${node.label}\n${node.body}` : node.label,
         fontSize: preset.fontSize,
         fontFamily: preset.fontFamily,
         textAlign: "center",
@@ -103,7 +109,29 @@ export function layoutToExcalidrawSkeleton(
     let width: number;
     let height: number;
 
-    if (edge.points && edge.points.length >= 2) {
+    const isLeftReturningEdge =
+      layout.direction === "LR" &&
+      fromNode.x > toNode.x &&
+      Math.abs((fromNode.y + fromNode.height / 2) - (toNode.y + toNode.height / 2)) < preset.verticalSpacing;
+
+    if (isLeftReturningEdge) {
+      sourceX = fromNode.x;
+      sourceY = fromNode.y + fromNode.height / 2;
+      targetX = toNode.x + toNode.width;
+      targetY = toNode.y + toNode.height / 2;
+      const laneY = Math.max(fromNode.y + fromNode.height, toNode.y + toNode.height) + preset.verticalSpacing * 0.75;
+      const px = targetX - sourceX;
+      const py = targetY - sourceY;
+      const laneDy = laneY - sourceY;
+      width = Math.abs(px);
+      height = Math.abs(Math.max(py, laneDy) - Math.min(0, py, laneDy));
+      points = [
+        [0, 0],
+        [0, laneDy],
+        [px, laneDy],
+        [px, py],
+      ];
+    } else if (edge.points && edge.points.length >= 2) {
       // Use dagre-computed edge points
       const pts = edge.points;
       let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;

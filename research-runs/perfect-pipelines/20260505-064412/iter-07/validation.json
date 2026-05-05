@@ -1,0 +1,1870 @@
+{
+  "thresholds": {
+    "readability": 0.95,
+    "parseFidelity": 0.99
+  },
+  "pass": false,
+  "scenarios": [
+    {
+      "scenario": "readable_default__hierarchy_tree",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 30,
+          "nodeCount": 10,
+          "textCount": 10,
+          "arrowCount": 9,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 897,
+            "height": 496
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 10,
+          "actualNodeCount": 10,
+          "expectedEdgeCount": 9,
+          "actualEdgeCount": 9,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_default__hub_spoke",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 18,
+          "nodeCount": 6,
+          "textCount": 6,
+          "arrowCount": 5,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 789,
+            "height": 398
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 6,
+          "actualNodeCount": 6,
+          "expectedEdgeCount": 5,
+          "actualEdgeCount": 5,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_default__linear_pipeline",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 18,
+          "nodeCount": 6,
+          "textCount": 6,
+          "arrowCount": 5,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 236,
+            "height": 1060
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 6,
+          "actualNodeCount": 6,
+          "expectedEdgeCount": 5,
+          "actualEdgeCount": 5,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_default__branching_workflow",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 48,
+          "nodeCount": 16,
+          "textCount": 16,
+          "arrowCount": 15,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 1525,
+            "height": 496
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 16,
+          "actualNodeCount": 16,
+          "expectedEdgeCount": 15,
+          "actualEdgeCount": 15,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_default__mixed_complexity",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 93,
+          "nodeCount": 31,
+          "textCount": 31,
+          "arrowCount": 29,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 2937,
+            "height": 684
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 31,
+          "actualNodeCount": 31,
+          "expectedEdgeCount": 29,
+          "actualEdgeCount": 29,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_default__control_system_reduction_6_step",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 23,
+          "nodeCount": 6,
+          "textCount": 11,
+          "arrowCount": 5,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 352,
+            "height": 1248
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 6,
+          "actualNodeCount": 6,
+          "expectedEdgeCount": 5,
+          "actualEdgeCount": 5,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_compact__hierarchy_tree",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 30,
+          "nodeCount": 10,
+          "textCount": 10,
+          "arrowCount": 9,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 897,
+            "height": 496
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 10,
+          "actualNodeCount": 10,
+          "expectedEdgeCount": 9,
+          "actualEdgeCount": 9,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_compact__hub_spoke",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 18,
+          "nodeCount": 6,
+          "textCount": 6,
+          "arrowCount": 5,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 789,
+            "height": 398
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 6,
+          "actualNodeCount": 6,
+          "expectedEdgeCount": 5,
+          "actualEdgeCount": 5,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_compact__linear_pipeline",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 18,
+          "nodeCount": 6,
+          "textCount": 6,
+          "arrowCount": 5,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 236,
+            "height": 1060
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 6,
+          "actualNodeCount": 6,
+          "expectedEdgeCount": 5,
+          "actualEdgeCount": 5,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_compact__branching_workflow",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 48,
+          "nodeCount": 16,
+          "textCount": 16,
+          "arrowCount": 15,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 1525,
+            "height": 496
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 16,
+          "actualNodeCount": 16,
+          "expectedEdgeCount": 15,
+          "actualEdgeCount": 15,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_compact__mixed_complexity",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 93,
+          "nodeCount": 31,
+          "textCount": 31,
+          "arrowCount": 29,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 2937,
+            "height": 684
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 31,
+          "actualNodeCount": 31,
+          "expectedEdgeCount": 29,
+          "actualEdgeCount": 29,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_compact__control_system_reduction_6_step",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 23,
+          "nodeCount": 6,
+          "textCount": 11,
+          "arrowCount": 5,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 352,
+            "height": 1248
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 6,
+          "actualNodeCount": 6,
+          "expectedEdgeCount": 5,
+          "actualEdgeCount": 5,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_spacious__hierarchy_tree",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 29,
+          "nodeCount": 10,
+          "textCount": 10,
+          "arrowCount": 9,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 976,
+            "height": 508
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 10,
+          "actualNodeCount": 10,
+          "expectedEdgeCount": 9,
+          "actualEdgeCount": 9,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_spacious__hub_spoke",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 17,
+          "nodeCount": 6,
+          "textCount": 6,
+          "arrowCount": 5,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 856,
+            "height": 416
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 6,
+          "actualNodeCount": 6,
+          "expectedEdgeCount": 5,
+          "actualEdgeCount": 5,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_spacious__linear_pipeline",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 17,
+          "nodeCount": 6,
+          "textCount": 6,
+          "arrowCount": 5,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 220,
+            "height": 1126
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 6,
+          "actualNodeCount": 6,
+          "expectedEdgeCount": 5,
+          "actualEdgeCount": 5,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_spacious__branching_workflow",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 47,
+          "nodeCount": 16,
+          "textCount": 16,
+          "arrowCount": 15,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 1699,
+            "height": 508
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 16,
+          "actualNodeCount": 16,
+          "expectedEdgeCount": 15,
+          "actualEdgeCount": 15,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_spacious__mixed_complexity",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 91,
+          "nodeCount": 31,
+          "textCount": 31,
+          "arrowCount": 29,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 3275,
+            "height": 714
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 31,
+          "actualNodeCount": 31,
+          "expectedEdgeCount": 29,
+          "actualEdgeCount": 29,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_spacious__control_system_reduction_6_step",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 22,
+          "nodeCount": 6,
+          "textCount": 11,
+          "arrowCount": 5,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 360,
+            "height": 1368
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 6,
+          "actualNodeCount": 6,
+          "expectedEdgeCount": 5,
+          "actualEdgeCount": 5,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_radial__hierarchy_tree",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 29,
+          "nodeCount": 10,
+          "textCount": 10,
+          "arrowCount": 9,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 779,
+            "height": 424
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 10,
+          "actualNodeCount": 10,
+          "expectedEdgeCount": 9,
+          "actualEdgeCount": 9,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_radial__hub_spoke",
+      "readability": {
+        "score": 0.91,
+        "pass": false,
+        "defects": [
+          "1 arrow/node crossing(s)",
+          "1 arrow/text crossing(s)"
+        ],
+        "metrics": {
+          "activeElementCount": 17,
+          "nodeCount": 6,
+          "textCount": 6,
+          "arrowCount": 5,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [
+            {
+              "arrow": "arrow-e1",
+              "shape": "rect-imu4"
+            }
+          ],
+          "arrowTextHits": [
+            {
+              "arrow": "arrow-e1",
+              "text": "HT7_SgpayqROvdPzFoQoU"
+            }
+          ],
+          "pngDimensions": {
+            "width": 750,
+            "height": 488
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 6,
+          "actualNodeCount": 6,
+          "expectedEdgeCount": 5,
+          "actualEdgeCount": 5,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_radial__linear_pipeline",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 17,
+          "nodeCount": 6,
+          "textCount": 6,
+          "arrowCount": 5,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 191,
+            "height": 928
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 6,
+          "actualNodeCount": 6,
+          "expectedEdgeCount": 5,
+          "actualEdgeCount": 5,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_radial__branching_workflow",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 47,
+          "nodeCount": 16,
+          "textCount": 16,
+          "arrowCount": 15,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 1353,
+            "height": 424
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 16,
+          "actualNodeCount": 16,
+          "expectedEdgeCount": 15,
+          "actualEdgeCount": 15,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_radial__mixed_complexity",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 91,
+          "nodeCount": 31,
+          "textCount": 31,
+          "arrowCount": 29,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 2609,
+            "height": 592
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 31,
+          "actualNodeCount": 31,
+          "expectedEdgeCount": 29,
+          "actualEdgeCount": 29,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_radial__control_system_reduction_6_step",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 22,
+          "nodeCount": 6,
+          "textCount": 11,
+          "arrowCount": 5,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 300,
+            "height": 1092
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 6,
+          "actualNodeCount": 6,
+          "expectedEdgeCount": 5,
+          "actualEdgeCount": 5,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_flowchart__hierarchy_tree",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 29,
+          "nodeCount": 10,
+          "textCount": 10,
+          "arrowCount": 9,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 976,
+            "height": 508
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 10,
+          "actualNodeCount": 10,
+          "expectedEdgeCount": 9,
+          "actualEdgeCount": 9,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_flowchart__hub_spoke",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 17,
+          "nodeCount": 6,
+          "textCount": 6,
+          "arrowCount": 5,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 856,
+            "height": 416
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 6,
+          "actualNodeCount": 6,
+          "expectedEdgeCount": 5,
+          "actualEdgeCount": 5,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_flowchart__linear_pipeline",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 17,
+          "nodeCount": 6,
+          "textCount": 6,
+          "arrowCount": 5,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 220,
+            "height": 1126
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 6,
+          "actualNodeCount": 6,
+          "expectedEdgeCount": 5,
+          "actualEdgeCount": 5,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_flowchart__branching_workflow",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 47,
+          "nodeCount": 16,
+          "textCount": 16,
+          "arrowCount": 15,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 1699,
+            "height": 508
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 16,
+          "actualNodeCount": 16,
+          "expectedEdgeCount": 15,
+          "actualEdgeCount": 15,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_flowchart__mixed_complexity",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 91,
+          "nodeCount": 31,
+          "textCount": 31,
+          "arrowCount": 29,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 3275,
+            "height": 714
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 31,
+          "actualNodeCount": 31,
+          "expectedEdgeCount": 29,
+          "actualEdgeCount": 29,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_flowchart__control_system_reduction_6_step",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 22,
+          "nodeCount": 6,
+          "textCount": 11,
+          "arrowCount": 5,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 360,
+            "height": 1368
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 6,
+          "actualNodeCount": 6,
+          "expectedEdgeCount": 5,
+          "actualEdgeCount": 5,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_block_diagram__hierarchy_tree",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 29,
+          "nodeCount": 10,
+          "textCount": 10,
+          "arrowCount": 9,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 1106,
+            "height": 424
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 10,
+          "actualNodeCount": 10,
+          "expectedEdgeCount": 9,
+          "actualEdgeCount": 9,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_block_diagram__hub_spoke",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 17,
+          "nodeCount": 6,
+          "textCount": 6,
+          "arrowCount": 5,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 815,
+            "height": 384
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 6,
+          "actualNodeCount": 6,
+          "expectedEdgeCount": 5,
+          "actualEdgeCount": 5,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_block_diagram__linear_pipeline",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 17,
+          "nodeCount": 6,
+          "textCount": 6,
+          "arrowCount": 5,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 212,
+            "height": 928
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 6,
+          "actualNodeCount": 6,
+          "expectedEdgeCount": 5,
+          "actualEdgeCount": 5,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_block_diagram__branching_workflow",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 47,
+          "nodeCount": 16,
+          "textCount": 16,
+          "arrowCount": 15,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 1847,
+            "height": 424
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 16,
+          "actualNodeCount": 16,
+          "expectedEdgeCount": 15,
+          "actualEdgeCount": 15,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_block_diagram__mixed_complexity",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 91,
+          "nodeCount": 31,
+          "textCount": 31,
+          "arrowCount": 29,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 3402,
+            "height": 592
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 31,
+          "actualNodeCount": 31,
+          "expectedEdgeCount": 29,
+          "actualEdgeCount": 29,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_block_diagram__control_system_reduction_6_step",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 22,
+          "nodeCount": 6,
+          "textCount": 11,
+          "arrowCount": 5,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 480,
+            "height": 1030
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 6,
+          "actualNodeCount": 6,
+          "expectedEdgeCount": 5,
+          "actualEdgeCount": 5,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_control_system__hierarchy_tree",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 29,
+          "nodeCount": 10,
+          "textCount": 10,
+          "arrowCount": 9,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 1252,
+            "height": 484
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 10,
+          "actualNodeCount": 10,
+          "expectedEdgeCount": 9,
+          "actualEdgeCount": 9,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_control_system__hub_spoke",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 17,
+          "nodeCount": 6,
+          "textCount": 6,
+          "arrowCount": 5,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 904,
+            "height": 423
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 6,
+          "actualNodeCount": 6,
+          "expectedEdgeCount": 5,
+          "actualEdgeCount": 5,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_control_system__linear_pipeline",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 17,
+          "nodeCount": 6,
+          "textCount": 6,
+          "arrowCount": 5,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 220,
+            "height": 1078
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 6,
+          "actualNodeCount": 6,
+          "expectedEdgeCount": 5,
+          "actualEdgeCount": 5,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_control_system__branching_workflow",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 47,
+          "nodeCount": 16,
+          "textCount": 16,
+          "arrowCount": 15,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 2073,
+            "height": 484
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 16,
+          "actualNodeCount": 16,
+          "expectedEdgeCount": 15,
+          "actualEdgeCount": 15,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_control_system__mixed_complexity",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 91,
+          "nodeCount": 31,
+          "textCount": 31,
+          "arrowCount": 29,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 3881,
+            "height": 682
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 31,
+          "actualNodeCount": 31,
+          "expectedEdgeCount": 29,
+          "actualEdgeCount": 29,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    },
+    {
+      "scenario": "readable_control_system__control_system_reduction_6_step",
+      "readability": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "activeElementCount": 22,
+          "nodeCount": 6,
+          "textCount": 11,
+          "arrowCount": 5,
+          "nodeOverlaps": [],
+          "degenerateArrows": [],
+          "unboundArrows": [],
+          "missingArrowheads": [],
+          "arrowNodeHits": [],
+          "arrowTextHits": [],
+          "pngDimensions": {
+            "width": 520,
+            "height": 1180
+          }
+        }
+      },
+      "parse": {
+        "score": 1,
+        "pass": true,
+        "defects": [],
+        "metrics": {
+          "expectedNodeCount": 6,
+          "actualNodeCount": 6,
+          "expectedEdgeCount": 5,
+          "actualEdgeCount": 5,
+          "missingNodes": [],
+          "extraNodes": [],
+          "missingBodies": [],
+          "missingEdges": [],
+          "missingEdgeLabels": [],
+          "unresolvedArrowCount": 0,
+          "ungroupedTextCount": 0,
+          "looseInferredEdgeCount": 0,
+          "deletedElementCount": 0
+        }
+      }
+    }
+  ]
+}

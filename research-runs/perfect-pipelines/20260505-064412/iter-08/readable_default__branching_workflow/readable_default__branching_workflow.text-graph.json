@@ -1,0 +1,551 @@
+{
+  "schema": "recall-board-text-graph-v1",
+  "summary": {
+    "total_element_count": 48,
+    "active_element_count": 48,
+    "deleted_element_count": 0,
+    "node_count": 16,
+    "edge_count": 15,
+    "unresolved_arrow_count": 0,
+    "ungrouped_text_count": 0
+  },
+  "nodes": [
+    {
+      "id": "node_rect-goal",
+      "label": "Project Goal",
+      "source_shape_id": "rect-goal",
+      "source_text_ids": [
+        "lDPHwlmqFNzujIU0L8boJ"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 744.4375,
+        "y": 40,
+        "width": 131,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-research",
+      "label": "Research",
+      "source_shape_id": "rect-research",
+      "source_text_ids": [
+        "z1yOpFbt2SV0scZZcp2-W"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 146,
+        "y": 228,
+        "width": 98,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-design",
+      "label": "Design",
+      "source_shape_id": "rect-design",
+      "source_text_ids": [
+        "hbsPGcKXEON9rCMiB5-SI"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 448.3125,
+        "y": 228,
+        "width": 81.5,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-prototype",
+      "label": "Prototype",
+      "source_shape_id": "rect-prototype",
+      "source_text_ids": [
+        "BWVPSmry0j92bQYiVKdKx"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 756.8125,
+        "y": 228,
+        "width": 106.25,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-validate",
+      "label": "Validate",
+      "source_shape_id": "rect-validate",
+      "source_text_ids": [
+        "G2o2dsCPPEQf7UZxswky2"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 1081.8125,
+        "y": 228,
+        "width": 98,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-iterate",
+      "label": "Iterate",
+      "source_shape_id": "rect-iterate",
+      "source_text_ids": [
+        "FA_5RAT1vRVGImTSgB013"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 1359.375,
+        "y": 228,
+        "width": 89.75,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-r1",
+      "label": "Market analysis",
+      "source_shape_id": "rect-r1",
+      "source_text_ids": [
+        "uG3j0v_eUorc5wXnyeh_S"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 40,
+        "y": 416,
+        "width": 155.75,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-r2",
+      "label": "Tech survey",
+      "source_shape_id": "rect-r2",
+      "source_text_ids": [
+        "0DeHKLTLoV5qYaIhshQRf"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 210.75,
+        "y": 416,
+        "width": 122.75000000000001,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-d1",
+      "label": "Wireframes",
+      "source_shape_id": "rect-d1",
+      "source_text_ids": [
+        "iRY6fR03cdjLsudGgO6r1"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 348.5,
+        "y": 416,
+        "width": 114.5,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-d2",
+      "label": "System architecture",
+      "source_shape_id": "rect-d2",
+      "source_text_ids": [
+        "io6ZaCs0waYIVp_3Vl1m2"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 478,
+        "y": 416,
+        "width": 188.75,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-p1",
+      "label": "MVP build",
+      "source_shape_id": "rect-p1",
+      "source_text_ids": [
+        "7sQjeXDR2oncCm4NjdzHz"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 681.75,
+        "y": 416,
+        "width": 106.25,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-p2",
+      "label": "Integration test",
+      "source_shape_id": "rect-p2",
+      "source_text_ids": [
+        "Pw3uV4Ye-6u5BpxHyzDAi"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 803,
+        "y": 416,
+        "width": 164,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-v1",
+      "label": "User testing",
+      "source_shape_id": "rect-v1",
+      "source_text_ids": [
+        "vSMmVqj1TjAep-nEApxL0"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 982,
+        "y": 416,
+        "width": 131,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-v2",
+      "label": "Performance audit",
+      "source_shape_id": "rect-v2",
+      "source_text_ids": [
+        "Nx3VpON8B4A_SvGaHItum"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 1128,
+        "y": 416,
+        "width": 172.25,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-i1",
+      "label": "Refine",
+      "source_shape_id": "rect-i1",
+      "source_text_ids": [
+        "NCeKl1mmB3TIZ4VQ6EV33"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 1315.25,
+        "y": 416,
+        "width": 81.5,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-i2",
+      "label": "Retest",
+      "source_shape_id": "rect-i2",
+      "source_text_ids": [
+        "EycFNYNUIm5NJCyiQ4AWj"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 1411.75,
+        "y": 416,
+        "width": 81.5,
+        "height": 48
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge_001",
+      "from_node_id": "node_rect-goal",
+      "to_node_id": "node_rect-research",
+      "from_label": "Project Goal",
+      "to_label": "Research",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e1",
+      "confidence": 1,
+      "plain_text": "Project Goal connects to Research"
+    },
+    {
+      "id": "edge_002",
+      "from_node_id": "node_rect-goal",
+      "to_node_id": "node_rect-design",
+      "from_label": "Project Goal",
+      "to_label": "Design",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e2",
+      "confidence": 1,
+      "plain_text": "Project Goal connects to Design"
+    },
+    {
+      "id": "edge_003",
+      "from_node_id": "node_rect-goal",
+      "to_node_id": "node_rect-prototype",
+      "from_label": "Project Goal",
+      "to_label": "Prototype",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e3",
+      "confidence": 1,
+      "plain_text": "Project Goal connects to Prototype"
+    },
+    {
+      "id": "edge_004",
+      "from_node_id": "node_rect-goal",
+      "to_node_id": "node_rect-validate",
+      "from_label": "Project Goal",
+      "to_label": "Validate",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e4",
+      "confidence": 1,
+      "plain_text": "Project Goal connects to Validate"
+    },
+    {
+      "id": "edge_005",
+      "from_node_id": "node_rect-goal",
+      "to_node_id": "node_rect-iterate",
+      "from_label": "Project Goal",
+      "to_label": "Iterate",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e5",
+      "confidence": 1,
+      "plain_text": "Project Goal connects to Iterate"
+    },
+    {
+      "id": "edge_006",
+      "from_node_id": "node_rect-research",
+      "to_node_id": "node_rect-r1",
+      "from_label": "Research",
+      "to_label": "Market analysis",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e6",
+      "confidence": 1,
+      "plain_text": "Research connects to Market analysis"
+    },
+    {
+      "id": "edge_007",
+      "from_node_id": "node_rect-research",
+      "to_node_id": "node_rect-r2",
+      "from_label": "Research",
+      "to_label": "Tech survey",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e7",
+      "confidence": 1,
+      "plain_text": "Research connects to Tech survey"
+    },
+    {
+      "id": "edge_008",
+      "from_node_id": "node_rect-design",
+      "to_node_id": "node_rect-d1",
+      "from_label": "Design",
+      "to_label": "Wireframes",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e8",
+      "confidence": 1,
+      "plain_text": "Design connects to Wireframes"
+    },
+    {
+      "id": "edge_009",
+      "from_node_id": "node_rect-design",
+      "to_node_id": "node_rect-d2",
+      "from_label": "Design",
+      "to_label": "System architecture",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e9",
+      "confidence": 1,
+      "plain_text": "Design connects to System architecture"
+    },
+    {
+      "id": "edge_010",
+      "from_node_id": "node_rect-prototype",
+      "to_node_id": "node_rect-p1",
+      "from_label": "Prototype",
+      "to_label": "MVP build",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e10",
+      "confidence": 1,
+      "plain_text": "Prototype connects to MVP build"
+    },
+    {
+      "id": "edge_011",
+      "from_node_id": "node_rect-prototype",
+      "to_node_id": "node_rect-p2",
+      "from_label": "Prototype",
+      "to_label": "Integration test",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e11",
+      "confidence": 1,
+      "plain_text": "Prototype connects to Integration test"
+    },
+    {
+      "id": "edge_012",
+      "from_node_id": "node_rect-validate",
+      "to_node_id": "node_rect-v1",
+      "from_label": "Validate",
+      "to_label": "User testing",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e12",
+      "confidence": 1,
+      "plain_text": "Validate connects to User testing"
+    },
+    {
+      "id": "edge_013",
+      "from_node_id": "node_rect-validate",
+      "to_node_id": "node_rect-v2",
+      "from_label": "Validate",
+      "to_label": "Performance audit",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e13",
+      "confidence": 1,
+      "plain_text": "Validate connects to Performance audit"
+    },
+    {
+      "id": "edge_014",
+      "from_node_id": "node_rect-iterate",
+      "to_node_id": "node_rect-i1",
+      "from_label": "Iterate",
+      "to_label": "Refine",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e14",
+      "confidence": 1,
+      "plain_text": "Iterate connects to Refine"
+    },
+    {
+      "id": "edge_015",
+      "from_node_id": "node_rect-iterate",
+      "to_node_id": "node_rect-i2",
+      "from_label": "Iterate",
+      "to_label": "Retest",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e15",
+      "confidence": 1,
+      "plain_text": "Iterate connects to Retest"
+    }
+  ],
+  "unresolved_arrows": [],
+  "ungrouped_text": [],
+  "graph_insights": {
+    "likely_root_nodes": [
+      {
+        "node_id": "node_rect-goal",
+        "label": "Project Goal",
+        "reason": "highest outgoing edge count with no incoming edges",
+        "outgoing_edge_count": 5,
+        "incoming_edge_count": 0
+      }
+    ],
+    "likely_leaf_nodes": [
+      {
+        "node_id": "node_rect-r1",
+        "label": "Market analysis",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-r2",
+        "label": "Tech survey",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-d1",
+        "label": "Wireframes",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-d2",
+        "label": "System architecture",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-p1",
+        "label": "MVP build",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-p2",
+        "label": "Integration test",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-v1",
+        "label": "User testing",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-v2",
+        "label": "Performance audit",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-i1",
+        "label": "Refine",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-i2",
+        "label": "Retest",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      }
+    ],
+    "direct_branch_count": 5,
+    "max_depth_estimate": 2,
+    "has_unresolved_arrows": false,
+    "has_ungrouped_text": false,
+    "lowest_confidence_edge": {
+      "id": "edge_001",
+      "plain_text": "Project Goal connects to Research",
+      "confidence": 1,
+      "status": "bound_visual_relation"
+    },
+    "relation_status_counts": {
+      "bound_visual_relation": 15,
+      "loose_inferred_relation": 0
+    }
+  },
+  "plain_text_graph": "# Board Text Graph\n\n## Graph Insights\n- Likely root: Project Goal (5 outgoing, 0 incoming)\n- Likely leaves:\n    - Market analysis\n    - Tech survey\n    - Wireframes\n    - System architecture\n    - MVP build\n    - Integration test\n    - User testing\n    - Performance audit\n    - Refine\n    - Retest\n- Direct branches from root: 5\n- Max depth estimate: 2\n- Relation statuses: 15 bound, 0 loose inferred\n- Lowest confidence edge: Project Goal connects to Research (1, bound_visual_relation)\n- Unresolved arrows: none\n- Ungrouped text: none\n\n## Nodes\n- Project Goal\n- Research\n- Design\n- Prototype\n- Validate\n- Iterate\n- Market analysis\n- Tech survey\n- Wireframes\n- System architecture\n- MVP build\n- Integration test\n- User testing\n- Performance audit\n- Refine\n- Retest\n\n## Edges\n- Project Goal connects to Research\n- Project Goal connects to Design\n- Project Goal connects to Prototype\n- Project Goal connects to Validate\n- Project Goal connects to Iterate\n- Research connects to Market analysis\n- Research connects to Tech survey\n- Design connects to Wireframes\n- Design connects to System architecture\n- Prototype connects to MVP build\n- Prototype connects to Integration test\n- Validate connects to User testing\n- Validate connects to Performance audit\n- Iterate connects to Refine\n- Iterate connects to Retest\n\n## Unresolved Arrows\n(none)\n\n## Ungrouped Text\n(none)"
+}

@@ -1,0 +1,54 @@
+{
+  "scenario": "mixed_complexity",
+  "thresholds": {
+    "readability": 0.95,
+    "parseFidelity": 0.99
+  },
+  "readability": {
+    "score": 1,
+    "pass": true,
+    "defects": [],
+    "metrics": {
+      "activeElementCount": 93,
+      "nodeCount": 31,
+      "textCount": 31,
+      "arrowCount": 29,
+      "nodeOverlaps": [],
+      "degenerateArrows": [],
+      "unboundArrows": [],
+      "missingArrowheads": [],
+      "arrowNodeHits": [],
+      "arrowTextHits": [],
+      "pngDimensions": {
+        "width": 2937,
+        "height": 684
+      }
+    }
+  },
+  "parse": {
+    "score": 0.99,
+    "pass": false,
+    "defects": [
+      "2 unexpected node(s) exported"
+    ],
+    "metrics": {
+      "expectedNodeCount": 31,
+      "actualNodeCount": 33,
+      "expectedEdgeCount": 29,
+      "actualEdgeCount": 29,
+      "missingNodes": [],
+      "extraNodes": [
+        "[unlabeled rectangle]",
+        "[unlabeled rectangle]"
+      ],
+      "missingBodies": [],
+      "missingEdges": [],
+      "missingEdgeLabels": [],
+      "unresolvedArrowCount": 0,
+      "ungroupedTextCount": 0,
+      "looseInferredEdgeCount": 0,
+      "deletedElementCount": 0
+    }
+  },
+  "pass": false
+}

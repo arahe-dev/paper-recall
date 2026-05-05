@@ -1,0 +1,124 @@
+{
+  "schema": "recall-board-text-graph-v1",
+  "summary": {
+    "total_element_count": 12,
+    "active_element_count": 9,
+    "deleted_element_count": 3,
+    "node_count": 3,
+    "edge_count": 2,
+    "unresolved_arrow_count": 0,
+    "ungrouped_text_count": 0
+  },
+  "nodes": [
+    {
+      "id": "node_rect-input",
+      "label": "Input",
+      "source_shape_id": "rect-input",
+      "source_text_ids": [
+        "IEp_R_19yR2-nbnT56ePl"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 61.375,
+        "y": 40,
+        "width": 80,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-active_step",
+      "label": "Active step",
+      "source_shape_id": "rect-active_step",
+      "source_text_ids": [
+        "nnkM-nvHL96zxsS6ouBEe"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 39.99999999999999,
+        "y": 228,
+        "width": 122.75000000000001,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-result",
+      "label": "Result",
+      "source_shape_id": "rect-result",
+      "source_text_ids": [
+        "jY6c-NU_HKi7wPOr6Koy3"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 60.625,
+        "y": 416,
+        "width": 81.5,
+        "height": 48
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge_001",
+      "from_node_id": "node_rect-input",
+      "to_node_id": "node_rect-active_step",
+      "from_label": "Input",
+      "to_label": "Active step",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e1",
+      "confidence": 1,
+      "plain_text": "Input connects to Active step"
+    },
+    {
+      "id": "edge_002",
+      "from_node_id": "node_rect-active_step",
+      "to_node_id": "node_rect-result",
+      "from_label": "Active step",
+      "to_label": "Result",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e2",
+      "confidence": 1,
+      "plain_text": "Active step connects to Result"
+    }
+  ],
+  "unresolved_arrows": [],
+  "ungrouped_text": [],
+  "graph_insights": {
+    "likely_root_nodes": [
+      {
+        "node_id": "node_rect-input",
+        "label": "Input",
+        "reason": "highest outgoing edge count with no incoming edges",
+        "outgoing_edge_count": 1,
+        "incoming_edge_count": 0
+      }
+    ],
+    "likely_leaf_nodes": [
+      {
+        "node_id": "node_rect-result",
+        "label": "Result",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      }
+    ],
+    "direct_branch_count": 1,
+    "max_depth_estimate": 2,
+    "has_unresolved_arrows": false,
+    "has_ungrouped_text": false,
+    "lowest_confidence_edge": {
+      "id": "edge_001",
+      "plain_text": "Input connects to Active step",
+      "confidence": 1,
+      "status": "bound_visual_relation"
+    },
+    "relation_status_counts": {
+      "bound_visual_relation": 2,
+      "loose_inferred_relation": 0
+    }
+  },
+  "plain_text_graph": "# Board Text Graph\n\n## Graph Insights\n- Likely root: Input (1 outgoing, 0 incoming)\n- Likely leaves:\n    - Result\n- Direct branches from root: 1\n- Max depth estimate: 2\n- Relation statuses: 2 bound, 0 loose inferred\n- Lowest confidence edge: Input connects to Active step (1, bound_visual_relation)\n- Unresolved arrows: none\n- Ungrouped text: none\n\n## Nodes\n- Input\n- Active step\n- Result\n\n## Edges\n- Input connects to Active step\n- Active step connects to Result\n\n## Unresolved Arrows\n(none)\n\n## Ungrouped Text\n(none)"
+}

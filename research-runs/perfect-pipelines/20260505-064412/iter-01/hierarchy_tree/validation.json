@@ -1,0 +1,53 @@
+{
+  "scenario": "hierarchy_tree",
+  "thresholds": {
+    "readability": 0.95,
+    "parseFidelity": 0.99
+  },
+  "readability": {
+    "score": 1,
+    "pass": true,
+    "defects": [],
+    "metrics": {
+      "activeElementCount": 30,
+      "nodeCount": 10,
+      "textCount": 10,
+      "arrowCount": 9,
+      "nodeOverlaps": [],
+      "degenerateArrows": [],
+      "unboundArrows": [],
+      "missingArrowheads": [],
+      "arrowNodeHits": [],
+      "arrowTextHits": [],
+      "pngDimensions": {
+        "width": 897,
+        "height": 496
+      }
+    }
+  },
+  "parse": {
+    "score": 0.98,
+    "pass": false,
+    "defects": [
+      "1 unexpected node(s) exported"
+    ],
+    "metrics": {
+      "expectedNodeCount": 10,
+      "actualNodeCount": 11,
+      "expectedEdgeCount": 9,
+      "actualEdgeCount": 9,
+      "missingNodes": [],
+      "extraNodes": [
+        "[unlabeled rectangle]"
+      ],
+      "missingBodies": [],
+      "missingEdges": [],
+      "missingEdgeLabels": [],
+      "unresolvedArrowCount": 0,
+      "ungroupedTextCount": 0,
+      "looseInferredEdgeCount": 0,
+      "deletedElementCount": 0
+    }
+  },
+  "pass": false
+}

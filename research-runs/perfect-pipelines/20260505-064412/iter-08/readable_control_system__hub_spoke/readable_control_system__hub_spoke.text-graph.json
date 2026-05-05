@@ -1,0 +1,236 @@
+{
+  "schema": "recall-board-text-graph-v1",
+  "summary": {
+    "total_element_count": 17,
+    "active_element_count": 17,
+    "deleted_element_count": 0,
+    "node_count": 6,
+    "edge_count": 5,
+    "unresolved_arrow_count": 0,
+    "ungrouped_text_count": 0
+  },
+  "nodes": [
+    {
+      "id": "node_rect-esp32",
+      "label": "esp 32",
+      "source_shape_id": "rect-esp32",
+      "source_text_ids": [
+        "K9ZBiOMIGDwW6uRnDbLsB"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": -90,
+        "y": -24,
+        "width": 180,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-imu0",
+      "label": "imu 0 thumb",
+      "source_shape_id": "rect-imu0",
+      "source_text_ids": [
+        "5cGcFkl5I2tI1UiQ0M9SQ"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": -425.8169299238992,
+        "y": -24.000000000000043,
+        "width": 180,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-imu1",
+      "label": "imu 1 index finger",
+      "source_shape_id": "rect-imu1",
+      "source_text_ids": [
+        "P2DYlFrR796gOHrfrT7r-"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": -331.7084283864367,
+        "y": -261.45842838643676,
+        "width": 188.5,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-imu2",
+      "label": "imu 2 middle finger",
+      "source_shape_id": "rect-imu2",
+      "source_text_ids": [
+        "JQtkSjFTEmEkrKvsmOv7u"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": -98.37499999999999,
+        "y": -359.8169299238992,
+        "width": 196.75,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-imu3",
+      "label": "imu 3 back of hand",
+      "source_shape_id": "rect-imu3",
+      "source_text_ids": [
+        "QhJmpHY73LT6pFQjSNdVZ"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 143.20842838643676,
+        "y": -261.4584283864367,
+        "width": 188.5,
+        "height": 48
+      }
+    },
+    {
+      "id": "node_rect-imu4",
+      "label": "imu 4 wrist relative",
+      "source_shape_id": "rect-imu4",
+      "source_text_ids": [
+        "WCUNLXkKAF9odanb2SBIe"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 233.31692992389918,
+        "y": -24,
+        "width": 205,
+        "height": 48
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge_001",
+      "from_node_id": "node_rect-esp32",
+      "to_node_id": "node_rect-imu0",
+      "from_label": "esp 32",
+      "to_label": "imu 0 thumb",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e1",
+      "confidence": 1,
+      "plain_text": "esp 32 connects to imu 0 thumb"
+    },
+    {
+      "id": "edge_002",
+      "from_node_id": "node_rect-esp32",
+      "to_node_id": "node_rect-imu1",
+      "from_label": "esp 32",
+      "to_label": "imu 1 index finger",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e2",
+      "confidence": 1,
+      "plain_text": "esp 32 connects to imu 1 index finger"
+    },
+    {
+      "id": "edge_003",
+      "from_node_id": "node_rect-esp32",
+      "to_node_id": "node_rect-imu2",
+      "from_label": "esp 32",
+      "to_label": "imu 2 middle finger",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e3",
+      "confidence": 1,
+      "plain_text": "esp 32 connects to imu 2 middle finger"
+    },
+    {
+      "id": "edge_004",
+      "from_node_id": "node_rect-esp32",
+      "to_node_id": "node_rect-imu3",
+      "from_label": "esp 32",
+      "to_label": "imu 3 back of hand",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e4",
+      "confidence": 1,
+      "plain_text": "esp 32 connects to imu 3 back of hand"
+    },
+    {
+      "id": "edge_005",
+      "from_node_id": "node_rect-esp32",
+      "to_node_id": "node_rect-imu4",
+      "from_label": "esp 32",
+      "to_label": "imu 4 wrist relative",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e5",
+      "confidence": 1,
+      "plain_text": "esp 32 connects to imu 4 wrist relative"
+    }
+  ],
+  "unresolved_arrows": [],
+  "ungrouped_text": [],
+  "graph_insights": {
+    "likely_root_nodes": [
+      {
+        "node_id": "node_rect-esp32",
+        "label": "esp 32",
+        "reason": "highest outgoing edge count with no incoming edges",
+        "outgoing_edge_count": 5,
+        "incoming_edge_count": 0
+      }
+    ],
+    "likely_leaf_nodes": [
+      {
+        "node_id": "node_rect-imu0",
+        "label": "imu 0 thumb",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-imu1",
+        "label": "imu 1 index finger",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-imu2",
+        "label": "imu 2 middle finger",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-imu3",
+        "label": "imu 3 back of hand",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      },
+      {
+        "node_id": "node_rect-imu4",
+        "label": "imu 4 wrist relative",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      }
+    ],
+    "direct_branch_count": 5,
+    "max_depth_estimate": 1,
+    "has_unresolved_arrows": false,
+    "has_ungrouped_text": false,
+    "lowest_confidence_edge": {
+      "id": "edge_001",
+      "plain_text": "esp 32 connects to imu 0 thumb",
+      "confidence": 1,
+      "status": "bound_visual_relation"
+    },
+    "relation_status_counts": {
+      "bound_visual_relation": 5,
+      "loose_inferred_relation": 0
+    }
+  },
+  "plain_text_graph": "# Board Text Graph\n\n## Graph Insights\n- Likely root: esp 32 (5 outgoing, 0 incoming)\n- Likely leaves:\n    - imu 0 thumb\n    - imu 1 index finger\n    - imu 2 middle finger\n    - imu 3 back of hand\n    - imu 4 wrist relative\n- Direct branches from root: 5\n- Max depth estimate: 1\n- Relation statuses: 5 bound, 0 loose inferred\n- Lowest confidence edge: esp 32 connects to imu 0 thumb (1, bound_visual_relation)\n- Unresolved arrows: none\n- Ungrouped text: none\n\n## Nodes\n- esp 32\n- imu 0 thumb\n- imu 1 index finger\n- imu 2 middle finger\n- imu 3 back of hand\n- imu 4 wrist relative\n\n## Edges\n- esp 32 connects to imu 0 thumb\n- esp 32 connects to imu 1 index finger\n- esp 32 connects to imu 2 middle finger\n- esp 32 connects to imu 3 back of hand\n- esp 32 connects to imu 4 wrist relative\n\n## Unresolved Arrows\n(none)\n\n## Ungrouped Text\n(none)"
+}

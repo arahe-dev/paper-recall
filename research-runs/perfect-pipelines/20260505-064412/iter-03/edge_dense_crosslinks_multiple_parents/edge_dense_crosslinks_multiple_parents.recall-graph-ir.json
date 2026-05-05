@@ -1,0 +1,170 @@
+{
+  "schema": "recall-graph-ir-v2",
+  "title": "edge_dense_crosslinks_multiple_parents",
+  "layout": {
+    "style": "readable_compact",
+    "density": "readable",
+    "sibling_order_policy": "explicit",
+    "rank_policy": "from_root_depth",
+    "strategy": "mixed",
+    "direction": "TD",
+    "root_ids": [
+      "start"
+    ]
+  },
+  "nodes": [
+    {
+      "order": 0,
+      "id": "start",
+      "label": "Start"
+    },
+    {
+      "order": 1,
+      "id": "a",
+      "label": "Branch A"
+    },
+    {
+      "order": 2,
+      "id": "b",
+      "label": "Branch B"
+    },
+    {
+      "order": 3,
+      "id": "c",
+      "label": "Branch C"
+    },
+    {
+      "order": 4,
+      "id": "d",
+      "label": "Shared D"
+    },
+    {
+      "order": 5,
+      "id": "e",
+      "label": "Shared E"
+    },
+    {
+      "order": 6,
+      "id": "f",
+      "label": "Finish F"
+    },
+    {
+      "order": 7,
+      "id": "g",
+      "label": "Audit G"
+    },
+    {
+      "order": 8,
+      "id": "h",
+      "label": "Review H"
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "order": 0,
+      "from": "start",
+      "to": "a"
+    },
+    {
+      "id": "e2",
+      "order": 1,
+      "from": "start",
+      "to": "b"
+    },
+    {
+      "id": "e3",
+      "order": 2,
+      "from": "start",
+      "to": "c"
+    },
+    {
+      "id": "e4",
+      "order": 3,
+      "from": "a",
+      "to": "d"
+    },
+    {
+      "id": "e5",
+      "order": 4,
+      "from": "b",
+      "to": "d",
+      "label": "shared"
+    },
+    {
+      "id": "e6",
+      "order": 5,
+      "from": "b",
+      "to": "e"
+    },
+    {
+      "id": "e7",
+      "order": 6,
+      "from": "c",
+      "to": "e",
+      "label": "shared"
+    },
+    {
+      "id": "e8",
+      "order": 7,
+      "from": "d",
+      "to": "f"
+    },
+    {
+      "id": "e9",
+      "order": 8,
+      "from": "e",
+      "to": "f"
+    },
+    {
+      "id": "e10",
+      "order": 9,
+      "from": "a",
+      "to": "g",
+      "label": "cross-check"
+    },
+    {
+      "id": "e11",
+      "order": 10,
+      "from": "g",
+      "to": "h"
+    },
+    {
+      "id": "e12",
+      "order": 11,
+      "from": "h",
+      "to": "f",
+      "label": "approve"
+    }
+  ],
+  "children_order": {
+    "start": [
+      "a",
+      "b",
+      "c"
+    ],
+    "a": [
+      "d",
+      "g"
+    ],
+    "b": [
+      "d",
+      "e"
+    ],
+    "c": [
+      "e"
+    ],
+    "d": [
+      "f"
+    ],
+    "e": [
+      "f"
+    ],
+    "g": [
+      "h"
+    ],
+    "h": [
+      "f"
+    ]
+  }
+}

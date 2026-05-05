@@ -1,0 +1,219 @@
+{
+  "schema": "recall-board-text-graph-v1",
+  "summary": {
+    "total_element_count": 22,
+    "active_element_count": 22,
+    "deleted_element_count": 0,
+    "node_count": 6,
+    "edge_count": 5,
+    "unresolved_arrow_count": 0,
+    "ungrouped_text_count": 0
+  },
+  "nodes": [
+    {
+      "id": "node_rect-original",
+      "label": "1. Original system",
+      "source_shape_id": "rect-original",
+      "source_text_ids": [
+        "bcIWHUD8xK_MXwFusa84q"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 40,
+        "y": 40,
+        "width": 260,
+        "height": 90
+      },
+      "body": "Find C/R from cascaded G1, G2, G3 with H1, H2, and outer feedback."
+    },
+    {
+      "id": "node_rect-shift_h1",
+      "label": "2. Shift H1 pickoff",
+      "source_shape_id": "rect-shift_h1",
+      "source_text_ids": [
+        "RLroOp-05dYHXtXoPY3b_"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 40,
+        "y": 250,
+        "width": 260,
+        "height": 72.5
+      },
+      "body": "Move H1 pickoff past G3, so H1 becomes H1/G3."
+    },
+    {
+      "id": "node_rect-shift_h2",
+      "label": "3. Shift H2 junction",
+      "source_shape_id": "rect-shift_h2",
+      "source_text_ids": [
+        "Bgb6xIYuiFupbMio9azY6"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 40,
+        "y": 442.5,
+        "width": 260,
+        "height": 72.5
+      },
+      "body": "Move the H2 junction left past G2, so H2 becomes H2/G2."
+    },
+    {
+      "id": "node_rect-combine_junctions",
+      "label": "4. Combine summing junctions",
+      "source_shape_id": "rect-combine_junctions",
+      "source_text_ids": [
+        "B0g1Csr4Xru-j6UZpn8-O"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 40,
+        "y": 635,
+        "width": 260,
+        "height": 90
+      },
+      "body": "Merge adjacent summing junctions while preserving signs."
+    },
+    {
+      "id": "node_rect-combine_cascade",
+      "label": "5. Combine cascade blocks",
+      "source_shape_id": "rect-combine_cascade",
+      "source_text_ids": [
+        "v_pBBsaG42RUp1dLOJEu3"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 48.19999999999999,
+        "y": 845,
+        "width": 243.60000000000002,
+        "height": 55
+      },
+      "body": "Forward path becomes G1G2G3."
+    },
+    {
+      "id": "node_rect-final_form",
+      "label": "6. Final closed loop",
+      "source_shape_id": "rect-final_form",
+      "source_text_ids": [
+        "s_YOSNCbg2_hEaBlCAr1Y"
+      ],
+      "shape_type": "rectangle",
+      "bounds": {
+        "x": 40,
+        "y": 1020,
+        "width": 260,
+        "height": 72.5
+      },
+      "body": "C/R = G1G2G3 / (1 + G1G2G3 - G1G2H1 + G2G3H2)"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge_001",
+      "from_node_id": "node_rect-original",
+      "to_node_id": "node_rect-shift_h1",
+      "from_label": "1. Original system",
+      "to_label": "2. Shift H1 pickoff",
+      "label": "transform",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e1",
+      "confidence": 1,
+      "plain_text": "1. Original system connects to 2. Shift H1 pickoff (transform)"
+    },
+    {
+      "id": "edge_002",
+      "from_node_id": "node_rect-shift_h1",
+      "to_node_id": "node_rect-shift_h2",
+      "from_label": "2. Shift H1 pickoff",
+      "to_label": "3. Shift H2 junction",
+      "label": "transform",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e2",
+      "confidence": 1,
+      "plain_text": "2. Shift H1 pickoff connects to 3. Shift H2 junction (transform)"
+    },
+    {
+      "id": "edge_003",
+      "from_node_id": "node_rect-shift_h2",
+      "to_node_id": "node_rect-combine_junctions",
+      "from_label": "3. Shift H2 junction",
+      "to_label": "4. Combine summing junctions",
+      "label": "transform",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e3",
+      "confidence": 1,
+      "plain_text": "3. Shift H2 junction connects to 4. Combine summing junctions (transform)"
+    },
+    {
+      "id": "edge_004",
+      "from_node_id": "node_rect-combine_junctions",
+      "to_node_id": "node_rect-combine_cascade",
+      "from_label": "4. Combine summing junctions",
+      "to_label": "5. Combine cascade blocks",
+      "label": "simplify",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e4",
+      "confidence": 1,
+      "plain_text": "4. Combine summing junctions connects to 5. Combine cascade blocks (simplify)"
+    },
+    {
+      "id": "edge_005",
+      "from_node_id": "node_rect-combine_cascade",
+      "to_node_id": "node_rect-final_form",
+      "from_label": "5. Combine cascade blocks",
+      "to_label": "6. Final closed loop",
+      "label": "reduce",
+      "direction": "from_to",
+      "relation": "arrow",
+      "status": "bound_visual_relation",
+      "source_arrow_id": "arrow-e5",
+      "confidence": 1,
+      "plain_text": "5. Combine cascade blocks connects to 6. Final closed loop (reduce)"
+    }
+  ],
+  "unresolved_arrows": [],
+  "ungrouped_text": [],
+  "graph_insights": {
+    "likely_root_nodes": [
+      {
+        "node_id": "node_rect-original",
+        "label": "1. Original system",
+        "reason": "highest outgoing edge count with no incoming edges",
+        "outgoing_edge_count": 1,
+        "incoming_edge_count": 0
+      }
+    ],
+    "likely_leaf_nodes": [
+      {
+        "node_id": "node_rect-final_form",
+        "label": "6. Final closed loop",
+        "reason": "has incoming edge(s) and no outgoing edges",
+        "outgoing_edge_count": 0,
+        "incoming_edge_count": 1
+      }
+    ],
+    "direct_branch_count": 1,
+    "max_depth_estimate": 5,
+    "has_unresolved_arrows": false,
+    "has_ungrouped_text": false,
+    "lowest_confidence_edge": {
+      "id": "edge_001",
+      "plain_text": "1. Original system connects to 2. Shift H1 pickoff (transform)",
+      "confidence": 1,
+      "status": "bound_visual_relation"
+    },
+    "relation_status_counts": {
+      "bound_visual_relation": 5,
+      "loose_inferred_relation": 0
+    }
+  },
+  "plain_text_graph": "# Board Text Graph\n\n## Graph Insights\n- Likely root: 1. Original system (1 outgoing, 0 incoming)\n- Likely leaves:\n    - 6. Final closed loop\n- Direct branches from root: 1\n- Max depth estimate: 5\n- Relation statuses: 5 bound, 0 loose inferred\n- Lowest confidence edge: 1. Original system connects to 2. Shift H1 pickoff (transform) (1, bound_visual_relation)\n- Unresolved arrows: none\n- Ungrouped text: none\n\n## Nodes\n- 1. Original system\n- 2. Shift H1 pickoff\n- 3. Shift H2 junction\n- 4. Combine summing junctions\n- 5. Combine cascade blocks\n- 6. Final closed loop\n\n## Edges\n- 1. Original system connects to 2. Shift H1 pickoff (transform)\n- 2. Shift H1 pickoff connects to 3. Shift H2 junction (transform)\n- 3. Shift H2 junction connects to 4. Combine summing junctions (transform)\n- 4. Combine summing junctions connects to 5. Combine cascade blocks (simplify)\n- 5. Combine cascade blocks connects to 6. Final closed loop (reduce)\n\n## Unresolved Arrows\n(none)\n\n## Ungrouped Text\n(none)"
+}

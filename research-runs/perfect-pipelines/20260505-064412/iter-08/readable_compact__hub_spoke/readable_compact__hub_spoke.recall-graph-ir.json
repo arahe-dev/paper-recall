@@ -1,0 +1,88 @@
+{
+  "schema": "recall-graph-ir-v2",
+  "title": "readable_compact__hub_spoke",
+  "layout": {
+    "style": "readable_compact",
+    "strategy": "hub_spoke",
+    "direction": "TD",
+    "density": "readable",
+    "root_ids": [
+      "esp32"
+    ],
+    "sibling_order_policy": "explicit",
+    "rank_policy": "from_root_depth"
+  },
+  "nodes": [
+    {
+      "id": "esp32",
+      "label": "esp 32",
+      "order": 0
+    },
+    {
+      "id": "imu0",
+      "label": "imu 0 thumb",
+      "order": 1
+    },
+    {
+      "id": "imu1",
+      "label": "imu 1 index finger",
+      "order": 2
+    },
+    {
+      "id": "imu2",
+      "label": "imu 2 middle finger",
+      "order": 3
+    },
+    {
+      "id": "imu3",
+      "label": "imu 3 back of hand",
+      "order": 4
+    },
+    {
+      "id": "imu4",
+      "label": "imu 4 wrist relative",
+      "order": 5
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "esp32",
+      "to": "imu0",
+      "order": 0
+    },
+    {
+      "id": "e2",
+      "from": "esp32",
+      "to": "imu1",
+      "order": 1
+    },
+    {
+      "id": "e3",
+      "from": "esp32",
+      "to": "imu2",
+      "order": 2
+    },
+    {
+      "id": "e4",
+      "from": "esp32",
+      "to": "imu3",
+      "order": 3
+    },
+    {
+      "id": "e5",
+      "from": "esp32",
+      "to": "imu4",
+      "order": 4
+    }
+  ],
+  "children_order": {
+    "esp32": [
+      "imu0",
+      "imu1",
+      "imu2",
+      "imu3",
+      "imu4"
+    ]
+  }
+}

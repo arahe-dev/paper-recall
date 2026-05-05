@@ -1,0 +1,68 @@
+{
+  "scenario": "edge_hub_many_spokes",
+  "thresholds": {
+    "readability": 0.95,
+    "parseFidelity": 0.99
+  },
+  "readability": {
+    "score": 0.6,
+    "pass": false,
+    "defects": [
+      "2 node overlap(s)",
+      "1 arrow/node crossing(s)"
+    ],
+    "metrics": {
+      "activeElementCount": 33,
+      "nodeCount": 11,
+      "textCount": 11,
+      "arrowCount": 10,
+      "nodeOverlaps": [
+        {
+          "a": "rect-spoke_4",
+          "b": "rect-spoke_5",
+          "area": 393
+        },
+        {
+          "a": "rect-spoke_6",
+          "b": "rect-spoke_7",
+          "area": 1340
+        }
+      ],
+      "degenerateArrows": [],
+      "unboundArrows": [],
+      "missingArrowheads": [],
+      "arrowNodeHits": [
+        {
+          "arrow": "arrow-e6",
+          "shape": "rect-spoke_7"
+        }
+      ],
+      "arrowTextHits": [],
+      "pngDimensions": {
+        "width": 605,
+        "height": 336
+      }
+    }
+  },
+  "parse": {
+    "score": 1,
+    "pass": true,
+    "defects": [],
+    "metrics": {
+      "expectedNodeCount": 11,
+      "actualNodeCount": 11,
+      "expectedEdgeCount": 10,
+      "actualEdgeCount": 10,
+      "missingNodes": [],
+      "extraNodes": [],
+      "missingBodies": [],
+      "missingEdges": [],
+      "missingEdgeLabels": [],
+      "unresolvedArrowCount": 0,
+      "ungroupedTextCount": 0,
+      "looseInferredEdgeCount": 0,
+      "deletedElementCount": 0
+    }
+  },
+  "pass": false
+}
