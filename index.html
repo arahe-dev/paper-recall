@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
@@ -559,7 +559,17 @@
       </main>
     </div>
     <script type="module">
-      if (!location.hostname.endsWith("github.io")) {
+      const recallHost = location.hostname;
+      const recallIsLocal =
+        recallHost === "localhost" ||
+        recallHost === "127.0.0.1" ||
+        recallHost === "::1" ||
+        recallHost === "0.0.0.0";
+      const recallIsTauri =
+        location.protocol.startsWith("tauri") ||
+        recallHost === "tauri.localhost";
+
+      if (recallIsLocal || recallIsTauri) {
         import("/src/main.tsx");
       }
     </script>
