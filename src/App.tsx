@@ -21,9 +21,12 @@ import {
   openBoardWithDialog,
   loadBoard,
   deleteBoard,
+  renameBoard,
+  duplicateBoard,
   getRecentBoards,
   isTauriEnv,
 } from "./utils/boardStorage";
+import { getSettings, updateSettings } from "./utils/settingsStore";
 
 // Minimal local types to avoid strict import issues for this prototype
 type LooseElement = {
@@ -46,6 +49,8 @@ type LooseElement = {
 };
 
 type LooseAppState = {
+  width?: number;
+  height?: number;
   viewBackgroundColor?: string;
   currentItemStrokeColor?: string;
   currentItemBackgroundColor?: string;
@@ -56,6 +61,11 @@ type LooseAppState = {
 };
 
 type LooseFiles = Record<string, unknown>;
+
+type RecallExcalidrawAPI = ExcalidrawImperativeAPI & {
+  scrollToContent?: (elements?: unknown, options?: { fitToViewport?: boolean; animate?: boolean }) => void;
+  getSceneElementsIncludingDeleted?: () => readonly LooseElement[];
+};
 
 function downloadJSON(filename: string, data: unknown) {
   const blob = new Blob([JSON.stringify(data, null, 2)], {
@@ -106,9 +116,7 @@ function exportScene(
 }
 
 function exportAiContext(
-  elements: readonly LooseElement[],
-  _appState: LooseAppState,
-  _files: LooseFiles
+  elements: readonly LooseElement[]
 ) {
   const total_element_count_in_scene = elements.length;
   const activeElements = elements.filter((el) => !el.isDeleted);
@@ -336,27 +344,37 @@ function App() {
   const appStateRef = useRef<LooseAppState>({});
   const filesRef = useRef<LooseFiles>({});
   const apiRef = useRef<ExcalidrawImperativeAPI | null>(null);
+  const lastChangeAtRef = useRef(0);
+  const suppressDirtyUntilRef = useRef(0);
+  const autoSavePromptedRef = useRef(false);
+  const saveInFlightRef = useRef(false);
   const [showTranscript, setShowTranscript] = useState(false);
   const [lastLoadErrors, setLastLoadErrors] = useState<string[]>([]);
 
-  // Phase 0: Board persistence state
   const [currentBoard, setCurrentBoard] = useState<BoardMeta | null>(null);
   const [isDirty, setIsDirty] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [lastSavedAt, setLastSavedAt] = useState<number | null>(null);
   const [recentBoards, setRecentBoards] = useState<BoardMeta[]>(getRecentBoards);
   const [showRecent, setShowRecent] = useState(false);
+  const [autoSaveEnabled, setAutoSaveEnabled] = useState(() => getSettings().autoSaveEnabled);
 
   const handleChange = useCallback(
     (elements: readonly unknown[], appState: unknown, files: unknown) => {
       elementsRef.current = elements as readonly LooseElement[];
       appStateRef.current = appState as LooseAppState;
       filesRef.current = files as LooseFiles;
-      setIsDirty(true);
+      if (Date.now() > suppressDirtyUntilRef.current) {
+        lastChangeAtRef.current = Date.now();
+        setIsDirty(true);
+      }
     },
     []
   );
 
   const handleExcalidrawAPI = useCallback((api: ExcalidrawImperativeAPI) => {
     apiRef.current = api;
+    suppressDirtyUntilRef.current = Date.now() + 1500;
   }, []);
 
   const handleLoadGraph = useCallback(async (json: RecallGraphIR) => {
@@ -375,12 +393,12 @@ function App() {
           ? "#ffffff"
           : appState?.viewBackgroundColor || "#ffffff",
       },
-      captureUpdate: "NEVER" as any,
+      captureUpdate: "NEVER" as never,
     });
 
     // Scroll to fit content
     setTimeout(() => {
-      (apiRef.current as any)?.scrollToContent?.(undefined, { fitToViewport: true, animate: false });
+      (apiRef.current as RecallExcalidrawAPI | null)?.scrollToContent?.(undefined, { fitToViewport: true, animate: false });
     }, 50);
 
     return { success: true, errors: [] };
@@ -407,8 +425,8 @@ function App() {
     const elements = api.getSceneElements();
     const appState = api.getAppState();
     const blob = await exportToBlob({
-      elements: elements as any,
-      appState: appState as any,
+      elements: elements as never,
+      appState: appState as never,
       files: null,
       mimeType: "image/png",
       exportPadding: 20,
@@ -423,14 +441,14 @@ function App() {
       loadDiagramSpec: handleLoadDiagramSpec,
       normalizeDiagramSpec: normalizeRecallDiagramSpec,
       exportPNG: handleExportPNG,
-      loadScene: (scene: { elements: any[] }) => {
-        const restored = restoreElements(scene.elements, null);
-        apiRef.current?.updateScene({ elements: restored, captureUpdate: "NEVER" as any });
+      loadScene: (scene: { elements: unknown[] }) => {
+        const restored = restoreElements(scene.elements as never, null);
+        apiRef.current?.updateScene({ elements: restored, captureUpdate: "NEVER" as never });
 
         requestAnimationFrame(() => {
           const els = apiRef.current?.getSceneElements() || restored;
           let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-          for (const el of els as any[]) {
+          for (const el of els as readonly LooseElement[]) {
             if (el.isDeleted) continue;
             const w = el.width ?? 0;
             const h = el.height ?? 0;
@@ -442,19 +460,19 @@ function App() {
           const cx = (minX + maxX) / 2;
           const cy = (minY + maxY) / 2;
           const appState = apiRef.current?.getAppState();
-          const vw = (appState as any)?.width || 1200;
-          const vh = (appState as any)?.height || 700;
+          const vw = appState?.width || 1200;
+          const vh = appState?.height || 700;
           const scrollX = vw / 2 - cx;
           const scrollY = vh / 2 - cy;
           apiRef.current?.updateScene({
-            appState: { scrollX, scrollY, zoom: { value: 1 as any } },
-            captureUpdate: "NEVER" as any,
+            appState: { scrollX, scrollY, zoom: { value: 1 as never } },
+            captureUpdate: "NEVER" as never,
           });
         });
       },
       getSceneSnapshot: () => ({
         elements: (
-          (apiRef.current as any)?.getSceneElementsIncludingDeleted?.() ||
+          (apiRef.current as RecallExcalidrawAPI | null)?.getSceneElementsIncludingDeleted?.() ||
           apiRef.current?.getSceneElements() ||
           elementsRef.current
         ) as unknown[],
@@ -462,7 +480,7 @@ function App() {
       }),
       getTextGraph: () => buildBoardTextGraph(
         (
-          (apiRef.current as any)?.getSceneElementsIncludingDeleted?.() ||
+          (apiRef.current as RecallExcalidrawAPI | null)?.getSceneElementsIncludingDeleted?.() ||
           apiRef.current?.getSceneElements() ||
           elementsRef.current
         ) as readonly LooseElement[]
@@ -481,12 +499,46 @@ function App() {
     files: filesRef.current as Record<string, unknown>,
   }), []);
 
+  const restoreScene = useCallback((scene: SceneData) => {
+    suppressDirtyUntilRef.current = Date.now() + 750;
+    apiRef.current?.updateScene({
+      elements: scene.elements as never,
+      appState: scene.appState as never,
+      captureUpdate: "NEVER" as never,
+    });
+  }, []);
+
+  const canDiscardDirty = useCallback(() => (
+    !isDirty || window.confirm("Discard unsaved changes?")
+  ), [isDirty]);
+
+  const saveSceneToBoard = useCallback(async (board: BoardMeta, scene: SceneData) => {
+    saveInFlightRef.current = true;
+    setIsSaving(true);
+    try {
+      const updated = await saveBoard(board, scene);
+      setCurrentBoard(updated);
+      setRecentBoards(getRecentBoards());
+      setIsDirty(false);
+      setLastSavedAt(updated.lastModified);
+      setLastLoadErrors([]);
+      return updated;
+    } finally {
+      saveInFlightRef.current = false;
+      setIsSaving(false);
+    }
+  }, []);
+
   const handleNewBoard = useCallback(() => {
+    if (!canDiscardDirty()) return;
+    suppressDirtyUntilRef.current = Date.now() + 750;
     apiRef.current?.resetScene();
     setCurrentBoard(null);
     setIsDirty(false);
+    setLastSavedAt(null);
+    autoSavePromptedRef.current = false;
     setLastLoadErrors([]);
-  }, []);
+  }, [canDiscardDirty]);
 
   const handleSaveAs = useCallback(async () => {
     const scene = getCurrentScene();
@@ -495,6 +547,7 @@ function App() {
       if (meta) {
         setCurrentBoard(meta);
         setIsDirty(false);
+        setLastSavedAt(meta.lastModified);
         setRecentBoards(getRecentBoards());
       }
     } else {
@@ -503,6 +556,7 @@ function App() {
       const meta = await createBoard(name.replace(/\.excalidraw$/i, ""), scene);
       setCurrentBoard(meta);
       setIsDirty(false);
+      setLastSavedAt(meta.lastModified);
       setRecentBoards(getRecentBoards());
     }
   }, [currentBoard, getCurrentScene]);
@@ -510,25 +564,21 @@ function App() {
   const handleSaveBoard = useCallback(async () => {
     const scene = getCurrentScene();
     if (currentBoard) {
-      await saveBoard(currentBoard, scene);
-      setIsDirty(false);
-      setRecentBoards(getRecentBoards());
+      await saveSceneToBoard(currentBoard, scene);
     } else {
       await handleSaveAs();
     }
-  }, [currentBoard, getCurrentScene, handleSaveAs]);
+  }, [currentBoard, getCurrentScene, handleSaveAs, saveSceneToBoard]);
 
   const handleOpenBoard = useCallback(async () => {
+    if (!canDiscardDirty()) return;
     if (isTauriEnv()) {
       const result = await openBoardWithDialog();
       if (result) {
-        apiRef.current?.updateScene({
-          elements: result.scene.elements as any,
-          appState: result.scene.appState as any,
-          captureUpdate: "NEVER" as any,
-        });
+        restoreScene(result.scene);
         setCurrentBoard(result.meta);
         setIsDirty(false);
+        setLastSavedAt(result.meta.lastModified);
         setRecentBoards(getRecentBoards());
         setLastLoadErrors([]);
       }
@@ -536,24 +586,22 @@ function App() {
       // Browser fallback: trigger hidden file input
       document.getElementById("browser-file-input")?.click();
     }
-  }, []);
+  }, [canDiscardDirty, restoreScene]);
 
   const handleOpenRecent = useCallback(async (meta: BoardMeta) => {
+    if (!canDiscardDirty()) return;
     const scene = await loadBoard(meta);
     if (scene) {
-      apiRef.current?.updateScene({
-        elements: scene.elements as any,
-        appState: scene.appState as any,
-        captureUpdate: "NEVER" as any,
-      });
+      restoreScene(scene);
       setCurrentBoard(meta);
       setIsDirty(false);
+      setLastSavedAt(meta.lastModified);
       setShowRecent(false);
       setLastLoadErrors([]);
     } else {
       setLastLoadErrors([`Failed to load board: ${meta.name}`]);
     }
-  }, []);
+  }, [canDiscardDirty, restoreScene]);
 
   const handleDeleteRecent = useCallback(async (meta: BoardMeta, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -563,9 +611,79 @@ function App() {
       if (currentBoard?.path === meta.path) {
         setCurrentBoard(null);
         setIsDirty(false);
+        setLastSavedAt(null);
       }
     }
   }, [currentBoard]);
+
+  const handleRenameBoard = useCallback(async () => {
+    if (!currentBoard) {
+      setLastLoadErrors(["Save the board before renaming it."]);
+      return;
+    }
+    const name = window.prompt("Rename board", currentBoard.name);
+    if (!name || name.trim() === currentBoard.name) return;
+    try {
+      const updated = await renameBoard(currentBoard, name);
+      setCurrentBoard(updated);
+      setRecentBoards(getRecentBoards());
+      setLastSavedAt(updated.lastModified);
+      setLastLoadErrors([]);
+    } catch (err) {
+      setLastLoadErrors([`Failed to rename board: ${err}`]);
+    }
+  }, [currentBoard]);
+
+  const handleDuplicateBoard = useCallback(async () => {
+    if (!currentBoard) {
+      setLastLoadErrors(["Save the board before duplicating it."]);
+      return;
+    }
+    try {
+      let source = currentBoard;
+      if (isDirty) {
+        source = await saveSceneToBoard(currentBoard, getCurrentScene());
+      }
+      const duplicate = await duplicateBoard(source);
+      if (!duplicate) {
+        setLastLoadErrors([`Failed to duplicate board: ${source.name}`]);
+        return;
+      }
+      const scene = await loadBoard(duplicate);
+      if (scene) restoreScene(scene);
+      setCurrentBoard(duplicate);
+      setIsDirty(false);
+      setLastSavedAt(duplicate.lastModified);
+      setRecentBoards(getRecentBoards());
+      setLastLoadErrors([]);
+    } catch (err) {
+      setLastLoadErrors([`Failed to duplicate board: ${err}`]);
+    }
+  }, [currentBoard, getCurrentScene, isDirty, restoreScene, saveSceneToBoard]);
+
+  const handleDeleteCurrentBoard = useCallback(async () => {
+    if (!currentBoard) {
+      setLastLoadErrors(["No saved board is selected."]);
+      return;
+    }
+    if (!window.confirm(`Delete "${currentBoard.name}"?`)) return;
+    try {
+      await deleteBoard(currentBoard);
+      apiRef.current?.resetScene();
+      setCurrentBoard(null);
+      setIsDirty(false);
+      setLastSavedAt(null);
+      setRecentBoards(getRecentBoards());
+      setLastLoadErrors([]);
+    } catch (err) {
+      setLastLoadErrors([`Failed to delete board: ${err}`]);
+    }
+  }, [currentBoard]);
+
+  const handleAutoSaveToggle = useCallback((enabled: boolean) => {
+    setAutoSaveEnabled(enabled);
+    updateSettings({ autoSaveEnabled: enabled });
+  }, []);
 
   const handleBrowserFileInput = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -578,21 +696,67 @@ function App() {
           setLastLoadErrors(["Invalid board file: missing elements array"]);
           return;
         }
-        apiRef.current?.updateScene({
+        const scene = {
           elements: parsed.elements,
           appState: parsed.appState ?? {},
-          captureUpdate: "NEVER" as any,
-        });
-        setCurrentBoard(null);
+          files: parsed.files ?? {},
+        };
+        restoreScene(scene);
+        const name = file.name.replace(/\.excalidraw$|\.json$/i, "") || "Imported";
+        const meta = await createBoard(name, scene);
+        setCurrentBoard(meta);
         setIsDirty(false);
+        setLastSavedAt(meta.lastModified);
+        setRecentBoards(getRecentBoards());
         setLastLoadErrors([]);
       } catch (err) {
         setLastLoadErrors([`Failed to parse board file: ${err}`]);
       }
       e.target.value = "";
     },
-    []
+    [restoreScene]
   );
+
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (!isDirty) return;
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [isDirty]);
+
+  useEffect(() => {
+    if (!autoSaveEnabled) return;
+
+    const timer = window.setInterval(async () => {
+      if (!isDirty || saveInFlightRef.current) return;
+      if (Date.now() - lastChangeAtRef.current < 2000) return;
+
+      try {
+        if (currentBoard) {
+          await saveSceneToBoard(currentBoard, getCurrentScene());
+          return;
+        }
+
+        if (autoSavePromptedRef.current) return;
+        autoSavePromptedRef.current = true;
+        const name = window.prompt("Name this board for auto-save", "Untitled");
+        if (!name) return;
+        const meta = await createBoard(name, getCurrentScene());
+        setCurrentBoard(meta);
+        setIsDirty(false);
+        setLastSavedAt(meta.lastModified);
+        setRecentBoards(getRecentBoards());
+        setLastLoadErrors([]);
+      } catch (err) {
+        setLastLoadErrors([`Auto-save failed: ${err}`]);
+      }
+    }, 30000);
+
+    return () => window.clearInterval(timer);
+  }, [autoSaveEnabled, currentBoard, getCurrentScene, isDirty, saveSceneToBoard]);
 
   const handleFileInput = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -619,11 +783,7 @@ function App() {
   }, []);
 
   const handleExportAiContext = useCallback(() => {
-    exportAiContext(
-      elementsRef.current,
-      appStateRef.current,
-      filesRef.current
-    );
+    exportAiContext(elementsRef.current);
   }, []);
 
   const handleExportTextGraph = useCallback(() => {
@@ -634,6 +794,14 @@ function App() {
     exportTextGraphPrompt(elementsRef.current);
   }, []);
 
+  const saveStatus = isSaving
+    ? "saving"
+    : isDirty
+      ? "unsaved"
+      : lastSavedAt
+        ? "saved"
+        : "new";
+
   return (
     <div className="app-shell">
       <header className="top-bar">
@@ -642,16 +810,27 @@ function App() {
           {currentBoard && (
             <span className="board-name">
               {" - "}{currentBoard.name}
-              {isDirty && <span className="dirty-indicator">*</span>}
             </span>
           )}
+          <span className={`save-status ${saveStatus}`}>{saveStatus}</span>
         </div>
         <div className="top-bar-actions">
-          {/* Phase 0: Board persistence actions */}
+          {/* Board persistence actions */}
           <button onClick={handleNewBoard}>New</button>
           <button onClick={handleOpenBoard}>Open...</button>
           <button onClick={handleSaveBoard}>Save</button>
           <button onClick={handleSaveAs}>Save As...</button>
+          <button onClick={handleRenameBoard}>Rename</button>
+          <button onClick={handleDuplicateBoard}>Duplicate</button>
+          <button onClick={handleDeleteCurrentBoard}>Delete</button>
+          <label className="auto-save-toggle">
+            <input
+              type="checkbox"
+              checked={autoSaveEnabled}
+              onChange={(event) => handleAutoSaveToggle(event.currentTarget.checked)}
+            />
+            Auto-save
+          </label>
 
           {/* Recent boards dropdown */}
           <div className="recent-dropdown">

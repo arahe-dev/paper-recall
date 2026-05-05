@@ -30,7 +30,7 @@ export function renderRecallGraphIR(
   const preset = getPreset(styleName || graph.layout.style || "readable_compact");
   const layout = computeLayout(graph, preset);
   const skeleton = layoutToExcalidrawSkeleton(layout, preset);
-  const elements = convertToExcalidrawElements(skeleton as any, { regenerateIds: false });
+  const elements = convertToExcalidrawElements(skeleton as never, { regenerateIds: false });
 
   return {
     valid: true,

@@ -210,7 +210,7 @@ function buildTree(graph: RecallGraphIR): {
   }
 
   // Determine roots
-  let roots: string[] = [];
+  const roots: string[] = [];
   if (graph.layout.root_ids && graph.layout.root_ids.length > 0) {
     for (const rid of graph.layout.root_ids) {
       if (allNodeIds.has(rid)) roots.push(rid);
@@ -377,7 +377,7 @@ function layoutHubSpoke(
     const gchildren = childrenMap.get(cid) || [];
     if (gchildren.length === 0) continue;
     let gx = cpos.x;
-    let gy = cpos.y + cpos.height + preset.verticalSpacing;
+    const gy = cpos.y + cpos.height + preset.verticalSpacing;
     for (const gcid of gchildren) {
       const gcnode = graph.nodes.find((n) => n.id === gcid)!;
       const gcsize = computeNodeSize(gcnode, preset);

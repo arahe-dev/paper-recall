@@ -300,6 +300,35 @@
   margin-left: 4px;
 }
 
+.save-status {
+  margin-left: 8px;
+  color: #8b949e;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.save-status.unsaved,
+.save-status.saving {
+  color: #fbbf24;
+}
+
+.save-status.saved {
+  color: #34d399;
+}
+
+.auto-save-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #c9d1d9;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.auto-save-toggle input {
+  margin: 0;
+}
+
 .action-separator {
   display: inline-block;
   width: 1px;

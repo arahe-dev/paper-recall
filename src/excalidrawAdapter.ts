@@ -429,7 +429,10 @@ export function layoutToExcalidrawSkeleton(
     };
 
     if (edge.label && edge.label.trim()) {
-      (arrow as any).label = {
+      const labelledArrow = arrow as Skeleton & {
+        label?: { text: string; fontSize: number; fontFamily: number };
+      };
+      labelledArrow.label = {
         text: edge.label,
         fontSize: Math.max(12, preset.fontSize - 2),
         fontFamily: preset.fontFamily,

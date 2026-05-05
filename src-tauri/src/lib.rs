@@ -1,4 +1,5 @@
 use std::fs;
+use std::path::PathBuf;
 
 #[derive(serde::Serialize)]
 struct BoardInfo {
@@ -21,7 +22,20 @@ fn ensure_board_dir() -> Result<String, String> {
 
 #[tauri::command]
 fn save_board(path: String, content: String) -> Result<(), String> {
-    fs::write(&path, content).map_err(|e| e.to_string())
+    let path = PathBuf::from(path);
+    if let Some(parent) = path.parent() {
+        fs::create_dir_all(parent).map_err(|e| e.to_string())?;
+    }
+
+    let tmp_path = path.with_extension("excalidraw.tmp");
+    fs::write(&tmp_path, content).map_err(|e| e.to_string())?;
+    if fs::rename(&tmp_path, &path).is_err() {
+        if path.exists() {
+            fs::remove_file(&path).map_err(|e| e.to_string())?;
+        }
+        fs::rename(&tmp_path, &path).map_err(|e| e.to_string())?;
+    }
+    Ok(())
 }
 
 #[tauri::command]

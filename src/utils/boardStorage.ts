@@ -17,6 +17,7 @@ export interface BoardMeta {
   path: string;
   lastModified: number;
   elementCount: number;
+  thumbnail?: string;
 }
 
 export interface SceneData {
@@ -32,15 +33,19 @@ export interface OpenBoardResult {
 
 const RECENT_KEY = "recall_recent_boards";
 const FALLBACK_PREFIX = "recall_board_";
+const SCENE_VERSION = 2;
+const INVALID_FILENAME_CHARS = new Set(['<', '>', ':', '"', '/', '\\', '|', '?', '*']);
 
 function generateId(): string {
   return `${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
 }
 
 function isTauri(): boolean {
+  if (typeof window === "undefined") return false;
+  type TauriWindow = Window & { __TAURI__?: unknown; __TAURI_INTERNALS__?: unknown };
+  const tauriWindow = window as TauriWindow;
   return (
-    typeof window !== "undefined" &&
-    ((window as any).__TAURI__ !== undefined || (window as any).__TAURI_INTERNALS__ !== undefined)
+    tauriWindow.__TAURI__ !== undefined || tauriWindow.__TAURI_INTERNALS__ !== undefined
   );
 }
 
@@ -67,6 +72,64 @@ function fallbackDeleteBoard(id: string): void {
   localStorage.removeItem(`${FALLBACK_PREFIX}${id}`);
 }
 
+function serializeScene(scene: SceneData): string {
+  return JSON.stringify({
+    type: "excalidraw",
+    version: SCENE_VERSION,
+    source: "recall-board",
+    elements: scene.elements,
+    appState: sanitizeAppState(scene.appState),
+    files: scene.files ?? {},
+  }, null, 2);
+}
+
+function sanitizeAppState(appState: Record<string, unknown> = {}): Record<string, unknown> {
+  const allowedKeys = [
+    "viewBackgroundColor",
+    "currentItemStrokeColor",
+    "currentItemBackgroundColor",
+    "currentItemFillStyle",
+    "currentItemStrokeWidth",
+    "currentItemStrokeStyle",
+    "currentItemRoughness",
+    "currentItemOpacity",
+    "currentItemFontFamily",
+    "currentItemFontSize",
+    "currentItemTextAlign",
+    "currentItemStartArrowhead",
+    "currentItemEndArrowhead",
+    "gridSize",
+    "theme",
+  ];
+  const sanitized: Record<string, unknown> = {};
+  for (const key of allowedKeys) {
+    const value = appState[key];
+    if (
+      value === null ||
+      typeof value === "string" ||
+      typeof value === "number" ||
+      typeof value === "boolean"
+    ) {
+      sanitized[key] = value;
+    }
+  }
+  return sanitized;
+}
+
+function normalizeBoardName(name: string): string {
+  const trimmed = name.trim().replace(/\.excalidraw$/i, "");
+  const safe = Array.from(trimmed)
+    .map((char) => char.charCodeAt(0) < 32 || INVALID_FILENAME_CHARS.has(char) ? "-" : char)
+    .join("")
+    .replace(/\s+/g, " ")
+    .trim();
+  return safe || "Untitled";
+}
+
+function fallbackIdFromPath(path: string): string {
+  return path.replace("fallback://", "");
+}
+
 // Public API
 
 export async function ensureBoardDir(): Promise<string> {
@@ -78,22 +141,16 @@ export async function ensureBoardDir(): Promise<string> {
 
 export async function createBoard(name: string, scene: SceneData): Promise<BoardMeta> {
   const id = generateId();
-  const content = JSON.stringify({
-    type: "excalidraw",
-    version: 2,
-    source: "recall-board",
-    elements: scene.elements,
-    appState: scene.appState,
-    files: scene.files ?? {},
-  }, null, 2);
+  const normalizedName = await uniqueBoardName(name);
+  const content = serializeScene(scene);
 
   if (isTauri()) {
     const boardDir = await ensureBoardDir();
-    const path = `${boardDir}\\${name}.excalidraw`;
+    const path = `${boardDir}/${normalizedName}.excalidraw`;
     await invoke("save_board", { path, content });
     const meta: BoardMeta = {
-      id,
-      name,
+      id: boardIdFromPath(path),
+      name: normalizedName,
       path,
       lastModified: Date.now(),
       elementCount: scene.elements.length,
@@ -104,7 +161,7 @@ export async function createBoard(name: string, scene: SceneData): Promise<Board
     fallbackSaveBoard(id, content);
     const meta: BoardMeta = {
       id,
-      name,
+      name: normalizedName,
       path: `fallback://${id}`,
       lastModified: Date.now(),
       elementCount: scene.elements.length,
@@ -114,25 +171,23 @@ export async function createBoard(name: string, scene: SceneData): Promise<Board
   }
 }
 
-export async function saveBoard(meta: BoardMeta, scene: SceneData): Promise<void> {
-  const content = JSON.stringify({
-    type: "excalidraw",
-    version: 2,
-    source: "recall-board",
-    elements: scene.elements,
-    appState: scene.appState,
-    files: scene.files ?? {},
-  }, null, 2);
+export async function saveBoard(meta: BoardMeta, scene: SceneData): Promise<BoardMeta> {
+  const content = serializeScene(scene);
+  const updated: BoardMeta = {
+    ...meta,
+    lastModified: Date.now(),
+    elementCount: scene.elements.length,
+  };
 
   if (isTauri()) {
     await invoke("save_board", { path: meta.path, content });
   } else {
-    const fallbackId = meta.path.replace("fallback://", "");
+    const fallbackId = fallbackIdFromPath(meta.path);
     fallbackSaveBoard(fallbackId, content);
   }
 
-  // Update recent list timestamp
-  updateRecentBoardTimestamp(meta.path);
+  updateRecentBoard(meta.path, updated, true);
+  return updated;
 }
 
 export async function openBoardWithDialog(): Promise<OpenBoardResult | null> {
@@ -168,27 +223,20 @@ export async function openBoardWithDialog(): Promise<OpenBoardResult | null> {
 
 export async function saveBoardWithDialog(scene: SceneData, defaultName?: string): Promise<BoardMeta | null> {
   if (isTauri()) {
-    const content = JSON.stringify({
-      type: "excalidraw",
-      version: 2,
-      source: "recall-board",
-      elements: scene.elements,
-      appState: scene.appState,
-      files: scene.files ?? {},
-    }, null, 2);
+    const content = serializeScene(scene);
 
     const boardDir = await ensureBoardDir();
     const fileName = ensureExcalidrawExtension(defaultName || "board.excalidraw");
     const path = await save({
       filters: [{ name: "Excalidraw", extensions: ["excalidraw"] }],
-      defaultPath: `${boardDir}\\${fileName}`,
+      defaultPath: `${boardDir}/${fileName}`,
     });
 
     if (!path) return null;
 
     await invoke("save_board", { path, content });
     const meta: BoardMeta = {
-      id: generateId(),
+      id: boardIdFromPath(path),
       name: path.split(/[\\/]/).pop()?.replace(/\.excalidraw$/, "") || "Untitled",
       path,
       lastModified: Date.now(),
@@ -207,7 +255,7 @@ export async function loadBoard(meta: BoardMeta): Promise<SceneData | null> {
     const content = await invoke<string>("load_board", { path: meta.path });
     return parseScene(content);
   } else {
-    const fallbackId = meta.path.replace("fallback://", "");
+    const fallbackId = fallbackIdFromPath(meta.path);
     const content = fallbackLoadBoard(fallbackId);
     return content ? parseScene(content) : null;
   }
@@ -217,28 +265,37 @@ export async function deleteBoard(meta: BoardMeta): Promise<void> {
   if (isTauri()) {
     await invoke("delete_board", { path: meta.path });
   } else {
-    const fallbackId = meta.path.replace("fallback://", "");
+    const fallbackId = fallbackIdFromPath(meta.path);
     fallbackDeleteBoard(fallbackId);
   }
   removeRecentBoard(meta.path);
 }
 
 export async function renameBoard(meta: BoardMeta, newName: string): Promise<BoardMeta> {
+  const normalizedName = await uniqueBoardName(newName, meta.path);
   if (isTauri()) {
-    const newPath = meta.path.replace(/[^\\/]+$/, `${newName}.excalidraw`);
+    const newPath = meta.path.replace(/[^\\/]+$/, `${normalizedName}.excalidraw`);
     await invoke("rename_board", { oldPath: meta.path, newPath });
-    const updated: BoardMeta = { ...meta, name: newName, path: newPath };
-    updateRecentBoard(meta.path, updated);
+    const updated: BoardMeta = { ...meta, name: normalizedName, path: newPath, lastModified: Date.now() };
+    updateRecentBoard(meta.path, updated, true);
     return updated;
   }
-  return meta;
+  const updated: BoardMeta = { ...meta, name: normalizedName, lastModified: Date.now() };
+  updateRecentBoard(meta.path, updated, true);
+  return updated;
+}
+
+export async function duplicateBoard(meta: BoardMeta): Promise<BoardMeta | null> {
+  const scene = await loadBoard(meta);
+  if (!scene) return null;
+  return createBoard(`${meta.name}-copy`, scene);
 }
 
 export async function listBoards(): Promise<BoardMeta[]> {
   if (isTauri()) {
     const boards = await invoke<Array<{ name: string; path: string; last_modified: number; element_count: number }>>("list_boards");
     return boards.map((b) => ({
-      id: generateId(),
+      id: boardIdFromPath(b.path),
       name: b.name,
       path: b.path,
       lastModified: b.last_modified * 1000,
@@ -254,7 +311,13 @@ export async function listBoards(): Promise<BoardMeta[]> {
 export function getRecentBoards(): BoardMeta[] {
   try {
     const raw = localStorage.getItem(RECENT_KEY);
-    return raw ? JSON.parse(raw) : [];
+    const boards = raw ? JSON.parse(raw) : [];
+    return Array.isArray(boards)
+      ? boards
+        .filter((board): board is BoardMeta => Boolean(board?.path && board?.name))
+        .sort((a, b) => b.lastModified - a.lastModified)
+        .slice(0, 10)
+      : [];
   } catch {
     return [];
   }
@@ -263,26 +326,26 @@ export function getRecentBoards(): BoardMeta[] {
 function addRecentBoard(meta: BoardMeta): void {
   const existing = getRecentBoards();
   const filtered = existing.filter((b) => b.path !== meta.path);
-  const updated = [meta, ...filtered].slice(0, 10);
+  const updated = [meta, ...filtered]
+    .sort((a, b) => b.lastModified - a.lastModified)
+    .slice(0, 10);
   localStorage.setItem(RECENT_KEY, JSON.stringify(updated));
 }
 
-function updateRecentBoardTimestamp(path: string): void {
-  const existing = getRecentBoards();
-  const idx = existing.findIndex((b) => b.path === path);
-  if (idx >= 0) {
-    existing[idx].lastModified = Date.now();
-    localStorage.setItem(RECENT_KEY, JSON.stringify(existing));
-  }
-}
-
-function updateRecentBoard(oldPath: string, meta: BoardMeta): void {
+function updateRecentBoard(oldPath: string, meta: BoardMeta, moveToFront = false): void {
   const existing = getRecentBoards();
   const idx = existing.findIndex((b) => b.path === oldPath);
   if (idx >= 0) {
     existing[idx] = meta;
-    localStorage.setItem(RECENT_KEY, JSON.stringify(existing));
+  } else {
+    existing.unshift(meta);
   }
+  const updated = (moveToFront
+    ? [meta, ...existing.filter((b) => b.path !== meta.path && b.path !== oldPath)]
+    : existing.filter((b, index, items) => items.findIndex((item) => item.path === b.path) === index))
+    .sort((a, b) => b.lastModified - a.lastModified)
+    .slice(0, 10);
+  localStorage.setItem(RECENT_KEY, JSON.stringify(updated));
 }
 
 function removeRecentBoard(path: string): void {
@@ -303,7 +366,7 @@ function parseScene(content: string): SceneData | null {
 
     return {
       elements: parsed.elements,
-      appState: parsed.appState ?? {},
+      appState: sanitizeAppState(parsed.appState ?? {}),
       files: parsed.files ?? {},
     };
   } catch {
@@ -315,6 +378,32 @@ function ensureExcalidrawExtension(name: string): string {
   return name.toLowerCase().endsWith(".excalidraw") ? name : `${name}.excalidraw`;
 }
 
+async function uniqueBoardName(name: string, ignorePath?: string): Promise<string> {
+  const baseName = normalizeBoardName(name);
+  const existing = await listBoards();
+  const taken = new Set(
+    existing
+      .filter((board) => board.path !== ignorePath)
+      .map((board) => board.name.toLowerCase())
+  );
+  if (!taken.has(baseName.toLowerCase())) return baseName;
+
+  for (let suffix = 2; suffix < 1000; suffix++) {
+    const candidate = `${baseName} ${suffix}`;
+    if (!taken.has(candidate.toLowerCase())) return candidate;
+  }
+
+  return `${baseName} ${Date.now()}`;
+}
+
+function boardIdFromPath(path: string): string {
+  let hash = 0;
+  for (let i = 0; i < path.length; i++) {
+    hash = ((hash << 5) - hash + path.charCodeAt(i)) | 0;
+  }
+  return `board_${Math.abs(hash)}`;
+}
+
 // Browser download fallback
 
 export function downloadBoardAsJson(filename: string, scene: SceneData): void {
@@ -324,7 +413,7 @@ export function downloadBoardAsJson(filename: string, scene: SceneData): void {
       version: 2,
       source: "recall-board",
       elements: scene.elements,
-      appState: scene.appState,
+      appState: sanitizeAppState(scene.appState),
       files: scene.files ?? {},
     }, null, 2)],
     { type: "application/json" }
