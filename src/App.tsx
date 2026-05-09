@@ -1,4 +1,4 @@
-import { useRef, useCallback, useState, useEffect } from "react";
+import { useRef, useCallback, useState, useEffect, useMemo } from "react";
 import {
   Excalidraw,
   convertToExcalidrawElements,
@@ -9,10 +9,12 @@ import {
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import "@excalidraw/excalidraw/index.css";
 import "./App.css";
-import HomeScreen from "./components/HomeScreen";
 import BacklinksPanel from "./components/BacklinksPanel";
+import BoardToolDock, { type BoardDockTool } from "./components/BoardToolDock";
+import CommandDialog from "./components/CommandDialog";
 import ContextMenu from "./components/ContextMenu";
 import CustomTitleBar from "./components/CustomTitleBar";
+import DailyCommandCenter from "./components/DailyCommandCenter";
 import GraphView from "./components/GraphView";
 import QuickSearch from "./components/QuickSearch";
 import SubpageBadge from "./components/SubpageBadge";
@@ -46,6 +48,16 @@ import {
 import { exportAndSaveBoard, type ExportFormat } from "./utils/exportEngine";
 import { useTheme } from "./hooks/useTheme";
 import { getSettings, updateSettings } from "./utils/settingsStore";
+import type { AppCommand } from "./utils/commandRegistry";
+import {
+  ensureDailyBoard,
+  getDailyBoardIndexEntry,
+  moveDailyBoardReference,
+  removeDailyBoardReference,
+  touchDailyBoardReference,
+  type DailyBoardIndexEntry,
+} from "./utils/dailyBoards";
+import { getLocalDateKey } from "./utils/localDate";
 import { recognizeShape, type GestureRecognition } from "./utils/gestureRecognizer";
 import {
   getAllTemplates,
@@ -98,6 +110,21 @@ const EXPORT_OPTIONS: Array<{ format: ExportFormat; label: string }> = [
   { format: "svg", label: "SVG" },
 ];
 
+const CLEAN_EXCALIDRAW_UI_OPTIONS = {
+  canvasActions: {
+    changeViewBackgroundColor: false,
+    clearCanvas: false,
+    export: false,
+    loadScene: false,
+    saveToActiveFile: false,
+    saveAsImage: false,
+    toggleTheme: null,
+  },
+  tools: {
+    image: true,
+  },
+} as const;
+
 // Extend window for automation
 declare global {
   interface Window {
@@ -126,6 +153,11 @@ declare global {
 }
 
 type SidebarTab = "graph" | "backlinks";
+type AppView = "command-center" | "board";
+type PendingBoardOpen = {
+  scene: SceneData;
+  meta: BoardMeta;
+};
 type ContextMenuState = {
   x: number;
   y: number;
@@ -219,6 +251,15 @@ function App() {
   const snapInFlightRef = useRef(false);
   const [showTranscript, setShowTranscript] = useState(false);
   const [lastLoadErrors, setLastLoadErrors] = useState<string[]>([]);
+  const [appView, setAppView] = useState<AppView>("command-center");
+  const [boardMounted, setBoardMounted] = useState(false);
+  const [pendingBoardOpen, setPendingBoardOpen] = useState<PendingBoardOpen | null>(null);
+  const [pendingBlankBoard, setPendingBlankBoard] = useState(false);
+  const [excalidrawReadyTick, setExcalidrawReadyTick] = useState(0);
+  const [commandDialogOpen, setCommandDialogOpen] = useState(false);
+  const [todayEntry, setTodayEntry] = useState<DailyBoardIndexEntry | null>(() => (
+    getDailyBoardIndexEntry(getLocalDateKey())
+  ));
 
   const [currentBoard, setCurrentBoard] = useState<BoardMeta | null>(null);
   const [isDirty, setIsDirty] = useState(false);
@@ -227,6 +268,8 @@ function App() {
   const [recentBoards, setRecentBoards] = useState<BoardMeta[]>(getRecentBoards);
   const [showRecent, setShowRecent] = useState(false);
   const [showExport, setShowExport] = useState(false);
+  const [boardMenuOpen, setBoardMenuOpen] = useState(false);
+  const [sidePanelOpen, setSidePanelOpen] = useState(false);
   const [quickSearchOpen, setQuickSearchOpen] = useState(false);
   const [sidebarTab, setSidebarTab] = useState<SidebarTab>("graph");
   const [allLinks, setAllLinks] = useState<LinkEntry[]>(() => getAllLinks());
@@ -237,11 +280,12 @@ function App() {
     appState: LooseAppState;
   }>({ elements: [], appState: {} });
   const [showTemplateGallery, setShowTemplateGallery] = useState(false);
-  const [homeDismissed, setHomeDismissed] = useState(false);
-  const [activeElementCount, setActiveElementCount] = useState(0);
+  const [, setHomeDismissed] = useState(false);
+  const [, setActiveElementCount] = useState(0);
   const [templates, setTemplates] = useState<RecallTemplate[]>(getAllTemplates);
   const [autoSaveEnabled, setAutoSaveEnabled] = useState(() => getSettings().autoSaveEnabled);
   const [autoSnapEnabled, setAutoSnapEnabled] = useState(() => getSettings().autoSnapEnabled);
+  const [cleanCanvasUi, setCleanCanvasUi] = useState(true);
   const [snapConfidenceThreshold, setSnapConfidenceThreshold] = useState(() => getSettings().snapConfidenceThreshold);
   const [snapFeedback, setSnapFeedback] = useState<string | null>(null);
 
@@ -322,6 +366,7 @@ function App() {
   const handleExcalidrawAPI = useCallback((api: ExcalidrawImperativeAPI) => {
     apiRef.current = api;
     suppressDirtyUntilRef.current = Date.now() + 1500;
+    setExcalidrawReadyTick((tick) => tick + 1);
   }, []);
 
   const handleLoadGraph = useCallback(async (json: RecallGraphIR) => {
@@ -380,6 +425,10 @@ function App() {
     setAllLinks(getAllLinks());
   }, []);
 
+  const refreshTodayEntry = useCallback(() => {
+    setTodayEntry(getDailyBoardIndexEntry(getLocalDateKey()));
+  }, []);
+
   useEffect(() => {
     let cancelled = false;
     Promise.all([rebuildIndex(), rebuildLinksFromBoards()])
@@ -400,6 +449,11 @@ function App() {
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key.toLowerCase() === "p") {
+        event.preventDefault();
+        setCommandDialogOpen(true);
+        return;
+      }
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
         event.preventDefault();
         setQuickSearchOpen(true);
@@ -566,6 +620,25 @@ function App() {
     setHomeDismissed(true);
   }, []);
 
+  const openBoardScene = useCallback((scene: SceneData, meta: BoardMeta) => {
+    setBoardMounted(true);
+    setAppView("board");
+    setPendingBlankBoard(false);
+    if (!apiRef.current) {
+      setPendingBoardOpen({ scene, meta });
+      return;
+    }
+    restoreScene(scene);
+    setCurrentBoard(meta);
+    setSubpageStack([]);
+    setIsDirty(false);
+    setLastSavedAt(meta.lastModified);
+    setRecentBoards(getRecentBoards());
+    setShowRecent(false);
+    setHomeDismissed(true);
+    setLastLoadErrors([]);
+  }, [restoreScene]);
+
   const canDiscardDirty = useCallback(() => (
     !isDirty || window.confirm("Discard unsaved changes?")
   ), [isDirty]);
@@ -577,6 +650,20 @@ function App() {
     syncBoardLinksFromElements(board, elements as LinkableElement[], boards);
     refreshLinks();
   }, [refreshLinks]);
+
+  const handleOpenToday = useCallback(async () => {
+    if (!canDiscardDirty()) return;
+    try {
+      const result = await ensureDailyBoard(getLocalDateKey());
+      openBoardScene(result.scene, result.meta);
+      await syncIndexesForBoard(result.meta, result.scene);
+      setRecentBoards(getRecentBoards());
+      setTodayEntry(result.entry);
+      setLastLoadErrors([]);
+    } catch (err) {
+      setLastLoadErrors([`Failed to open today's board: ${err}`]);
+    }
+  }, [canDiscardDirty, openBoardScene, syncIndexesForBoard]);
 
   const refreshSearchIndexForCurrentBoard = useCallback(async () => {
     if (!currentBoard) return;
@@ -592,9 +679,11 @@ function App() {
     try {
       const thumbnail = await createCurrentThumbnail();
       const updated = await saveBoard(thumbnail ? { ...board, thumbnail } : board, scene);
+      touchDailyBoardReference(updated);
       await syncIndexesForBoard(updated, scene);
       setCurrentBoard(updated);
       setRecentBoards(getRecentBoards());
+      refreshTodayEntry();
       setIsDirty(false);
       setLastSavedAt(updated.lastModified);
       setLastLoadErrors([]);
@@ -603,10 +692,16 @@ function App() {
       saveInFlightRef.current = false;
       setIsSaving(false);
     }
-  }, [createCurrentThumbnail, syncIndexesForBoard]);
+  }, [createCurrentThumbnail, refreshTodayEntry, syncIndexesForBoard]);
 
   const handleNewBoard = useCallback(() => {
     if (!canDiscardDirty()) return;
+    setBoardMounted(true);
+    setAppView("board");
+    setPendingBoardOpen(null);
+    setShowTemplateGallery(false);
+    setShowRecent(false);
+    setShowExport(false);
     suppressDirtyUntilRef.current = Date.now() + 750;
     apiRef.current?.resetScene();
     elementsRef.current = [];
@@ -617,15 +712,22 @@ function App() {
     setIsDirty(false);
     setLastSavedAt(null);
     setActiveElementCount(0);
-    setHomeDismissed(false);
+    setHomeDismissed(true);
     autoSavePromptedRef.current = false;
     setLastLoadErrors([]);
   }, [canDiscardDirty]);
 
   const handleBlankCanvas = useCallback(() => {
+    if (!apiRef.current) {
+      if (!canDiscardDirty()) return;
+      setBoardMounted(true);
+      setAppView("board");
+      setPendingBlankBoard(true);
+      return;
+    }
     handleNewBoard();
     setHomeDismissed(true);
-  }, [handleNewBoard]);
+  }, [canDiscardDirty, handleNewBoard]);
 
   const handleSaveAs = useCallback(async (): Promise<BoardMeta | null> => {
     if (subpageStack.length > 0) {
@@ -695,55 +797,45 @@ function App() {
     if (isTauriEnv()) {
       const result = await openBoardWithDialog();
       if (result) {
-        restoreScene(result.scene);
-        setCurrentBoard(result.meta);
-        setSubpageStack([]);
-        setIsDirty(false);
-        setLastSavedAt(result.meta.lastModified);
-        setRecentBoards(getRecentBoards());
-        setLastLoadErrors([]);
-        setHomeDismissed(true);
+        openBoardScene(result.scene, result.meta);
       }
     } else {
       // Browser fallback: trigger hidden file input
       document.getElementById("browser-file-input")?.click();
     }
-  }, [canDiscardDirty, restoreScene]);
+  }, [canDiscardDirty, openBoardScene]);
 
   const handleOpenRecent = useCallback(async (meta: BoardMeta) => {
     if (!canDiscardDirty()) return;
     const scene = await loadBoard(meta);
     if (scene) {
-      restoreScene(scene);
-      setCurrentBoard(meta);
-      setSubpageStack([]);
-      setIsDirty(false);
-      setLastSavedAt(meta.lastModified);
-      setShowRecent(false);
-      setHomeDismissed(true);
-      setLastLoadErrors([]);
+      openBoardScene(scene, meta);
     } else {
       setLastLoadErrors([`Failed to load board: ${meta.name}`]);
     }
-  }, [canDiscardDirty, restoreScene]);
+  }, [canDiscardDirty, openBoardScene]);
 
   const handleDeleteRecent = useCallback(async (meta: BoardMeta, e: React.MouseEvent) => {
     e.stopPropagation();
     if (window.confirm(`Delete "${meta.name}"?`)) {
       await deleteBoard(meta);
+      removeDailyBoardReference(meta);
       removeIndexedBoard(meta.id);
       removeLinksForBoard(meta.id);
       refreshLinks();
+      refreshTodayEntry();
       setRecentBoards(getRecentBoards());
       if (currentBoard?.path === meta.path) {
+        apiRef.current?.resetScene();
+        setAppView("command-center");
         setCurrentBoard(null);
         setIsDirty(false);
         setLastSavedAt(null);
         setActiveElementCount(0);
-        setHomeDismissed(false);
+        setHomeDismissed(true);
       }
     }
-  }, [currentBoard, refreshLinks]);
+  }, [currentBoard, refreshLinks, refreshTodayEntry]);
 
   const handleRenameBoard = useCallback(async () => {
     if (!currentBoard) {
@@ -753,16 +845,19 @@ function App() {
     const name = window.prompt("Rename board", currentBoard.name);
     if (!name || name.trim() === currentBoard.name) return;
     try {
+      const previous = currentBoard;
       const updated = await renameBoard(currentBoard, name);
+      moveDailyBoardReference(previous, updated);
       await syncIndexesForBoard(updated, getCurrentScene());
       setCurrentBoard(updated);
       setRecentBoards(getRecentBoards());
       setLastSavedAt(updated.lastModified);
+      refreshTodayEntry();
       setLastLoadErrors([]);
     } catch (err) {
       setLastLoadErrors([`Failed to rename board: ${err}`]);
     }
-  }, [currentBoard, getCurrentScene, syncIndexesForBoard]);
+  }, [currentBoard, getCurrentScene, refreshTodayEntry, syncIndexesForBoard]);
 
   const handleDuplicateBoard = useCallback(async () => {
     if (!currentBoard) {
@@ -780,16 +875,12 @@ function App() {
         return;
       }
       const scene = await loadBoard(duplicate);
-      if (scene) restoreScene(scene);
-      setCurrentBoard(duplicate);
-      setIsDirty(false);
-      setLastSavedAt(duplicate.lastModified);
-      setRecentBoards(getRecentBoards());
+      if (scene) openBoardScene(scene, duplicate);
       setLastLoadErrors([]);
     } catch (err) {
       setLastLoadErrors([`Failed to duplicate board: ${err}`]);
     }
-  }, [currentBoard, getCurrentScene, isDirty, restoreScene, saveSceneToBoard]);
+  }, [currentBoard, getCurrentScene, isDirty, openBoardScene, saveSceneToBoard]);
 
   const handleDeleteCurrentBoard = useCallback(async () => {
     if (!currentBoard) {
@@ -799,21 +890,24 @@ function App() {
     if (!window.confirm(`Delete "${currentBoard.name}"?`)) return;
     try {
       await deleteBoard(currentBoard);
+      removeDailyBoardReference(currentBoard);
       removeIndexedBoard(currentBoard.id);
       removeLinksForBoard(currentBoard.id);
       refreshLinks();
+      refreshTodayEntry();
       apiRef.current?.resetScene();
+      setAppView("command-center");
       setCurrentBoard(null);
       setIsDirty(false);
       setLastSavedAt(null);
       setActiveElementCount(0);
-      setHomeDismissed(false);
+      setHomeDismissed(true);
       setRecentBoards(getRecentBoards());
       setLastLoadErrors([]);
     } catch (err) {
       setLastLoadErrors([`Failed to delete board: ${err}`]);
     }
-  }, [currentBoard, refreshLinks]);
+  }, [currentBoard, refreshLinks, refreshTodayEntry]);
 
   const findBoardMeta = useCallback(async (boardId: string, path?: string): Promise<BoardMeta | null> => {
     const boards = [...recentBoards, ...(await listBoards())];
@@ -852,6 +946,28 @@ function App() {
       });
     }, 80);
   }, []);
+
+  useEffect(() => {
+    if (!pendingBoardOpen || !apiRef.current) return;
+    restoreScene(pendingBoardOpen.scene);
+    setCurrentBoard(pendingBoardOpen.meta);
+    setSubpageStack([]);
+    setIsDirty(false);
+    setLastSavedAt(pendingBoardOpen.meta.lastModified);
+    setRecentBoards(getRecentBoards());
+    setShowRecent(false);
+    setHomeDismissed(true);
+    setLastLoadErrors([]);
+    setPendingBoardOpen(null);
+    scrollToElement(undefined, pendingBoardOpen.scene.elements);
+  }, [excalidrawReadyTick, pendingBoardOpen, restoreScene, scrollToElement]);
+
+  useEffect(() => {
+    if (!pendingBlankBoard || !apiRef.current) return;
+    handleNewBoard();
+    setHomeDismissed(true);
+    setPendingBlankBoard(false);
+  }, [excalidrawReadyTick, handleNewBoard, pendingBlankBoard]);
 
   const loadSubpageScene = useCallback((subpage: SubpageData, stack: SubpageData[]) => {
     const appState = {
@@ -1013,18 +1129,10 @@ function App() {
       setLastLoadErrors([`Failed to load board: ${meta.name}`]);
       return false;
     }
-    restoreScene(scene);
-    setCurrentBoard(meta);
-    setSubpageStack([]);
-    setIsDirty(false);
-    setLastSavedAt(meta.lastModified);
-    setRecentBoards(getRecentBoards());
-    setShowRecent(false);
-    setHomeDismissed(true);
-    setLastLoadErrors([]);
+    openBoardScene(scene, meta);
     scrollToElement(undefined, scene.elements);
     return true;
-  }, [canDiscardDirty, findBoardMeta, restoreScene, scrollToElement]);
+  }, [canDiscardDirty, findBoardMeta, openBoardScene, scrollToElement]);
 
   const handleOpenSearchResult = useCallback(async (result: SearchResult) => {
     if (!canDiscardDirty()) return;
@@ -1040,15 +1148,8 @@ function App() {
       setLastLoadErrors([`Failed to load board: ${result.boardName}`]);
       return;
     }
-    restoreScene(scene);
-    setCurrentBoard(meta);
-    setSubpageStack([]);
-    setIsDirty(false);
-    setLastSavedAt(meta.lastModified);
-    setRecentBoards(getRecentBoards());
+    openBoardScene(scene, meta);
     setQuickSearchOpen(false);
-    setHomeDismissed(true);
-    setLastLoadErrors([]);
     if (result.subpageId) {
       const subpage = navigateToSubpage(result.subpageId);
       if (subpage) {
@@ -1059,7 +1160,7 @@ function App() {
       }
     }
     scrollToElement(result.elementId, scene.elements);
-  }, [canDiscardDirty, loadSubpageScene, restoreScene, scrollToElement]);
+  }, [canDiscardDirty, loadSubpageScene, openBoardScene, scrollToElement]);
 
   const selectBoardLinkTarget = useCallback(async (targetBoardId?: string): Promise<BoardMeta | null> => {
     const boards = await listBoards();
@@ -1211,7 +1312,7 @@ function App() {
 
   const handleBoardContextMenu = useCallback((event: React.MouseEvent<HTMLElement>) => {
     const target = event.target as HTMLElement;
-    if (target.closest(".top-bar, .board-side-panel, .quick-search-panel, .template-overlay, .home-screen")) {
+    if (target.closest(".top-bar, .board-tool-dock, .board-side-panel, .quick-search-panel, .template-overlay, .home-screen")) {
       return;
     }
     const element = elementAtClientPoint(event.clientX, event.clientY);
@@ -1228,7 +1329,7 @@ function App() {
 
   const handleBoardDoubleClick = useCallback((event: React.MouseEvent<HTMLElement>) => {
     const target = event.target as HTMLElement;
-    if (target.closest(".top-bar, .board-side-panel, .template-overlay, .home-screen")) {
+    if (target.closest(".top-bar, .board-tool-dock, .board-side-panel, .template-overlay, .home-screen")) {
       return;
     }
     const element = elementAtClientPoint(event.clientX, event.clientY);
@@ -1271,22 +1372,17 @@ function App() {
           appState: parsed.appState ?? {},
           files: parsed.files ?? {},
         };
-        restoreScene(scene);
         const name = file.name.replace(/\.excalidraw$|\.json$/i, "") || "Imported";
         const meta = await createBoard(name, scene);
         await syncIndexesForBoard(meta, scene);
-        setCurrentBoard(meta);
-        setIsDirty(false);
-        setLastSavedAt(meta.lastModified);
-        setRecentBoards(getRecentBoards());
-        setHomeDismissed(true);
+        openBoardScene(scene, meta);
         setLastLoadErrors([]);
       } catch (err) {
         setLastLoadErrors([`Failed to parse board file: ${err}`]);
       }
       e.target.value = "";
     },
-    [restoreScene, syncIndexesForBoard]
+    [openBoardScene, syncIndexesForBoard]
   );
 
   useEffect(() => {
@@ -1396,13 +1492,15 @@ function App() {
     if (!name || name.trim() === meta.name) return;
     try {
       const updated = await renameBoard(meta, name);
+      moveDailyBoardReference(meta, updated);
       if (currentBoard?.path === meta.path) setCurrentBoard(updated);
       setRecentBoards(getRecentBoards());
+      refreshTodayEntry();
       setLastLoadErrors([]);
     } catch (err) {
       setLastLoadErrors([`Failed to rename board: ${err}`]);
     }
-  }, [currentBoard]);
+  }, [currentBoard, refreshTodayEntry]);
 
   const handleDuplicateRecent = useCallback(async (meta: BoardMeta) => {
     try {
@@ -1421,19 +1519,22 @@ function App() {
   const handleDeleteRecentCard = useCallback(async (meta: BoardMeta) => {
     if (!window.confirm(`Delete "${meta.name}"?`)) return;
     await deleteBoard(meta);
+    removeDailyBoardReference(meta);
     removeIndexedBoard(meta.id);
     removeLinksForBoard(meta.id);
     refreshLinks();
+    refreshTodayEntry();
     setRecentBoards(getRecentBoards());
     if (currentBoard?.path === meta.path) {
       apiRef.current?.resetScene();
+      setAppView("command-center");
       setCurrentBoard(null);
       setIsDirty(false);
       setLastSavedAt(null);
       setActiveElementCount(0);
-      setHomeDismissed(false);
+      setHomeDismissed(true);
     }
-  }, [currentBoard, refreshLinks]);
+  }, [currentBoard, refreshLinks, refreshTodayEntry]);
 
   useEffect(() => {
     window.__RECALL_API__ = {
@@ -1459,24 +1560,139 @@ function App() {
       : lastSavedAt
         ? "saved"
         : "new";
+  const appCommands = useMemo<AppCommand[]>(() => [
+    {
+      id: "board.newBlank",
+      title: "New Blank Board",
+      description: "Start an empty canvas.",
+      shortcut: "New",
+      group: "Board",
+      run: handleBlankCanvas,
+    },
+    {
+      id: "board.openFile",
+      title: "Open Board",
+      description: "Open an existing Excalidraw board.",
+      shortcut: "Open",
+      group: "Board",
+      run: handleOpenBoard,
+    },
+    {
+      id: "search.openQuickSearch",
+      title: "Search Boards",
+      description: "Search indexed board text.",
+      shortcut: "Ctrl K",
+      group: "Search",
+      run: () => setQuickSearchOpen(true),
+    },
+    {
+      id: "board.templates",
+      title: "Templates",
+      description: "Open the template gallery.",
+      group: "Board",
+      run: () => {
+        setBoardMounted(true);
+        setAppView("board");
+        setHomeDismissed(true);
+        setShowTemplateGallery(true);
+      },
+    },
+    {
+      id: "daily.openToday",
+      title: "Open Today",
+      description: "Open or create today's daily command board.",
+      group: "Daily",
+      run: () => void handleOpenToday(),
+    },
+  ], [handleBlankCanvas, handleOpenBoard, handleOpenToday]);
+
+  const activeBoardTool = String(
+    (canvasSnapshot.appState.activeTool as { type?: string } | undefined)?.type || "selection"
+  );
+
+  const handleSelectBoardTool = useCallback((tool: BoardDockTool) => {
+    if (!apiRef.current) return;
+    if (tool === "image") {
+      apiRef.current.setActiveTool({ type: "image" });
+      return;
+    }
+    apiRef.current.setActiveTool({ type: tool });
+  }, []);
+
+  const closeBoardFloatingPanels = useCallback(() => {
+    setBoardMenuOpen(false);
+    setSidePanelOpen(false);
+    setShowRecent(false);
+    setShowExport(false);
+  }, []);
+
+  const handleToggleBoardMenu = useCallback(() => {
+    const opening = !boardMenuOpen;
+    setBoardMenuOpen(opening);
+    if (opening) {
+      setSidePanelOpen(false);
+      setShowRecent(false);
+      setShowExport(false);
+    }
+  }, [boardMenuOpen]);
+
+  const handleToggleSidePanel = useCallback(() => {
+    const opening = !sidePanelOpen;
+    setSidePanelOpen(opening);
+    if (opening) {
+      setBoardMenuOpen(false);
+      setShowRecent(false);
+      setShowExport(false);
+    }
+  }, [sidePanelOpen]);
+
+  useEffect(() => {
+    if (!boardMenuOpen && !sidePanelOpen) return undefined;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (!(event.target instanceof Element)) return;
+      if (boardMenuOpen && event.target.closest(".board-command-menu, .board-more-trigger")) return;
+      if (sidePanelOpen && event.target.closest(".board-side-panel, .board-graph-trigger")) return;
+      closeBoardFloatingPanels();
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        closeBoardFloatingPanels();
+      }
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown, true);
+    document.addEventListener("keydown", handleKeyDown, true);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown, true);
+      document.removeEventListener("keydown", handleKeyDown, true);
+    };
+  }, [boardMenuOpen, closeBoardFloatingPanels, sidePanelOpen]);
+
   const currentBacklinks = currentBoard
     ? allLinks.filter((entry) => entry.targetBoardId === currentBoard.id)
     : [];
-  const showSidePanel = homeDismissed || Boolean(currentBoard) || recentBoards.length > 0 || allLinks.length > 0;
+  const showSidePanel = appView === "board" && sidePanelOpen;
   const customChromeEnabled = isTauriEnv() && import.meta.env.VITE_RECALL_CUSTOM_CHROME === "true";
 
   useEffect(() => {
-    document.title = currentBoard ? `Recall Board - ${currentBoard.name}` : "Recall Board";
-  }, [currentBoard]);
+    document.title = currentBoard
+      ? `Recall Board - ${currentBoard.name}`
+      : appView === "command-center"
+        ? "Recall - Today"
+        : "Recall Board";
+  }, [appView, currentBoard]);
 
   return (
     <div className={`app-shell${customChromeEnabled ? " custom-chrome-shell" : ""}`}>
       {customChromeEnabled && (
         <CustomTitleBar boardName={currentBoard?.name} saveStatus={saveStatus} />
       )}
+      {appView === "board" && (
       <header className="top-bar">
         <div className="top-bar-title">
-          Recall Board
+          <span>Recall</span>
           {currentBoard && (
             <span className="board-name">
               {" - "}{currentBoard.name}
@@ -1485,71 +1701,110 @@ function App() {
           <span className={`save-status ${saveStatus}`}>{saveStatus}</span>
         </div>
         <div className="top-bar-actions">
-          <div className="toolbar-group board-actions">
-            <button className="toolbar-button" onClick={handleNewBoard}>New</button>
-            <button className="toolbar-button" onClick={handleOpenBoard}>Open...</button>
-            <button className="toolbar-button primary-action" onClick={handleSaveBoard}>Save</button>
-            <button className="toolbar-button" onClick={handleSaveAs}>Save As...</button>
-            <button className="toolbar-button" onClick={handleRenameBoard}>Rename</button>
-            <button className="toolbar-button" onClick={handleDuplicateBoard}>Duplicate</button>
-            <button className="toolbar-button danger-action" onClick={handleDeleteCurrentBoard}>Delete</button>
-          </div>
+          <button
+            className="toolbar-button"
+            onClick={() => {
+              closeBoardFloatingPanels();
+              setAppView("command-center");
+            }}
+          >
+            Today
+          </button>
+          <button className="toolbar-button" onClick={() => {
+            closeBoardFloatingPanels();
+            handleNewBoard();
+          }}>New</button>
+          <button className="toolbar-button" onClick={() => {
+            closeBoardFloatingPanels();
+            handleOpenBoard();
+          }}>Open</button>
+          <button className="toolbar-button primary-action" onClick={() => {
+            closeBoardFloatingPanels();
+            handleSaveBoard();
+          }}>Save</button>
+          <button className="toolbar-button" onClick={() => {
+            closeBoardFloatingPanels();
+            setQuickSearchOpen(true);
+          }}>Search</button>
+          <button
+            className={`toolbar-button board-graph-trigger${sidePanelOpen ? " active" : ""}`}
+            onClick={handleToggleSidePanel}
+          >
+            Graph
+          </button>
+          <button
+            className={`toolbar-button icon-button board-more-trigger${boardMenuOpen ? " active" : ""}`}
+            aria-label="More board actions"
+            title="More board actions"
+            onClick={handleToggleBoardMenu}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="6" cy="12" r="1.6" />
+              <circle cx="12" cy="12" r="1.6" />
+              <circle cx="18" cy="12" r="1.6" />
+            </svg>
+          </button>
+        </div>
+        {boardMenuOpen && (
+          <div className="board-command-menu glass-panel">
+            <section className="board-command-section">
+              <span className="board-command-section-title">Board</span>
+              <button type="button" onClick={() => {
+                closeBoardFloatingPanels();
+                handleSaveAs();
+              }}>Save As...</button>
+              <button type="button" onClick={() => {
+                closeBoardFloatingPanels();
+                handleRenameBoard();
+              }}>Rename</button>
+              <button type="button" onClick={() => {
+                closeBoardFloatingPanels();
+                handleDuplicateBoard();
+              }}>Duplicate</button>
+              <button type="button" className="danger-action" onClick={() => {
+                closeBoardFloatingPanels();
+                handleDeleteCurrentBoard();
+              }}>Delete</button>
+            </section>
 
-          <div className="toolbar-group organize-actions">
-            <button className="toolbar-button" onClick={() => setQuickSearchOpen(true)}>Search</button>
-            <button className="toolbar-button" onClick={() => void handleCreateBoardLink()}>Link Board</button>
-            <button className="toolbar-button" onClick={() => {
-              setShowTemplateGallery(!showTemplateGallery);
-              setShowRecent(false);
-              setShowExport(false);
-            }}>
-              Templates
-            </button>
-            <button className="toolbar-button" onClick={handleSaveAsTemplate}>Save Template</button>
-          </div>
+            <section className="board-command-section">
+              <span className="board-command-section-title">Organize</span>
+              <button type="button" onClick={() => {
+                closeBoardFloatingPanels();
+                void handleCreateBoardLink();
+              }}>Link Board</button>
+              <button
+                type="button"
+                onClick={() => {
+                  closeBoardFloatingPanels();
+                  setShowTemplateGallery(true);
+                }}
+              >
+                Templates
+              </button>
+              <button type="button" onClick={() => {
+                closeBoardFloatingPanels();
+                handleSaveAsTemplate();
+              }}>Save Template</button>
+              <button type="button" onClick={() => {
+                closeBoardFloatingPanels();
+                setShowTranscript(true);
+              }}>Parse Transcript</button>
+            </section>
 
-          <div className="toolbar-group settings-actions">
-            <label className="auto-save-toggle">
-              <input
-                type="checkbox"
-                checked={autoSaveEnabled}
-                onChange={(event) => handleAutoSaveToggle(event.currentTarget.checked)}
-              />
-              Auto-save
-            </label>
-            <label className="auto-save-toggle">
-              <input
-                type="checkbox"
-                checked={autoSnapEnabled}
-                onChange={(event) => handleAutoSnapToggle(event.currentTarget.checked)}
-              />
-              Auto-snap
-            </label>
-            <label className="snap-threshold">
-              <span>Snap</span>
-              <input
-                type="number"
-                min="0.5"
-                max="0.95"
-                step="0.05"
-                value={snapConfidenceThreshold}
-                onChange={(event) => handleSnapThresholdChange(Number(event.currentTarget.value))}
-              />
-            </label>
-            <ThemeToggle compact />
-          </div>
-
-          {/* Recent boards dropdown */}
-          <div className="toolbar-group file-actions">
-            <div className="recent-dropdown">
-              <button className="toolbar-button" onClick={() => {
-                setShowRecent(!showRecent);
-                setShowExport(false);
-              }}>
+            <section className="board-command-section">
+              <span className="board-command-section-title">Files</span>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowRecent(!showRecent);
+                  setShowExport(false);
+                }}
+              >
                 Recent
               </button>
               {showRecent && (
-                <div className="recent-menu">
+                <div className="recent-menu inline-menu">
                   {recentBoards.length === 0 ? (
                     <div className="recent-item empty">No recent boards</div>
                   ) : (
@@ -1575,27 +1830,27 @@ function App() {
                   )}
                 </div>
               )}
-            </div>
-
-            <label className="file-input-label">
-              <input
-                id="recall-graph-input"
-                type="file"
-                accept=".json"
-                onChange={handleFileInput}
-                style={{ display: "none" }}
-              />
-              Load Recall Graph IR
-            </label>
-            <div className="export-dropdown">
-              <button className="toolbar-button" onClick={() => {
-                setShowExport(!showExport);
-                setShowRecent(false);
-              }}>
+              <label className="file-input-label">
+                <input
+                  id="recall-graph-input"
+                  type="file"
+                  accept=".json"
+                  onChange={handleFileInput}
+                  style={{ display: "none" }}
+                />
+                Load Recall Graph IR
+              </label>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowExport(!showExport);
+                  setShowRecent(false);
+                }}
+              >
                 Export
               </button>
               {showExport && (
-                <div className="export-menu">
+                <div className="export-menu inline-menu">
                   {EXPORT_OPTIONS.map((option) => (
                     <button
                       key={option.format}
@@ -1607,11 +1862,51 @@ function App() {
                   ))}
                 </div>
               )}
-            </div>
-            <button className="toolbar-button" onClick={() => setShowTranscript(true)}>Parse Transcript</button>
+            </section>
+
+            <section className="board-command-section board-command-settings">
+              <span className="board-command-section-title">Canvas</span>
+              <label className="auto-save-toggle">
+                <input
+                  type="checkbox"
+                  checked={autoSaveEnabled}
+                  onChange={(event) => handleAutoSaveToggle(event.currentTarget.checked)}
+                />
+                Auto-save
+              </label>
+              <label className="auto-save-toggle">
+                <input
+                  type="checkbox"
+                  checked={autoSnapEnabled}
+                  onChange={(event) => handleAutoSnapToggle(event.currentTarget.checked)}
+                />
+                Auto-snap
+              </label>
+              <label className="auto-save-toggle">
+                <input
+                  type="checkbox"
+                  checked={cleanCanvasUi}
+                  onChange={(event) => setCleanCanvasUi(event.currentTarget.checked)}
+                />
+                Clean board
+              </label>
+              <label className="snap-threshold">
+                <span>Snap</span>
+                <input
+                  type="number"
+                  min="0.5"
+                  max="0.95"
+                  step="0.05"
+                  value={snapConfidenceThreshold}
+                  onChange={(event) => handleSnapThresholdChange(Number(event.currentTarget.value))}
+                />
+              </label>
+              <ThemeToggle compact />
+            </section>
           </div>
-        </div>
+        )}
       </header>
+      )}
 
       {/* Hidden file input for browser fallback open */}
       <input
@@ -1622,7 +1917,7 @@ function App() {
         style={{ display: "none" }}
       />
 
-      {currentBoard && subpageStack.length > 0 && (
+      {appView === "board" && currentBoard && subpageStack.length > 0 && (
         <nav className="breadcrumb-bar" aria-label="Subpage breadcrumbs">
           <button type="button" onClick={() => void navigateToBreadcrumb(0)}>
             Board: {currentBoard.name}
@@ -1656,8 +1951,21 @@ function App() {
           </button>
         </div>
       )}
+      {appView === "command-center" && (
+        <DailyCommandCenter
+          todayEntry={todayEntry}
+          recentBoards={recentBoards}
+          commands={appCommands}
+          onOpenToday={() => void handleOpenToday()}
+          onOpenRecent={(board) => void handleOpenRecent(board)}
+          onRenameRecent={handleRenameRecent}
+          onDeleteRecent={handleDeleteRecentCard}
+          onDuplicateRecent={handleDuplicateRecent}
+        />
+      )}
+      {boardMounted && (
       <main
-        className="board"
+        className={`board board-workspace${appView === "board" ? "" : " is-hidden"}${cleanCanvasUi ? " clean-canvas" : ""}`}
         onContextMenuCapture={handleBoardContextMenu}
         onDoubleClickCapture={handleBoardDoubleClick}
       >
@@ -1666,7 +1974,15 @@ function App() {
           excalidrawAPI={handleExcalidrawAPI}
           onLinkOpen={handleLinkOpen}
           theme={excalidrawTheme}
+          zenModeEnabled={cleanCanvasUi}
+          UIOptions={cleanCanvasUi ? CLEAN_EXCALIDRAW_UI_OPTIONS : undefined}
         />
+        {appView === "board" && cleanCanvasUi && (
+          <BoardToolDock
+            activeTool={activeBoardTool}
+            onSelectTool={handleSelectBoardTool}
+          />
+        )}
         <SubpageBadge
           elements={canvasSnapshot.elements}
           appState={canvasSnapshot.appState}
@@ -1676,20 +1992,6 @@ function App() {
           <div className="snap-feedback" role="status">
             {snapFeedback}
           </div>
-        )}
-        {!homeDismissed && !currentBoard && activeElementCount === 0 && (
-          <HomeScreen
-            templates={templates}
-            recentBoards={recentBoards}
-            onUseTemplate={handleUseTemplate}
-            onOpenRecent={handleOpenRecent}
-            onRenameRecent={handleRenameRecent}
-            onDeleteRecent={handleDeleteRecentCard}
-            onDuplicateRecent={handleDuplicateRecent}
-            onNew={handleBlankCanvas}
-            onOpen={handleOpenBoard}
-            onImport={() => document.getElementById("recall-graph-input")?.click()}
-          />
         )}
         {showTemplateGallery && (
           <div className="template-overlay">
@@ -1758,6 +2060,12 @@ function App() {
           />
         )}
       </main>
+      )}
+      <CommandDialog
+        open={commandDialogOpen}
+        commands={appCommands}
+        onClose={() => setCommandDialogOpen(false)}
+      />
       <QuickSearch
         open={quickSearchOpen}
         onClose={() => setQuickSearchOpen(false)}
